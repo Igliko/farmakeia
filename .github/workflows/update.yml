@@ -34,6 +34,6 @@ jobs:
             echo "Καμία αλλαγή."
           else
             git commit -m "Εφημερίες: ενημέρωση $(TZ=Europe/Athens date '+%d/%m %H:%M')"
-            git pull --rebase origin main
-            git push
+            for i in 1 2 3 4 5; do git pull --rebase origin main && git push && exit 0; sleep 7; done
+            exit 1
           fi
