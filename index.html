@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Εφημερίες Πάτρας</title>
-<meta name="description" content="Ποια φαρμακεία είναι ανοιχτά τώρα στην Πάτρα: εφημερεύοντα και διευρυμένου ωραρίου, σε χάρτη.">
+<title>Εφημερίες Φαρμακείων</title>
+<meta name="description" content="Ποια φαρμακεία είναι ανοιχτά τώρα σε όλη την Ελλάδα: εφημερεύοντα και διευρυμένου ωραρίου, σε χάρτη.">
 <meta name="theme-color" content="#07794D">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2307794D'/%3E%3Cpath d='M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z' fill='white'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,6 +45,16 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
 .handle{flex:none;border:0;background:none;padding:10px 0 6px;cursor:pointer;display:grid;place-items:center}
 .handle i{width:38px;height:4px;border-radius:2px;background:var(--line);display:block}
 .head{flex:none;padding:0 max(18px,env(safe-area-inset-right,0px)) 8px max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+.search{position:relative;display:flex;align-items:center;gap:8px;height:44px;padding:0 12px;border-radius:12px;background:var(--soft);color:var(--muted)}
+.search input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--fg);font:500 16px/1 var(--body);outline:none}
+.search:focus-within{outline:3px solid var(--blue);outline-offset:1px}
+.results{position:absolute;left:0;right:0;top:48px;z-index:10;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px var(--shadow);overflow:hidden}
+.results button{display:flex;justify-content:space-between;align-items:baseline;gap:10px;width:100%;padding:12px 14px;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer}
+.results button:first-child{border-top:0}
+.results button:hover,.results button:focus-visible{background:var(--soft)}
+.results b{font:600 15px/1.2 var(--body)}
+.results span{font:500 12.5px/1.2 var(--body);color:var(--muted)}
+.nores{margin:0;padding:12px 14px;font:500 14px/1.3 var(--body);color:var(--muted)}
 .tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;background:var(--soft);border-radius:12px}
 .tabs button{height:36px;border:0;border-radius:9px;background:transparent;color:var(--muted);font:600 14.5px/1 var(--body);cursor:pointer}
 .tabs button[aria-selected="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px var(--shadow)}
@@ -108,22 +118,27 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
 </style>
 </head>
 <body>
-<div id="map" role="region" aria-label="Χάρτης της Πάτρας με τα φαρμακεία"></div>
+<div id="map" role="region" aria-label="Χάρτης με τα φαρμακεία"></div>
 
 <div class="top">
   <div class="brand">
     <div class="logo"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M6.5 1h5v5.5H17v5h-5.5V17h-5v-5.5H1v-5h5.5z"/></svg></div>
-    <div><h1>Εφημερίες Πάτρας</h1><p class="sub" id="clock">&nbsp;</p></div>
+    <div><h1>Εφημερίες Φαρμακείων</h1><p class="sub" id="clock">&nbsp;</p></div>
   </div>
   <div class="fabs">
     <button class="fab loc" id="locate" aria-label="Η θέση μου"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
-    <button class="fab" id="fit" aria-label="Δείξε όλα τα φαρμακεία"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+    <button class="fab" id="fit" aria-label="Δείξε τα κοντινά ανοιχτά φαρμακεία"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
   </div>
 </div>
 
 <section class="sheet" id="sheet" aria-label="Φαρμακεία">
   <button class="handle" id="handle" aria-label="Μεγάλωσε ή μίκρυνε τη λίστα"><i></i></button>
   <div class="head">
+    <form class="search" id="search" role="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="q" type="search" placeholder="Ψάξε πόλη, π.χ. Αίγιο" autocomplete="off" aria-label="Ψάξε πόλη">
+      <div class="results" id="results" hidden></div>
+    </form>
     <div class="tabs" role="tablist" aria-label="Πότε">
       <button role="tab" data-view="now" aria-selected="true">Τώρα</button>
       <button role="tab" data-view="today" aria-selected="false">Σήμερα</button>
@@ -136,7 +151,7 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
   </div>
   <div class="scroll" id="scroll">
     <div id="list"></div>
-    <p class="note">Πηγή: <a href="https://www.vrisko.gr/efimeries-farmakeion/patra/" target="_blank" rel="noopener">vrisko.gr</a> (Φαρμακευτικός Σύλλογος Αχαΐας) · τελευταία αλλαγή <span id="upd">–</span>.<br>Οι εφημερίες αλλάζουν καμιά φορά τελευταία στιγμή. Πάρε τηλέφωνο πριν πας.</p>
+    <p class="note">Πηγή: <a href="https://www.vrisko.gr/efimeries-farmakeion/patra/" target="_blank" rel="noopener">vrisko.gr</a> (Φαρμακευτικοί Σύλλογοι) · τελευταία αλλαγή <span id="upd">–</span>.<br>Οι εφημερίες αλλάζουν καμιά φορά τελευταία στιγμή. Πάρε τηλέφωνο πριν πας.</p>
   </div>
 </section>
 
@@ -205,14 +220,14 @@ function card(p, st, extra) {
     <div class="more"><p class="addr"></p>
       <div class="btns">
         <a class="call" href="tel:+30${p.phone}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2z"/></svg>Κλήση</a>
-        <a class="dir" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat != null ? p.lat + ',' + p.lng : encodeURIComponent(p.address + ', ' + p.zip + ' Πάτρα')}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>Οδηγίες</a>
+        <a class="dir" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat != null ? p.lat + ',' + p.lng : encodeURIComponent(p.address + ', ' + p.zip + ' ' + (p.town || ''))}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>Οδηγίες</a>
       </div>
       <span class="phone"></span>
     </div>`;
   el.querySelector('.name').textContent = p.name;
   el.querySelector('.st').textContent = st.text;
   el.querySelector('.kind').textContent = kindOf(st.slot) + (st.slot ? ' · ' + slotLabel(st.slot) : '');
-  el.querySelector('.addr').textContent = p.address + ', ' + (p.area && p.area !== 'Πάτρα' ? p.area + ', ' : '') + p.zip + ' Πάτρα';
+  el.querySelector('.addr').textContent = [p.address, p.area && p.area !== p.town ? p.area : '', (p.zip ? p.zip + ' ' : '') + (p.town || '')].filter(Boolean).join(', ');
   el.querySelector('.phone').textContent = 'Τηλ. ' + p.phone.replace(/^(\d{4})(\d+)/, '$1 $2');
   el.querySelector('.row').onclick = () => select(p === state.sel ? null : p, true);
   return el;
@@ -240,111 +255,157 @@ function inView(p) {
 // Σήμερα = όσα ξεκινούν σήμερα, συν όσα από χθες είναι ακόμα ανοιχτά
 function inToday(s, n) { return s.from.slice(0, 10) === n.slice(0, 10) || (s.from <= n && n < s.to); }
 
-function sortKey(p) { const d = dist(p); return d ? d.d : 0; }
+// Σημείο αναφοράς για τις αποστάσεις: η θέση μου, αλλιώς το κέντρο του χάρτη
+function ref() { if (state.me) return state.me; const c = map.getCenter(); return [c.lat, c.lng]; }
+function sortKey(p) { return p.lat == null ? 1e9 : km(ref(), [p.lat, p.lng]); }
 
+// Φαρμακεία που φαίνονται στον χάρτη τώρα (ή κοντά του)
+const MIN_ZOOM_LIST = 9.5;
+function nearby(list) {
+  if (map.getZoom() < MIN_ZOOM_LIST) return null;
+  const b = map.getBounds();
+  const pad = 0.15 * (b.getNorth() - b.getSouth());
+  const inB = p => p.lat != null && p.lat > b.getSouth() - pad && p.lat < b.getNorth() + pad && p.lng > b.getWest() - pad && p.lng < b.getEast() + pad;
+  return list.filter(inB);
+}
+function placeName() {
+  const r = ref();
+  let best = null, bd = 1e9;
+  for (const t of state.towns) { const d = km(r, t.c); if (d < bd) { bd = d; best = t; } }
+  return best && bd < 25 ? best.n : '';
+}
+
+const MAX_ITEMS = 40;
 function render() {
   const data = state.data; if (!data) return;
   const n = nowStr(), today = n.slice(0, 10), tm = addDays(today, 1);
   const list = $('list'); list.innerHTML = '';
-  const ph = data.pharmacies.filter(inView);
+  const all = data.pharmacies.filter(inView);
+  const ph = nearby(all);
   $('live').hidden = state.view !== 'now';
+  const where = placeName();
+  paintMarkers(all);
+  $('upd').textContent = data.updated ? data.updated.slice(8, 10) + '/' + data.updated.slice(5, 7) + ' ' + hhmm(data.updated) : '–';
+
+  if (!ph) {
+    $('big').textContent = all.filter(p => status(p).k === 'open').length + ' ανοιχτά σε όλη την Ελλάδα';
+    $('small').textContent = 'Ψάξε πόλη ή πάτα το βελάκι';
+    list.innerHTML = '<div class="empty"><b>Μεγάλωσε τον χάρτη σε μια πόλη</b>Ή γράψε το όνομα της πόλης στην αναζήτηση από πάνω.</div>';
+    return;
+  }
 
   if (state.view === 'now') {
-    const open = ph.filter(p => status(p).k === 'open').sort((a, b) => sortKey(a) - sortKey(b) || status(b).left - status(a).left);
-    const later = ph.filter(p => status(p).k === 'later').sort((a, b) => status(a).inM - status(b).inM);
-    $('big').textContent = open.length === 1 ? '1 ανοιχτό τώρα' : open.length + ' ανοιχτά τώρα';
+    const open = ph.filter(p => status(p).k === 'open').sort((a, b) => sortKey(a) - sortKey(b));
+    const later = ph.filter(p => status(p).k === 'later').sort((a, b) => status(a).inM - status(b).inM || sortKey(a) - sortKey(b));
+    $('big').textContent = (open.length === 1 ? '1 ανοιχτό τώρα' : open.length + ' ανοιχτά τώρα');
     const near = open[0], d = near && dist(near);
-    $('small').textContent = !open.length ? (later[0] ? 'Το επόμενο ανοίγει ' + hhmm(status(later[0]).slot.from) : 'Δεν υπάρχουν στοιχεία για τώρα')
-      : d ? 'Πιο κοντινό: ' + short(near.name) + ' · ' + d.text : 'Πάτα το βελάκι για να δεις τι είναι κοντά σου';
-    open.forEach(p => list.appendChild(card(p, status(p))));
+    $('small').textContent = !open.length ? (later[0] ? 'Το επόμενο εδώ ανοίγει ' + hhmm(status(later[0]).slot.from) : 'Κανένα σε αυτό το σημείο του χάρτη')
+      : d ? 'Πιο κοντινό: ' + short(near.name) + ' · ' + d.text : (where ? 'Στην περιοχή: ' + where : 'Σε αυτό το σημείο του χάρτη');
+    open.slice(0, MAX_ITEMS).forEach(p => list.appendChild(card(p, status(p))));
     if (later.length) {
       const g = document.createElement('p'); g.className = 'group'; g.textContent = 'Ανοίγουν αργότερα'; list.appendChild(g);
       later.slice(0, 12).forEach(p => list.appendChild(card(p, status(p))));
     }
-    if (!open.length && !later.length) list.innerHTML = '<div class="empty"><b>Δεν βρέθηκαν φαρμακεία για τώρα</b>Δες τη σελίδα του vrisko.gr ή πάρε τηλέφωνο στο 1434.</div>';
+    if (!open.length && !later.length) list.innerHTML = '<div class="empty"><b>Δεν βρέθηκαν φαρμακεία εδώ</b>Μίκρυνε λίγο τον χάρτη ή ψάξε άλλη πόλη.</div>';
   } else {
     const day = state.view === 'today' ? today : tm;
     $('big').textContent = dayName(day).replace(/^./, c => c.toUpperCase());
-    const duty = ph.filter(p => p.slots.some(s => s.type === 'duty' && (state.view === 'today' ? inToday(s, n) : s.from.slice(0, 10) === day)));
-    $('small').textContent = ph.length ? `${duty.length} εφημερεύουν · ${ph.length - duty.length} με διευρυμένο ωράριο` : '';
+    const inDay = s => state.view === 'today' ? inToday(s, n) : s.from.slice(0, 10) === day;
+    const duty = ph.filter(p => p.slots.some(s => s.type === 'duty' && inDay(s)));
+    $('small').textContent = ph.length ? `${where ? where + ': ' : ''}${duty.length} εφημερεύουν · ${ph.length - duty.length} διευρυμένο` : '';
     if (!ph.length) {
       list.innerHTML = state.view === 'tomorrow'
         ? '<div class="empty"><b>Το πρόγραμμα της επόμενης μέρας δεν έχει βγει ακόμα</b>Θα εμφανιστεί εδώ μόλις το ανεβάσει ο Φαρμακευτικός Σύλλογος.</div>'
-        : '<div class="empty"><b>Δεν βρέθηκαν φαρμακεία για σήμερα</b></div>';
+        : '<div class="empty"><b>Δεν βρέθηκαν φαρμακεία εδώ για σήμερα</b></div>';
     } else {
       const ticks = ['08', '12', '16', '20', '00', '04', '08'].map((t, i) => `<span style="left:${i / 6 * 100}%">${t}</span>`).join('');
       const tk = document.createElement('div'); tk.className = 'ticks'; tk.setAttribute('aria-hidden', 'true'); tk.innerHTML = ticks; list.appendChild(tk);
-      const first = p => p.slots.filter(s => s.to > day + 'T00:00').map(s => s.from).sort()[0] || '';
       const order = ph.slice().sort((a, b) => {
         const da = duty.includes(a), db = duty.includes(b); if (da !== db) return da ? -1 : 1;
-        return sortKey(a) - sortKey(b) || first(a).localeCompare(first(b)); });
+        return sortKey(a) - sortKey(b); }).slice(0, MAX_ITEMS);
       let lastGroup = null;
       for (const p of order) {
         const g = duty.includes(p) ? 'Εφημερεύουν' : 'Διευρυμένο ωράριο';
         if (g !== lastGroup) { const h = document.createElement('p'); h.className = 'group'; h.textContent = g; list.appendChild(h); lastGroup = g; }
         const st = status(p);
-        const slot = p.slots.filter(s => (state.view === 'today' ? inToday(s, n) : s.from.slice(0, 10) === day));
+        const slot = p.slots.filter(inDay);
         const shown = { ...st, slot: slot[slot.length - 1] };
         if (state.view === 'tomorrow') { shown.text = slot.map(slotLabel).join(', '); shown.color = 'var(--fg)'; }
         list.appendChild(card(p, shown, timeline(p, day)));
       }
     }
   }
-  $('upd').textContent = data.updated ? data.updated.slice(8, 10) + '/' + data.updated.slice(5, 7) + ' ' + hhmm(data.updated) : '–';
-  paintMarkers(ph);
 }
 
 // ---- χάρτης ----
+let start = { center: [21.7346, 38.2466], zoom: 12.6 };
+try { const v = JSON.parse(localStorage.getItem('view') || 'null'); if (v && v.center && v.zoom) start = v; } catch (e) {}
 const map = new maplibregl.Map({
   container: 'map', style: 'https://tiles.openfreemap.org/styles/' + (dark ? 'dark' : 'positron'),
-  center: [21.7385, 38.2466], zoom: 12.6, attributionControl: { compact: true }, maxBounds: [[21.3, 37.95], [22.2, 38.55]]
+  center: start.center, zoom: start.zoom, attributionControl: { compact: true }, maxBounds: [[17.5, 33.8], [30.5, 42.5]], minZoom: 5.5
 });
 let mapReady = false;
-map.on('load', () => { mapReady = true; });
-map.on('style.load', () => { mapReady = true; });
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
-map.on('style.load', () => {
+
+const COLORS = { open: '#07794D', later: '#A35400', off: '#7D8C85' };
+function geojson(list) {
+  return { type: 'FeatureCollection', features: list.filter(p => p.lat != null).map(p => {
+    const st = status(p);
+    return { type: 'Feature', id: p.n, geometry: { type: 'Point', coordinates: [p.lng, p.lat] }, properties: { i: p.n, k: st.k, sel: p === state.sel ? 1 : 0 } };
+  }) };
+}
+function setupLayers() {
   for (const l of map.getStyle().layers) {
     if (l.type === 'symbol' && l.layout && l.layout['text-field']) {
       try { map.setLayoutProperty(l.id, 'text-field', ['coalesce', ['get', 'name:el'], ['get', 'name'], ['get', 'name_int']]); } catch (e) {}
     }
   }
-});
+  const img = new Image(48, 48);
+  img.onload = () => { if (!map.hasImage('cross')) map.addImage('cross', img, { pixelRatio: 2 }); };
+  img.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 18 18"><path d="M6.5 1h5v5.5H17v5h-5.5V17h-5v-5.5H1v-5h5.5z" fill="#fff" transform="translate(4.5 4.5) scale(.5)"/></svg>');
+  map.addSource('ph', { type: 'geojson', data: geojson([]) });
+  map.addLayer({ id: 'ph-halo', type: 'circle', source: 'ph', filter: ['==', ['get', 'k'], 'open'],
+    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, 4, 12, 13, 16, 22], 'circle-color': '#12A464', 'circle-opacity': 0.22 } });
+  map.addLayer({ id: 'ph-dot', type: 'circle', source: 'ph',
+    paint: {
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, ['match', ['get', 'k'], 'off', 1.5, 2.5], 12, ['case', ['==', ['get', 'sel'], 1], 14, ['match', ['get', 'k'], 'off', 6, 9]], 16, ['case', ['==', ['get', 'sel'], 1], 20, ['match', ['get', 'k'], 'off', 9, 15]]],
+      'circle-color': ['match', ['get', 'k'], 'open', COLORS.open, 'later', COLORS.later, COLORS.off],
+      'circle-stroke-color': '#ffffff', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 12, 2, 16, 2.5] } });
+  map.addLayer({ id: 'ph-cross', type: 'symbol', source: 'ph', minzoom: 11.5,
+    layout: { 'icon-image': 'cross', 'icon-size': ['interpolate', ['linear'], ['zoom'], 11.5, 0.45, 16, 0.85], 'icon-allow-overlap': true } });
+  map.on('click', 'ph-dot', e => { const f = e.features && e.features[0]; if (f) { e.originalEvent.cancelBubble = true; clickedPin = true; select(byN[f.properties.i], false); } });
+  map.on('mouseenter', 'ph-dot', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', 'ph-dot', () => map.getCanvas().style.cursor = '');
+  mapReady = true;
+  render();
+}
+map.on('style.load', setupLayers);
 
-function paintMarkers(visible) {
-  const show = new Set(visible.map(p => p.id));
-  for (const p of state.data.pharmacies) {
-    if (p.lat == null) continue;
-    let m = markers.get(p.id);
-    if (!m) {
-      const el = document.createElement('button');
-      el.className = 'pin'; el.innerHTML = CROSS(16);
-      el.onclick = e => { e.stopPropagation(); select(p, false); };
-      m = { el, mk: new maplibregl.Marker({ element: el }).setLngLat([p.lng, p.lat]) };
-      markers.set(p.id, m);
-    }
-    const st = status(p);
-    m.el.setAttribute('aria-label', p.name + ', ' + st.text);
-    m.el.className = 'pin' + (st.k === 'later' ? ' later' : st.k === 'off' ? ' off' : '') + (p === state.sel ? ' on' : '');
-    if (show.has(p.id)) m.mk.addTo(map); else m.mk.remove();
-  }
+let byN = [], clickedPin = false;
+function paintMarkers(list) {
+  if (!mapReady || !map.getSource('ph')) return;
+  map.getSource('ph').setData(geojson(list));
 }
 
 function sheetH() { return innerWidth >= 860 ? 0 : $('sheet').getBoundingClientRect().height; }
 function select(p, fromList) {
   state.sel = p; render();
   if (!p) return;
-  if (p.lat != null) map.flyTo({ center: [p.lng, p.lat], zoom: Math.max(map.getZoom(), 15), offset: innerWidth >= 860 ? [210, 0] : [0, -sheetH() / 2 + 40], duration: 700 });
+  if (p.lat != null) { moving = true; map.flyTo({ center: [p.lng, p.lat], zoom: Math.max(map.getZoom(), 15), offset: innerWidth >= 860 ? [210, 0] : [0, -sheetH() / 2 + 40], duration: 700 }); }
   const el = document.querySelector(`.item[data-id="${CSS.escape(p.id)}"]`);
   if (el && !fromList) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
+// Δείξε τα πιο κοντινά ανοιχτά φαρμακεία
 function fitAll() {
-  const pts = state.data ? state.data.pharmacies.filter(inView).filter(p => p.lat != null).map(p => [p.lng, p.lat]) : [];
-  if (state.me) pts.push([state.me[1], state.me[0]]);
-  if (!pts.length) return;
-  const b = pts.reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds(pts[0], pts[0]));
+  if (!state.data) return;
+  const r = ref();
+  const cand = state.data.pharmacies.filter(inView).filter(p => p.lat != null && (state.view !== 'now' || status(p).k === 'open'))
+    .map(p => [km(r, [p.lat, p.lng]), p]).sort((a, b) => a[0] - b[0]).slice(0, 6).filter(x => x[0] < 40).map(x => [x[1].lng, x[1].lat]);
+  if (state.me) cand.push([state.me[1], state.me[0]]);
+  if (!cand.length) return;
+  const b = cand.reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds(cand[0], cand[0]));
   const wide = innerWidth >= 860;
-  map.fitBounds(b, { padding: { top: 100, bottom: wide ? 60 : sheetH() + 30, left: wide ? 440 : 40, right: 70 }, maxZoom: 15.5, duration: 600 });
+  map.fitBounds(b, { padding: { top: 140, bottom: wide ? 60 : sheetH() + 30, left: wide ? 440 : 40, right: 70 }, maxZoom: 15.5, duration: 600 });
 }
 
 // ---- θέση χρήστη ----
@@ -356,38 +417,80 @@ function locate(fly) {
     try { localStorage.setItem('loc-ok', '1'); } catch (e) {}
     if (!meMarker) { const d = document.createElement('div'); d.className = 'me'; meMarker = new maplibregl.Marker({ element: d }).setLngLat([state.me[1], state.me[0]]).addTo(map); }
     else meMarker.setLngLat([state.me[1], state.me[0]]);
-    render(); if (fly) fitAll();
+    if (fly) { map.jumpTo({ center: [state.me[1], state.me[0]], zoom: Math.max(map.getZoom(), 13) }); fitAll(); }
+    render();
   }, () => {}, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
 }
 
-// ---- δεδομένα ----
+// ---- δεδομένα: Πάτρα (κάθε 30') + όλη η Ελλάδα (3 φορές τη μέρα) ----
+async function getJson(u) { const r = await fetch(u + '?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }); if (!r.ok) throw new Error(r.status); return r.json(); }
 async function load(first) {
-  try {
-    const r = await fetch('data/patra.json?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' });
-    state.data = await r.json();
-    if (state.sel) state.sel = state.data.pharmacies.find(p => p.id === state.sel.id) || null;
-    render();
-    if (first) { if (mapReady || map.isStyleLoaded()) fitAll(); else map.once('style.load', fitAll); }
-  } catch (e) {
+  const [pa, gr, tw] = await Promise.allSettled([getJson('data/patra.json'), getJson('data/greece.json'), state.towns.length ? Promise.resolve(state.towns) : getJson('data/towns.json')]);
+  if (pa.status !== 'fulfilled' && gr.status !== 'fulfilled') {
     $('big').textContent = 'Δεν φόρτωσαν τα φαρμακεία';
     $('small').textContent = 'Έλεγξε τη σύνδεση και ξαναδοκίμασε.';
+    return;
   }
+  if (tw.status === 'fulfilled') state.towns = tw.value;
+  const seen = new Set(), list = [];
+  for (const p of (pa.value?.pharmacies || [])) { seen.add(p.id); list.push({ ...p, town: 'Πάτρα' }); }
+  for (const p of (gr.value?.pharmacies || [])) if (!seen.has(p.id)) { seen.add(p.id); list.push(p); }
+  list.forEach((p, i) => p.n = i);
+  byN = list;
+  const ups = [pa.value?.updated, gr.value?.updated].filter(Boolean).sort();
+  state.data = { pharmacies: list, updated: ups[ups.length - 1] };
+  if (state.sel) state.sel = list.find(p => p.id === state.sel.id) || null;
+  render();
+  if (first && !localStorage.getItem('view')) { if (mapReady) fitAll(); else map.once('style.load', () => setTimeout(fitAll, 50)); }
 }
 
 function clock() { const d = new Date(); $('clock').textContent = d.toLocaleDateString('el-GR', { weekday: 'long', day: '2-digit', month: '2-digit', timeZone: 'Europe/Athens' }) + ' · ' + d.toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Athens' }); }
 
+// ---- αναζήτηση πόλης ----
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/ς/g, 'σ');
+function searchTowns() {
+  const q = norm($('q').value.trim()), box = $('results');
+  box.innerHTML = '';
+  if (!q) { box.hidden = true; return; }
+  const hits = state.towns.filter(t => norm(t.n).includes(q)).sort((a, b) => norm(a.n).indexOf(q) - norm(b.n).indexOf(q)).slice(0, 8);
+  if (!hits.length) { box.innerHTML = '<p class="nores">Δεν βρέθηκε πόλη με αυτό το όνομα</p>'; box.hidden = false; return; }
+  for (const t of hits) {
+    const b = document.createElement('button'); b.type = 'button';
+    b.innerHTML = '<b></b><span></span>';
+    b.querySelector('b').textContent = t.n;
+    b.querySelector('span').textContent = t.p.charAt(0) + t.p.slice(1).toLowerCase().replace(/ς$/, 'ς');
+    b.onclick = () => { $('q').value = ''; box.hidden = true; $('q').blur(); state.sel = null; map.jumpTo({ center: [t.c[1], t.c[0]], zoom: 13 }); fitAllNear(t.c); };
+    box.appendChild(b);
+  }
+  box.hidden = false;
+}
+function fitAllNear(c) { const keep = state.me; state.me = null; map.jumpTo({ center: [c[1], c[0]], zoom: 13 }); fitAll(); state.me = keep; render(); }
+$('q').addEventListener('input', searchTowns);
+$('q').addEventListener('keydown', e => { if (e.key === 'Enter') { const f = $('results').querySelector('button'); if (f) f.click(); } if (e.key === 'Escape') { $('q').value = ''; searchTowns(); } });
+$('search').addEventListener('submit', e => e.preventDefault());
+
 document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
   state.view = b.dataset.view; state.sel = null;
   document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
-  $('scroll').scrollTop = 0; render(); fitAll();
+  $('scroll').scrollTop = 0; render();
 });
 $('locate').onclick = () => locate(true);
 $('fit').onclick = fitAll;
 $('handle').onclick = () => $('sheet').classList.toggle('tall');
-map.on('click', () => { if (state.sel) select(null); });
+map.on('click', () => { if (clickedPin) { clickedPin = false; return; } if (state.sel) select(null); });
+let moving = false, mvT = null;
+map.on('moveend', () => {
+  clearTimeout(mvT);
+  mvT = setTimeout(() => {
+    try { const c = map.getCenter(); localStorage.setItem('view', JSON.stringify({ center: [+c.lng.toFixed(4), +c.lat.toFixed(4)], zoom: +map.getZoom().toFixed(1) })); } catch (e) {}
+    if (moving) { moving = false; return; }
+    render();
+  }, 150);
+});
 
+state.towns = [];
 clock(); load(true);
-try { if (localStorage.getItem('loc-ok')) locate(false); } catch (e) {}
+try { if (localStorage.getItem('loc-ok')) locate(!localStorage.getItem('view')); } catch (e) {}
 setInterval(() => { clock(); render(); }, 30000);
 setInterval(() => load(false), 10 * 60000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { clock(); load(false); } });
