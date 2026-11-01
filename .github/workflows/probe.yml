@@ -1,0 +1,19 @@
+name: probe
+on:
+  push:
+    paths: [".github/workflows/probe.yml"]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: probe
+        run: |
+          UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
+          t() { echo "== $1"; curl -sS -L --compressed -o /tmp/o -w "code=%{http_code} size=%{size_download}\n" "${@:2}" "$1"; grep -o 'DutiesResult\|Εφημερ[^<]\{0,30\}\|cf-ray\|Just a moment\|captcha' /tmp/o | sort | uniq -c | head -5; head -c 300 /tmp/o | tr '\n' ' '; echo; }
+          t https://www.vrisko.gr/efimeries-farmakeion/patra/
+          t https://www.vrisko.gr/efimeries-farmakeion/patra/ -A "$UA" -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Language: el-GR,el;q=0.9,en;q=0.8' -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Dest: document' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-Site: none'
+          t https://vrisko.gr/efimeries-farmakeion/patra/ -A "$UA"
+          t https://r.jina.ai/https://www.vrisko.gr/efimeries-farmakeion/patra/
+          t https://www.xo.gr/efimerevonta-farmakeia/patra/ -A "$UA"
+          t https://www.xo.gr/efimerevonta-farmakeia/axaias/patra/ -A "$UA"
+          curl -sSI https://www.vrisko.gr/efimeries-farmakeion/patra/ -A "$UA" | head -20
