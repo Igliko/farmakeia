@@ -45,6 +45,9 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
 .handle{flex:none;border:0;background:none;padding:10px 0 6px;cursor:pointer;display:grid;place-items:center}
 .handle i{width:38px;height:4px;border-radius:2px;background:var(--line);display:block}
 .head{flex:none;padding:0 max(18px,env(safe-area-inset-right,0px)) 8px max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+.styles{position:fixed;z-index:6;top:calc(80px + env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));right:70px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.styles button{flex:none;height:36px;padding:0 13px;border:0;border-radius:999px;background:var(--card);color:var(--fg);font:600 13.5px/1 var(--body);box-shadow:0 3px 10px var(--shadow);cursor:pointer}
+.styles button[aria-pressed="true"]{background:var(--green);color:var(--onGreen)}
 .search{position:relative;display:flex;align-items:center;gap:8px;height:44px;padding:0 12px;border-radius:12px;background:var(--soft);color:var(--muted)}
 .search input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--fg);font:500 16px/1 var(--body);outline:none}
 .search:focus-within{outline:3px solid var(--blue);outline-offset:1px}
@@ -130,6 +133,8 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
     <button class="fab" id="fit" aria-label="Δείξε τα κοντινά ανοιχτά φαρμακεία"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
   </div>
 </div>
+
+<div class="styles" id="styles" role="group" aria-label="Στυλ χάρτη" hidden></div>
 
 <section class="sheet" id="sheet" aria-label="Φαρμακεία">
   <button class="handle" id="handle" aria-label="Μεγάλωσε ή μίκρυνε τη λίστα"><i></i></button>
@@ -340,8 +345,36 @@ function render() {
 // ---- χάρτης ----
 let start = { center: [21.7346, 38.2466], zoom: 12.6 };
 try { const v = JSON.parse(localStorage.getItem('view') || 'null'); if (v && v.center && v.zoom) start = v; } catch (e) {}
+// ---- στυλ χάρτη (δοκιμή: ?dokimi στη διεύθυνση) ----
+const OFM = 'https://tiles.openfreemap.org/styles/';
+const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+const satellite = {
+  version: 8, glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+  sources: {
+    sat: { type: 'raster', tileSize: 256, maxzoom: 19, attribution: 'Εικόνες © Esri, Maxar, Earthstar Geographics',
+      tiles: [ESRI + 'World_Imagery/MapServer/tile/{z}/{y}/{x}'] },
+    roads: { type: 'raster', tileSize: 256, maxzoom: 19, tiles: [ESRI + 'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}'] },
+    names: { type: 'raster', tileSize: 256, maxzoom: 19, tiles: [ESRI + 'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'] }
+  },
+  layers: [
+    { id: 'sat', type: 'raster', source: 'sat' },
+    { id: 'roads', type: 'raster', source: 'roads', paint: { 'raster-opacity': 0.75 } },
+    { id: 'names', type: 'raster', source: 'names' }
+  ]
+};
+const STYLES = {
+  apalos: { name: 'Απαλός', url: () => OFM + (dark ? 'dark' : 'positron') },
+  xromata: { name: 'Πολύχρωμος', url: () => OFM + 'liberty' },
+  '3d': { name: '3D κτίρια', url: () => OFM + 'liberty', pitch: 55 },
+  doryforos: { name: 'Δορυφόρος', url: () => satellite },
+  nyxta: { name: 'Σκούρος', url: () => OFM + 'dark', glow: true }
+};
+const DOKIMI = /dokimi/.test(location.search + location.hash);
+let styleKey = 'apalos';
+try { const k = localStorage.getItem('style'); if (DOKIMI && STYLES[k]) styleKey = k; } catch (e) {}
+
 const map = new maplibregl.Map({
-  container: 'map', style: 'https://tiles.openfreemap.org/styles/' + (dark ? 'dark' : 'positron'),
+  container: 'map', style: STYLES[styleKey].url(), pitch: STYLES[styleKey].pitch || 0, maxPitch: 70,
   center: start.center, zoom: start.zoom, attributionControl: { compact: true }, maxBounds: [[17.5, 33.8], [30.5, 42.5]], minZoom: 5.5
 });
 let mapReady = false;
@@ -354,7 +387,11 @@ function geojson(list) {
     return { type: 'Feature', id: p.n, geometry: { type: 'Point', coordinates: [p.lng, p.lat] }, properties: { i: p.n, k: st.k, sel: p === state.sel ? 1 : 0 } };
   }) };
 }
+let layerEvents = false;
 function setupLayers() {
+  const st = STYLES[styleKey];
+  if (map.getLayer('building-3d')) map.setLayoutProperty('building-3d', 'visibility', st.pitch ? 'visible' : 'none');
+  if (st.pitch && map.getLayer('building')) map.setLayoutProperty('building', 'visibility', 'none');
   for (const l of map.getStyle().layers) {
     if (l.type === 'symbol' && l.layout && l.layout['text-field']) {
       try { map.setLayoutProperty(l.id, 'text-field', ['coalesce', ['get', 'name:el'], ['get', 'name'], ['get', 'name_int']]); } catch (e) {}
@@ -365,7 +402,8 @@ function setupLayers() {
   img.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 18 18"><path d="M6.5 1h5v5.5H17v5h-5.5V17h-5v-5.5H1v-5h5.5z" fill="#fff" transform="translate(4.5 4.5) scale(.5)"/></svg>');
   map.addSource('ph', { type: 'geojson', data: geojson([]) });
   map.addLayer({ id: 'ph-halo', type: 'circle', source: 'ph', filter: ['==', ['get', 'k'], 'open'],
-    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, 4, 12, 13, 16, 22], 'circle-color': '#12A464', 'circle-opacity': 0.22 } });
+    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, STYLES[styleKey].glow ? 8 : 4, 12, STYLES[styleKey].glow ? 24 : 13, 16, STYLES[styleKey].glow ? 36 : 22],
+      'circle-color': STYLES[styleKey].glow ? '#3DDC97' : '#12A464', 'circle-opacity': STYLES[styleKey].glow ? 0.35 : 0.22, 'circle-blur': STYLES[styleKey].glow ? 0.9 : 0 } });
   map.addLayer({ id: 'ph-dot', type: 'circle', source: 'ph',
     paint: {
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, ['match', ['get', 'k'], 'off', 1.5, 2.5], 12, ['case', ['==', ['get', 'sel'], 1], 14, ['match', ['get', 'k'], 'off', 6, 9]], 16, ['case', ['==', ['get', 'sel'], 1], 20, ['match', ['get', 'k'], 'off', 9, 15]]],
@@ -373,13 +411,28 @@ function setupLayers() {
       'circle-stroke-color': '#ffffff', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 12, 2, 16, 2.5] } });
   map.addLayer({ id: 'ph-cross', type: 'symbol', source: 'ph', minzoom: 11.5,
     layout: { 'icon-image': 'cross', 'icon-size': ['interpolate', ['linear'], ['zoom'], 11.5, 0.45, 16, 0.85], 'icon-allow-overlap': true } });
-  map.on('click', 'ph-dot', e => { const f = e.features && e.features[0]; if (f) { e.originalEvent.cancelBubble = true; clickedPin = true; select(byN[f.properties.i], false); } });
+  if (!layerEvents) { layerEvents = true; map.on('click', 'ph-dot', e => { const f = e.features && e.features[0]; if (f) { e.originalEvent.cancelBubble = true; clickedPin = true; select(byN[f.properties.i], false); } });
   map.on('mouseenter', 'ph-dot', () => map.getCanvas().style.cursor = 'pointer');
-  map.on('mouseleave', 'ph-dot', () => map.getCanvas().style.cursor = '');
+  map.on('mouseleave', 'ph-dot', () => map.getCanvas().style.cursor = ''); }
   mapReady = true;
   render();
 }
 map.on('style.load', setupLayers);
+function setStyleKey(k) {
+  if (!STYLES[k] || k === styleKey) return;
+  styleKey = k; mapReady = false;
+  try { localStorage.setItem('style', k); } catch (e) {}
+  document.querySelectorAll('#styles button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
+  map.setStyle(STYLES[k].url(), { diff: false });
+  map.easeTo({ pitch: STYLES[k].pitch || 0, duration: 600 });
+}
+if (DOKIMI) {
+  const box = $('styles'); box.hidden = false;
+  for (const [k, v] of Object.entries(STYLES)) {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.k = k; b.textContent = v.name;
+    b.setAttribute('aria-pressed', k === styleKey); b.onclick = () => setStyleKey(k); box.appendChild(b);
+  }
+}
 
 let byN = [], clickedPin = false;
 function paintMarkers(list) {
