@@ -299,6 +299,8 @@ const map = new maplibregl.Map({
   container: 'map', style: 'https://tiles.openfreemap.org/styles/' + (dark ? 'dark' : 'positron'),
   center: [21.7385, 38.2466], zoom: 12.6, attributionControl: { compact: true }, maxBounds: [[21.3, 37.95], [22.2, 38.55]]
 });
+let mapReady = false;
+map.on('load', () => { mapReady = true; });
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 map.on('style.load', () => {
   for (const l of map.getStyle().layers) {
@@ -364,7 +366,7 @@ async function load(first) {
     state.data = await r.json();
     if (state.sel) state.sel = state.data.pharmacies.find(p => p.id === state.sel.id) || null;
     render();
-    if (first) { if (map.loaded()) fitAll(); else map.once('load', fitAll); }
+    if (first) { if (mapReady) fitAll(); else map.once('load', fitAll); }
   } catch (e) {
     $('big').textContent = 'Δεν φόρτωσαν τα φαρμακεία';
     $('small').textContent = 'Έλεγξε τη σύνδεση και ξαναδοκίμασε.';
