@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Εφημερίες Πάτρας</title>
+<meta name="description" content="Ποια φαρμακεία είναι ανοιχτά τώρα στην Πάτρα: εφημερεύοντα και διευρυμένου ωραρίου, σε χάρτη.">
+<meta name="theme-color" content="#07794D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2307794D'/%3E%3Cpath d='M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Fira+Sans+Extra+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<style>
+/* Χάρτης σε όλη την οθόνη, φύλλο με τη λίστα από κάτω (κινητό) ή αριστερά (υπολογιστής) */
+:root{
+  --bg:#E8ECE7;--card:#FFFFFF;--fg:#10241B;--muted:#52635B;--line:#E3E9E5;--soft:#EEF2EF;
+  --green:#07794D;--greenSoft:#E3F3EA;--bar:#5FB98C;--amber:#A35400;--amberSoft:#FBEEDD;--blue:#2563EB;--onGreen:#FFFFFF;
+  --shadow:rgba(16,36,27,.16);--display:'Fira Sans Extra Condensed','Arial Narrow',sans-serif;--body:Commissioner,'Segoe UI',Roboto,Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#121C18;--card:#121D19;--fg:#E6F0EB;--muted:#9AB0A6;--line:#22322B;--soft:#1A2722;
+  --green:#3DDC97;--greenSoft:rgba(61,220,151,.12);--bar:#2E8A62;--amber:#F2A65A;--amberSoft:rgba(242,166,90,.13);--blue:#4C8DFF;--onGreen:#062014;
+  --shadow:rgba(0,0,0,.45);color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow:hidden;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+#map{position:fixed;inset:0}
+
+.top{position:fixed;z-index:6;top:calc(12px + env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));display:flex;justify-content:space-between;align-items:flex-start;gap:10px;pointer-events:none}
+.brand,.fab{pointer-events:auto;background:var(--card);box-shadow:0 6px 18px var(--shadow)}
+.brand{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:16px}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--green);display:grid;place-items:center;flex:none}
+.logo path{fill:var(--onGreen)}
+h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
+.sub{margin:2px 0 0;font:500 12.5px/1.2 var(--body);color:var(--muted);font-variant-numeric:tabular-nums}
+.fabs{display:flex;flex-direction:column;gap:10px}
+.fab{width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer}
+.fab.loc{color:var(--blue)}
+
+.sheet{position:fixed;z-index:5;left:0;right:0;bottom:0;height:46vh;min-height:300px;display:flex;flex-direction:column;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -10px 30px var(--shadow);transition:height .25s ease}
+.sheet.tall{height:82vh}
+.handle{flex:none;border:0;background:none;padding:10px 0 6px;cursor:pointer;display:grid;place-items:center}
+.handle i{width:38px;height:4px;border-radius:2px;background:var(--line);display:block}
+.head{flex:none;padding:0 max(18px,env(safe-area-inset-right,0px)) 8px max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;background:var(--soft);border-radius:12px}
+.tabs button{height:36px;border:0;border-radius:9px;background:transparent;color:var(--muted);font:600 14.5px/1 var(--body);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px var(--shadow)}
+.sum{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.big{margin:0;font:700 26px/1.05 var(--display)}
+.small{margin:4px 0 0;font:500 14px/1.3 var(--body);color:var(--muted)}
+.live{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--greenSoft);color:var(--green);font:600 12px/1 var(--body);white-space:nowrap}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:0 max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px))}
+.group{margin:14px 0 2px;font:600 11.5px/1 var(--body);letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
+
+.item{border-top:1px solid var(--line);padding:12px 0}
+.row{display:flex;align-items:center;gap:12px;width:100%;padding:0;border:0;background:none;text-align:left;cursor:pointer}
+.ic{flex:none;width:32px;height:32px;border-radius:9px;background:var(--green);display:grid;place-items:center}
+.ic path{fill:var(--onGreen)}
+.ic.later{background:var(--amberSoft)} .ic.later path{fill:var(--amber)}
+.ic.off{background:var(--soft)} .ic.off path{fill:var(--muted)}
+.mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.name{font:600 16px/1.25 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st{font:600 13.5px/1.25 var(--body)}
+.kind{font:500 12.5px/1.2 var(--body);color:var(--muted)}
+.dist{flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.dist b{font:700 18px/1 var(--display);font-variant-numeric:tabular-nums}
+.dist span{font:500 12px/1.2 var(--body);color:var(--muted)}
+.more{display:none;flex-direction:column;gap:10px;padding:10px 0 0 44px}
+.item.on .more{display:flex}
+.addr{margin:0;font:500 14px/1.45 var(--body);color:var(--muted)}
+.btns{display:flex;gap:8px}
+.btns a{flex:1;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px;font:600 15px/1 var(--body);text-decoration:none}
+.call{background:var(--green);color:var(--onGreen)}
+.dir{border:1.5px solid var(--line);color:var(--fg)}
+.phone{font:500 13px/1.3 var(--body);color:var(--muted);font-variant-numeric:tabular-nums;user-select:all}
+
+.tl{position:relative;height:8px;border-radius:4px;background:var(--soft);margin-top:8px}
+.tl span{position:absolute;top:0;bottom:0;border-radius:4px;background:var(--bar)}
+.tl span.duty{background:var(--green)}
+.tl .now{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--fg);opacity:.55}
+.ticks{position:relative;height:14px;margin-top:10px;font:500 11px/1 var(--body);color:var(--muted);font-variant-numeric:tabular-nums}
+.ticks span{position:absolute;transform:translateX(-50%)}
+.ticks span:first-child{transform:none}.ticks span:last-child{transform:translateX(-100%)}
+.empty{padding:26px 8px;text-align:center;color:var(--muted);font:500 14px/1.5 var(--body)}
+.empty b{display:block;color:var(--fg);font:600 16px/1.3 var(--body);margin-bottom:6px}
+.note{margin:16px 0 0;font:500 12.5px/1.5 var(--body);color:var(--muted)}
+.note a{color:inherit}
+
+.pin{width:34px;height:34px;border-radius:11px;border:2.5px solid #fff;background:#07794D;display:grid;place-items:center;padding:0;cursor:pointer;box-shadow:0 0 0 5px rgba(18,164,100,.22),0 4px 10px rgba(0,0,0,.3);transition:transform .15s}
+.pin path{fill:#fff}
+.pin.later{background:#A35400;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+.pin.off{background:#7D8C85;box-shadow:0 4px 10px rgba(0,0,0,.25);transform:scale(.8)}
+.pin.on{transform:scale(1.25);z-index:3}
+.me{width:16px;height:16px;border-radius:50%;background:#2563EB;border:3px solid #fff;box-shadow:0 0 0 12px rgba(37,99,235,.15)}
+.maplibregl-ctrl-attrib{font-size:10px}
+.maplibregl-ctrl-bottom-right{bottom:calc(46vh - 8px)}
+
+@media (min-width:860px){
+  .sheet,.sheet.tall{top:calc(84px + env(safe-area-inset-top,0px));left:12px;right:auto;bottom:12px;width:400px;height:auto;min-height:0;border-radius:20px}
+  .handle{display:none}.head{padding-top:16px}
+  .maplibregl-ctrl-bottom-right{bottom:0}
+}
+@media (prefers-reduced-motion:reduce){.sheet,.pin{transition:none}}
+</style>
+</head>
+<body>
+<div id="map" role="region" aria-label="Χάρτης της Πάτρας με τα φαρμακεία"></div>
+
+<div class="top">
+  <div class="brand">
+    <div class="logo"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M6.5 1h5v5.5H17v5h-5.5V17h-5v-5.5H1v-5h5.5z"/></svg></div>
+    <div><h1>Εφημερίες Πάτρας</h1><p class="sub" id="clock">&nbsp;</p></div>
+  </div>
+  <div class="fabs">
+    <button class="fab loc" id="locate" aria-label="Η θέση μου"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
+    <button class="fab" id="fit" aria-label="Δείξε όλα τα φαρμακεία"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+  </div>
+</div>
+
+<section class="sheet" id="sheet" aria-label="Φαρμακεία">
+  <button class="handle" id="handle" aria-label="Μεγάλωσε ή μίκρυνε τη λίστα"><i></i></button>
+  <div class="head">
+    <div class="tabs" role="tablist" aria-label="Πότε">
+      <button role="tab" data-view="now" aria-selected="true">Τώρα</button>
+      <button role="tab" data-view="today" aria-selected="false">Σήμερα</button>
+      <button role="tab" data-view="tomorrow" aria-selected="false">Αύριο</button>
+    </div>
+    <div class="sum">
+      <div><p class="big" id="big">Φόρτωση…</p><p class="small" id="small">&nbsp;</p></div>
+      <span class="live" id="live"><i></i>Ζωντανά</span>
+    </div>
+  </div>
+  <div class="scroll" id="scroll">
+    <div id="list"></div>
+    <p class="note">Πηγή: <a href="https://www.vrisko.gr/efimeries-farmakeion/patra/" target="_blank" rel="noopener">vrisko.gr</a> (Φαρμακευτικός Σύλλογος Αχαΐας) · τελευταία αλλαγή <span id="upd">–</span>.<br>Οι εφημερίες αλλάζουν καμιά φορά τελευταία στιγμή. Πάρε τηλέφωνο πριν πας.</p>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
+<script>
+const CROSS = s => `<svg width="${s}" height="${s}" viewBox="0 0 18 18" aria-hidden="true"><path d="M6.5 1h5v5.5H17v5h-5.5V17h-5v-5.5H1v-5h5.5z"/></svg>`;
+const $ = id => document.getElementById(id);
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+const state = { data: null, view: 'now', sel: null, me: null };
+const markers = new Map();
+
+// ---- χρόνος (ώρα Ελλάδας) ----
+function athensParts(d = new Date()) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Athens', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(d).map(x => [x.type, x.value]));
+  return p;
+}
+const nowStr = () => { const p = athensParts(); return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`; };
+const pad = n => String(n).padStart(2, '0');
+function addDays(ymd, k) { const [y, m, d] = ymd.split('-').map(Number); const t = new Date(Date.UTC(y, m - 1, d + k)); return `${t.getUTCFullYear()}-${pad(t.getUTCMonth() + 1)}-${pad(t.getUTCDate())}`; }
+const mins = s => { const [d, t] = s.split('T'); const [y, m, dd] = d.split('-').map(Number); const [h, mi] = t.split(':').map(Number); return Date.UTC(y, m - 1, dd, h, mi) / 60000; };
+const hhmm = s => s.slice(11, 16);
+const dayName = ymd => { const [y, m, d] = ymd.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('el-GR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); };
+function dur(m) { if (m < 60) return m + '′'; const h = Math.floor(m / 60), r = m % 60; return h + (h === 1 ? ' ώρα' : ' ώρες') + (r ? ' ' + r + '′' : ''); }
+function slotLabel(s) { return hhmm(s.from) + ' – ' + hhmm(s.to) + (s.to.slice(0, 10) > s.from.slice(0, 10) ? ' (επόμενης)' : ''); }
+
+// Κατάσταση ενός φαρμακείου τώρα
+function status(p) {
+  const n = nowStr(), nm = mins(n);
+  const cur = p.slots.filter(s => s.from <= n && n < s.to).sort((a, b) => b.to.localeCompare(a.to))[0];
+  if (cur) {
+    const left = mins(cur.to) - nm;
+    return { k: 'open', slot: cur, text: left <= 60 ? `Κλείνει σε ${left}′ · ${hhmm(cur.to)}` : `Ανοιχτό ως ${hhmm(cur.to)}`, color: left <= 60 ? 'var(--amber)' : 'var(--green)', left };
+  }
+  const next = p.slots.filter(s => s.from > n).sort((a, b) => a.from.localeCompare(b.from))[0];
+  if (next) {
+    const inM = mins(next.from) - nm;
+    const when = next.from.slice(0, 10) === n.slice(0, 10) ? hhmm(next.from) : (next.from.slice(0, 10) === addDays(n.slice(0, 10), 1) ? 'αύριο ' + hhmm(next.from) : hhmm(next.from));
+    return { k: 'later', slot: next, text: inM <= 90 ? `Ανοίγει σε ${inM}′ · ${hhmm(next.from)}` : `Ανοίγει ${when}`, color: 'var(--amber)', inM };
+  }
+  return { k: 'off', text: 'Έκλεισε', color: 'var(--muted)' };
+}
+const kindOf = s => s && s.type === 'extended' ? 'Διευρυμένο ωράριο' : 'Εφημερία';
+
+// ---- απόσταση ----
+function km(a, b) { const R = 6371, t = x => x * Math.PI / 180, dl = t(b[0] - a[0]), dn = t(b[1] - a[1]); const h = Math.sin(dl / 2) ** 2 + Math.cos(t(a[0])) * Math.cos(t(b[0])) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
+function dist(p) {
+  if (!state.me || p.lat == null) return null;
+  const d = km(state.me, [p.lat, p.lng]) * 1.3; // περίπου, με τους δρόμους
+  return { d, text: d < 1 ? Math.round(d * 100) * 10 + ' μ.' : d.toFixed(1).replace('.', ',') + ' χλμ', walk: d <= 3 ? Math.max(1, Math.round(d * 1000 / 80)) + '′ με τα πόδια' : Math.max(2, Math.round(d * 2.2)) + '′ με αμάξι' };
+}
+const short = n => { const m = n.match(/\(([^)]+)\)\s*$/); const s = m ? m[1] : n; return s.trim().split(/\s+/)[0].replace(/^./, c => c).toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase()); };
+
+// ---- λίστα ----
+function card(p, st, extra) {
+  const d = dist(p);
+  const el = document.createElement('article');
+  el.className = 'item' + (p === state.sel ? ' on' : '');
+  el.dataset.id = p.id;
+  const ic = st.k === 'open' ? '' : st.k === 'later' ? ' later' : ' off';
+  el.innerHTML = `<button class="row" aria-expanded="${p === state.sel}">
+      <span class="ic${ic}">${CROSS(15)}</span>
+      <span class="mid"><span class="name"></span><span class="st" style="color:${st.color}"></span><span class="kind"></span></span>
+      <span class="dist"><b>${d ? d.text : ''}</b><span>${d ? d.walk : ''}</span></span>
+    </button>
+    ${extra || ''}
+    <div class="more"><p class="addr"></p>
+      <div class="btns">
+        <a class="call" href="tel:+30${p.phone}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2z"/></svg>Κλήση</a>
+        <a class="dir" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat != null ? p.lat + ',' + p.lng : encodeURIComponent(p.address + ', ' + p.zip + ' Πάτρα')}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>Οδηγίες</a>
+      </div>
+      <span class="phone"></span>
+    </div>`;
+  el.querySelector('.name').textContent = p.name;
+  el.querySelector('.st').textContent = st.text;
+  el.querySelector('.kind').textContent = kindOf(st.slot) + (st.slot ? ' · ' + slotLabel(st.slot) : '');
+  el.querySelector('.addr').textContent = p.address + ', ' + (p.area && p.area !== 'Πάτρα' ? p.area + ', ' : '') + p.zip + ' Πάτρα';
+  el.querySelector('.phone').textContent = 'Τηλ. ' + p.phone.replace(/^(\d{4})(\d+)/, '$1 $2');
+  el.querySelector('.row').onclick = () => select(p === state.sel ? null : p, true);
+  return el;
+}
+
+function timeline(p, day) {
+  // κλίμακα 08:00 της ημέρας -> 08:00 της επόμενης
+  const a = mins(day + 'T08:00'), W = 24 * 60, n = mins(nowStr());
+  const bars = p.slots.map(s => {
+    const x0 = Math.max(0, mins(s.from) - a), x1 = Math.min(W, mins(s.to) - a);
+    return x1 > x0 ? `<span class="${s.type === 'duty' ? 'duty' : ''}" style="left:${x0 / W * 100}%;width:${(x1 - x0) / W * 100}%"></span>` : '';
+  }).join('');
+  const nowLine = n > a && n < a + W ? `<i class="now" style="left:${(n - a) / W * 100}%"></i>` : '';
+  return `<div class="tl" aria-hidden="true">${bars}${nowLine}</div>`;
+}
+
+function inView(p) {
+  const n = nowStr(), today = n.slice(0, 10);
+  if (state.view === 'now') return status(p).k !== 'off';
+  if (state.view === 'today') return p.slots.some(s => inToday(s, n));
+  const tm = addDays(today, 1);
+  return p.slots.some(s => s.from.slice(0, 10) === tm);
+}
+
+// Σήμερα = όσα ξεκινούν σήμερα, συν όσα από χθες είναι ακόμα ανοιχτά
+function inToday(s, n) { return s.from.slice(0, 10) === n.slice(0, 10) || (s.from <= n && n < s.to); }
+
+function sortKey(p) { const d = dist(p); return d ? d.d : 0; }
+
+function render() {
+  const data = state.data; if (!data) return;
+  const n = nowStr(), today = n.slice(0, 10), tm = addDays(today, 1);
+  const list = $('list'); list.innerHTML = '';
+  const ph = data.pharmacies.filter(inView);
+  $('live').hidden = state.view !== 'now';
+
+  if (state.view === 'now') {
+    const open = ph.filter(p => status(p).k === 'open').sort((a, b) => sortKey(a) - sortKey(b) || status(b).left - status(a).left);
+    const later = ph.filter(p => status(p).k === 'later').sort((a, b) => status(a).inM - status(b).inM);
+    $('big').textContent = open.length === 1 ? '1 ανοιχτό τώρα' : open.length + ' ανοιχτά τώρα';
+    const near = open[0], d = near && dist(near);
+    $('small').textContent = !open.length ? (later[0] ? 'Το επόμενο ανοίγει ' + hhmm(status(later[0]).slot.from) : 'Δεν υπάρχουν στοιχεία για τώρα')
+      : d ? 'Πιο κοντινό: ' + short(near.name) + ' · ' + d.text : 'Πάτα το βελάκι για να δεις τι είναι κοντά σου';
+    open.forEach(p => list.appendChild(card(p, status(p))));
+    if (later.length) {
+      const g = document.createElement('p'); g.className = 'group'; g.textContent = 'Ανοίγουν αργότερα'; list.appendChild(g);
+      later.slice(0, 12).forEach(p => list.appendChild(card(p, status(p))));
+    }
+    if (!open.length && !later.length) list.innerHTML = '<div class="empty"><b>Δεν βρέθηκαν φαρμακεία για τώρα</b>Δες τη σελίδα του vrisko.gr ή πάρε τηλέφωνο στο 1434.</div>';
+  } else {
+    const day = state.view === 'today' ? today : tm;
+    $('big').textContent = dayName(day).replace(/^./, c => c.toUpperCase());
+    const duty = ph.filter(p => p.slots.some(s => s.type === 'duty' && (state.view === 'today' ? inToday(s, n) : s.from.slice(0, 10) === day)));
+    $('small').textContent = ph.length ? `${duty.length} εφημερεύουν · ${ph.length - duty.length} με διευρυμένο ωράριο` : '';
+    if (!ph.length) {
+      list.innerHTML = state.view === 'tomorrow'
+        ? '<div class="empty"><b>Το πρόγραμμα της επόμενης μέρας δεν έχει βγει ακόμα</b>Θα εμφανιστεί εδώ μόλις το ανεβάσει ο Φαρμακευτικός Σύλλογος.</div>'
+        : '<div class="empty"><b>Δεν βρέθηκαν φαρμακεία για σήμερα</b></div>';
+    } else {
+      const ticks = ['08', '12', '16', '20', '00', '04', '08'].map((t, i) => `<span style="left:${i / 6 * 100}%">${t}</span>`).join('');
+      const tk = document.createElement('div'); tk.className = 'ticks'; tk.setAttribute('aria-hidden', 'true'); tk.innerHTML = ticks; list.appendChild(tk);
+      const first = p => p.slots.filter(s => s.to > day + 'T00:00').map(s => s.from).sort()[0] || '';
+      const order = ph.slice().sort((a, b) => {
+        const da = duty.includes(a), db = duty.includes(b); if (da !== db) return da ? -1 : 1;
+        return sortKey(a) - sortKey(b) || first(a).localeCompare(first(b)); });
+      let lastGroup = null;
+      for (const p of order) {
+        const g = duty.includes(p) ? 'Εφημερεύουν' : 'Διευρυμένο ωράριο';
+        if (g !== lastGroup) { const h = document.createElement('p'); h.className = 'group'; h.textContent = g; list.appendChild(h); lastGroup = g; }
+        const st = status(p);
+        const slot = p.slots.filter(s => (state.view === 'today' ? inToday(s, n) : s.from.slice(0, 10) === day));
+        const shown = { ...st, slot: slot[slot.length - 1] };
+        if (state.view === 'tomorrow') { shown.text = slot.map(slotLabel).join(', '); shown.color = 'var(--fg)'; }
+        list.appendChild(card(p, shown, timeline(p, day)));
+      }
+    }
+  }
+  $('upd').textContent = data.updated ? data.updated.slice(8, 10) + '/' + data.updated.slice(5, 7) + ' ' + hhmm(data.updated) : '–';
+  paintMarkers(ph);
+}
+
+// ---- χάρτης ----
+const map = new maplibregl.Map({
+  container: 'map', style: 'https://tiles.openfreemap.org/styles/' + (dark ? 'dark' : 'positron'),
+  center: [21.7385, 38.2466], zoom: 12.6, attributionControl: { compact: true }, maxBounds: [[21.3, 37.95], [22.2, 38.55]]
+});
+map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+map.on('style.load', () => {
+  for (const l of map.getStyle().layers) {
+    if (l.type === 'symbol' && l.layout && l.layout['text-field']) {
+      try { map.setLayoutProperty(l.id, 'text-field', ['coalesce', ['get', 'name:el'], ['get', 'name'], ['get', 'name_int']]); } catch (e) {}
+    }
+  }
+});
+
+function paintMarkers(visible) {
+  const show = new Set(visible.map(p => p.id));
+  for (const p of state.data.pharmacies) {
+    if (p.lat == null) continue;
+    let m = markers.get(p.id);
+    if (!m) {
+      const el = document.createElement('button');
+      el.className = 'pin'; el.innerHTML = CROSS(16);
+      el.onclick = e => { e.stopPropagation(); select(p, false); };
+      m = { el, mk: new maplibregl.Marker({ element: el }).setLngLat([p.lng, p.lat]) };
+      markers.set(p.id, m);
+    }
+    const st = status(p);
+    m.el.setAttribute('aria-label', p.name + ', ' + st.text);
+    m.el.className = 'pin' + (st.k === 'later' ? ' later' : st.k === 'off' ? ' off' : '') + (p === state.sel ? ' on' : '');
+    if (show.has(p.id)) m.mk.addTo(map); else m.mk.remove();
+  }
+}
+
+function sheetH() { return innerWidth >= 860 ? 0 : $('sheet').getBoundingClientRect().height; }
+function select(p, fromList) {
+  state.sel = p; render();
+  if (!p) return;
+  if (p.lat != null) map.flyTo({ center: [p.lng, p.lat], zoom: Math.max(map.getZoom(), 15), offset: innerWidth >= 860 ? [210, 0] : [0, -sheetH() / 2 + 40], duration: 700 });
+  const el = document.querySelector(`.item[data-id="${CSS.escape(p.id)}"]`);
+  if (el && !fromList) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+function fitAll() {
+  const pts = state.data ? state.data.pharmacies.filter(inView).filter(p => p.lat != null).map(p => [p.lng, p.lat]) : [];
+  if (state.me) pts.push([state.me[1], state.me[0]]);
+  if (!pts.length) return;
+  const b = pts.reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds(pts[0], pts[0]));
+  const wide = innerWidth >= 860;
+  map.fitBounds(b, { padding: { top: 100, bottom: wide ? 60 : sheetH() + 30, left: wide ? 440 : 40, right: 70 }, maxZoom: 15.5, duration: 600 });
+}
+
+// ---- θέση χρήστη ----
+let meMarker = null;
+function locate(fly) {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    state.me = [pos.coords.latitude, pos.coords.longitude];
+    try { localStorage.setItem('loc-ok', '1'); } catch (e) {}
+    if (!meMarker) { const d = document.createElement('div'); d.className = 'me'; meMarker = new maplibregl.Marker({ element: d }).setLngLat([state.me[1], state.me[0]]).addTo(map); }
+    else meMarker.setLngLat([state.me[1], state.me[0]]);
+    render(); if (fly) fitAll();
+  }, () => {}, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+}
+
+// ---- δεδομένα ----
+async function load(first) {
+  try {
+    const r = await fetch('data/patra.json?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' });
+    state.data = await r.json();
+    if (state.sel) state.sel = state.data.pharmacies.find(p => p.id === state.sel.id) || null;
+    render();
+    if (first) { if (map.loaded()) fitAll(); else map.once('load', fitAll); }
+  } catch (e) {
+    $('big').textContent = 'Δεν φόρτωσαν τα φαρμακεία';
+    $('small').textContent = 'Έλεγξε τη σύνδεση και ξαναδοκίμασε.';
+  }
+}
+
+function clock() { const d = new Date(); $('clock').textContent = d.toLocaleDateString('el-GR', { weekday: 'long', day: '2-digit', month: '2-digit', timeZone: 'Europe/Athens' }) + ' · ' + d.toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Athens' }); }
+
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  state.view = b.dataset.view; state.sel = null;
+  document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
+  $('scroll').scrollTop = 0; render(); fitAll();
+});
+$('locate').onclick = () => locate(true);
+$('fit').onclick = fitAll;
+$('handle').onclick = () => $('sheet').classList.toggle('tall');
+map.on('click', () => { if (state.sel) select(null); });
+
+clock(); load(true);
+try { if (localStorage.getItem('loc-ok')) locate(false); } catch (e) {}
+setInterval(() => { clock(); render(); }, 30000);
+setInterval(() => load(false), 10 * 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { clock(); load(false); } });
+</script>
+</body>
+</html>
