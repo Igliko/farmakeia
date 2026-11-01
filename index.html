@@ -118,6 +118,79 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
   .maplibregl-ctrl-bottom-right{bottom:0}
 }
 @media (prefers-reduced-motion:reduce){.sheet,.pin{transition:none}}
+
+/* ===== Σχέδια (δοκιμή) : html[data-d] ===== */
+@media (min-width:860px){
+  html[data-d] .top{left:0;right:max(16px,env(safe-area-inset-right,0px));top:0}
+  html[data-d] .brand{position:fixed;left:0;top:0;width:420px;border-radius:0;box-shadow:none;padding:16px 20px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+  html[data-d] .fabs{position:fixed;top:16px;right:max(16px,env(safe-area-inset-right,0px))}
+  html[data-d] .sheet,html[data-d] .sheet.tall{top:67px;left:0;bottom:0;width:420px;border-radius:0;box-shadow:none;border-right:1px solid var(--line)}
+  html[data-d] .styles{left:436px;top:16px}
+}
+html[data-d] .head{gap:10px}
+html[data-d] .tabs{background:none;border-radius:0;padding:0;gap:0;border-bottom:1px solid var(--line)}
+html[data-d] .tabs button{border-radius:0;height:42px;background:none;box-shadow:none}
+html[data-d] .tabs button[aria-selected="true"]{background:none;box-shadow:inset 0 -2px 0 var(--fg);color:var(--fg)}
+html[data-d] .live{background:none;padding:0}
+html[data-d] .ic{width:10px;height:10px;border-radius:50%;margin:0 4px}
+html[data-d] .ic svg{display:none}
+html[data-d] .ic.later{background:var(--amber)} html[data-d] .ic.off{background:var(--line)}
+html[data-d] .item .more{padding-left:26px}
+html[data-d] .item{padding:14px 0}
+
+/* Α · Καθαρό */
+html[data-d="clean"]{--bg:#F5F5F3;--card:#FFFFFF;--fg:#151515;--muted:#5F6368;--line:#E4E4E1;--soft:#F1F1EE;--green:#0B7A3E;--greenSoft:#E6F2EA;--amber:#B25E00;--blue:#1A56DB;--onGreen:#fff;--shadow:rgba(0,0,0,.08);
+  --display:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color-scheme:light}
+html[data-d="clean"] h1{font:600 17px/1.2 var(--body);letter-spacing:0}
+html[data-d="clean"] .logo{width:28px;height:28px;border-radius:6px}
+html[data-d="clean"] .big{font:600 22px/1.2 var(--body)}
+html[data-d="clean"] .name{font:600 15px/1.3 var(--body)}
+html[data-d="clean"] .dist b{font:600 15px/1 var(--body)}
+html[data-d="clean"] .search{background:#fff;border:1px solid var(--line);border-radius:8px}
+html[data-d="clean"] .btns a{border-radius:8px;height:40px;font:600 14px/1 var(--body)}
+html[data-d="clean"] .fab{border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.15),0 0 0 1px var(--line)}
+html[data-d="clean"] .group{letter-spacing:.6px}
+
+/* Β · Σκούρο */
+html[data-d="dark"]{--bg:#0B0C0E;--card:#111214;--fg:#EDEDEF;--muted:#8A8F98;--line:#222428;--soft:#17181B;--green:#4ADE80;--greenSoft:rgba(74,222,128,.1);--bar:#2F8F57;--amber:#F5A524;--amberSoft:rgba(245,165,36,.12);--blue:#7AA2FF;--onGreen:#04140A;--shadow:rgba(0,0,0,.5);
+  --display:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color-scheme:dark}
+html[data-d="dark"] h1{font:600 16px/1.2 var(--body);letter-spacing:-.1px}
+html[data-d="dark"] .logo{width:26px;height:26px;border-radius:7px;background:linear-gradient(180deg,#5BE58F,#2FB96A)}
+html[data-d="dark"] .big{font:600 26px/1.15 var(--body);letter-spacing:-.4px}
+html[data-d="dark"] .name{font:500 15px/1.3 var(--body)}
+html[data-d="dark"] .st{font:500 13px/1.3 var(--body)}
+html[data-d="dark"] .dist b{font:500 15px/1 var(--body)}
+html[data-d="dark"] .ic{box-shadow:0 0 10px var(--green)}
+html[data-d="dark"] .ic.later,html[data-d="dark"] .ic.off{box-shadow:none}
+html[data-d="dark"] .search{background:var(--soft);border:1px solid var(--line);border-radius:8px}
+html[data-d="dark"] .item{border-top-color:var(--line)}
+html[data-d="dark"] .item:hover{background:rgba(255,255,255,.02)}
+html[data-d="dark"] .btns a{border-radius:7px;height:38px;font:500 14px/1 var(--body)}
+html[data-d="dark"] .dir{border:1px solid var(--line)}
+html[data-d="dark"] .fab{border-radius:8px;background:var(--card);box-shadow:0 0 0 1px var(--line)}
+
+/* Γ · Έντονο (neo-brutal) */
+html[data-d="bold"]{--bg:#FFFDF6;--card:#FFFDF6;--fg:#0A0A0A;--muted:#3B3B3B;--line:#0A0A0A;--soft:#F1EEE2;--green:#00C065;--greenSoft:#C9F7DD;--bar:#00C065;--amber:#FF8A00;--amberSoft:#FFE2BF;--blue:#2B4BFF;--onGreen:#0A0A0A;--shadow:transparent;
+  --display:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color-scheme:light}
+html[data-d="bold"] .brand,html[data-d="bold"] .sheet{border-width:2px!important;border-color:#0A0A0A!important}
+html[data-d="bold"] h1{font:800 20px/1.1 var(--body);text-transform:uppercase;letter-spacing:.3px}
+html[data-d="bold"] .logo{border-radius:0;border:2px solid #0A0A0A}
+html[data-d="bold"] .big{font:800 30px/1.05 var(--body);letter-spacing:-.5px}
+html[data-d="bold"] .name{font:700 16px/1.3 var(--body)}
+html[data-d="bold"] .st{color:var(--fg)!important;font:600 13.5px/1.3 var(--body)}
+html[data-d="bold"] .ic{width:14px;height:14px;border-radius:0;border:2px solid #0A0A0A}
+html[data-d="bold"] .item{border-top:2px solid #0A0A0A}
+html[data-d="bold"] .tabs{border:2px solid #0A0A0A;border-bottom-width:2px}
+html[data-d="bold"] .tabs button{font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+html[data-d="bold"] .tabs button+button{border-left:2px solid #0A0A0A}
+html[data-d="bold"] .tabs button[aria-selected="true"]{background:var(--green);box-shadow:none}
+html[data-d="bold"] .search{background:#fff;border:2px solid #0A0A0A;border-radius:0;box-shadow:3px 3px 0 #0A0A0A}
+html[data-d="bold"] .btns a{border-radius:0;border:2px solid #0A0A0A;box-shadow:3px 3px 0 #0A0A0A;font:800 14px/1 var(--body);text-transform:uppercase}
+html[data-d="bold"] .call{background:var(--green);color:#0A0A0A}
+html[data-d="bold"] .fab{border-radius:0;background:#fff;border:2px solid #0A0A0A;box-shadow:3px 3px 0 #0A0A0A}
+html[data-d="bold"] .live{color:#0A0A0A;font-weight:800}
+html[data-d="bold"] .live i{background:var(--green);border:1.5px solid #0A0A0A;width:9px;height:9px}
+html[data-d="bold"] .styles button{border-radius:0;border:2px solid #0A0A0A;box-shadow:none}
 </style>
 </head>
 <body>
@@ -370,8 +443,18 @@ const STYLES = {
   nyxta: { name: 'Σκούρος', url: () => OFM + 'dark', glow: true }
 };
 const DOKIMI = /dokimi/.test(location.search + location.hash);
-let styleKey = 'apalos';
-try { const k = localStorage.getItem('style'); if (DOKIMI && STYLES[k]) styleKey = k; } catch (e) {}
+// Σχέδια σελίδας: το καθένα έχει και δικό του χάρτη
+const DESIGNS = {
+  old: { name: 'Τωρινό', map: null },
+  clean: { name: 'Α · Καθαρό', map: 'xromata', stroke: '#ffffff' },
+  dark: { name: 'Β · Σκούρο', map: 'nyxta', stroke: '#0B0C0E' },
+  bold: { name: 'Γ · Έντονο', map: 'xromata', stroke: '#0A0A0A' }
+};
+let designKey = 'old';
+try { const d = localStorage.getItem('design'); if (DOKIMI && DESIGNS[d]) designKey = d; } catch (e) {}
+function applyDesign() { if (designKey === 'old') document.documentElement.removeAttribute('data-d'); else document.documentElement.dataset.d = designKey; }
+applyDesign();
+let styleKey = DESIGNS[designKey].map || 'apalos';
 
 const map = new maplibregl.Map({
   container: 'map', style: STYLES[styleKey].url(), pitch: STYLES[styleKey].pitch || 0, maxPitch: 70,
@@ -408,7 +491,7 @@ function setupLayers() {
     paint: {
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, ['match', ['get', 'k'], 'off', 1.5, 2.5], 12, ['case', ['==', ['get', 'sel'], 1], 14, ['match', ['get', 'k'], 'off', 6, 9]], 16, ['case', ['==', ['get', 'sel'], 1], 20, ['match', ['get', 'k'], 'off', 9, 15]]],
       'circle-color': ['match', ['get', 'k'], 'open', COLORS.open, 'later', COLORS.later, COLORS.off],
-      'circle-stroke-color': '#ffffff', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 12, 2, 16, 2.5] } });
+      'circle-stroke-color': DESIGNS[designKey].stroke || '#ffffff', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 12, 2, 16, 2.5] } });
   map.addLayer({ id: 'ph-cross', type: 'symbol', source: 'ph', minzoom: 11.5,
     layout: { 'icon-image': 'cross', 'icon-size': ['interpolate', ['linear'], ['zoom'], 11.5, 0.45, 16, 0.85], 'icon-allow-overlap': true } });
   if (!layerEvents) { layerEvents = true; map.on('click', 'ph-dot', e => { const f = e.features && e.features[0]; if (f) { e.originalEvent.cancelBubble = true; clickedPin = true; select(byN[f.properties.i], false); } });
@@ -422,15 +505,24 @@ function setStyleKey(k) {
   if (!STYLES[k] || k === styleKey) return;
   styleKey = k; mapReady = false;
   try { localStorage.setItem('style', k); } catch (e) {}
-  document.querySelectorAll('#styles button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
-  map.setStyle(STYLES[k].url(), { diff: false });
+    map.setStyle(STYLES[k].url(), { diff: false });
   map.easeTo({ pitch: STYLES[k].pitch || 0, duration: 600 });
 }
 if (DOKIMI) {
   const box = $('styles'); box.hidden = false;
-  for (const [k, v] of Object.entries(STYLES)) {
+  for (const [k, v] of Object.entries(DESIGNS)) {
     const b = document.createElement('button'); b.type = 'button'; b.dataset.k = k; b.textContent = v.name;
-    b.setAttribute('aria-pressed', k === styleKey); b.onclick = () => setStyleKey(k); box.appendChild(b);
+    b.setAttribute('aria-pressed', k === designKey);
+    b.onclick = () => {
+      designKey = k; applyDesign();
+      try { localStorage.setItem('design', k); } catch (e) {}
+      box.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.k === k));
+      const want = DESIGNS[k].map || 'apalos';
+      if (want !== styleKey) setStyleKey(want);
+      else if (map.getLayer('ph-dot')) map.setPaintProperty('ph-dot', 'circle-stroke-color', DESIGNS[k].stroke || '#ffffff');
+      setTimeout(() => map.resize(), 50);
+    };
+    box.appendChild(b);
   }
 }
 
