@@ -301,6 +301,7 @@ const map = new maplibregl.Map({
 });
 let mapReady = false;
 map.on('load', () => { mapReady = true; });
+map.on('style.load', () => { mapReady = true; });
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 map.on('style.load', () => {
   for (const l of map.getStyle().layers) {
@@ -366,7 +367,7 @@ async function load(first) {
     state.data = await r.json();
     if (state.sel) state.sel = state.data.pharmacies.find(p => p.id === state.sel.id) || null;
     render();
-    if (first) { if (mapReady) fitAll(); else map.once('load', fitAll); }
+    if (first) { if (mapReady || map.isStyleLoaded()) fitAll(); else map.once('style.load', fitAll); }
   } catch (e) {
     $('big').textContent = 'Δεν φόρτωσαν τα φαρμακεία';
     $('small').textContent = 'Έλεγξε τη σύνδεση και ξαναδοκίμασε.';
