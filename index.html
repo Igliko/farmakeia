@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Εφημερίες Φαρμακείων</title>
 <meta name="description" content="Ποια φαρμακεία είναι ανοιχτά τώρα σε όλη την Ελλάδα: εφημερεύοντα και διευρυμένου ωραρίου, σε χάρτη.">
-<meta name="theme-color" content="#07794D">
+<meta name="theme-color" content="#0B0C0E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2307794D'/%3E%3Cpath d='M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z' fill='white'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -191,6 +191,11 @@ html[data-d="bold"] .fab{border-radius:0;background:#fff;border:2px solid #0A0A0
 html[data-d="bold"] .live{color:#0A0A0A;font-weight:800}
 html[data-d="bold"] .live i{background:var(--green);border:1.5px solid #0A0A0A;width:9px;height:9px}
 html[data-d="bold"] .styles button{border-radius:0;border:2px solid #0A0A0A;box-shadow:none}
+html[data-d="dark"] .maplibregl-ctrl-group{background:var(--card);box-shadow:0 0 0 1px var(--line)}
+html[data-d="dark"] .maplibregl-ctrl-group button+button{border-top-color:var(--line)}
+html[data-d="dark"] .maplibregl-ctrl-group .maplibregl-ctrl-icon{filter:invert(1) brightness(.9)}
+html[data-d="dark"] .maplibregl-ctrl-attrib{background:rgba(17,18,20,.8);color:var(--muted)}
+html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -206,8 +211,6 @@ html[data-d="bold"] .styles button{border-radius:0;border:2px solid #0A0A0A;box-
     <button class="fab" id="fit" aria-label="Δείξε τα κοντινά ανοιχτά φαρμακεία"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
   </div>
 </div>
-
-<div class="styles" id="styles" role="group" aria-label="Στυλ χάρτη" hidden></div>
 
 <section class="sheet" id="sheet" aria-label="Φαρμακεία">
   <button class="handle" id="handle" aria-label="Μεγάλωσε ή μίκρυνε τη λίστα"><i></i></button>
@@ -450,8 +453,7 @@ const DESIGNS = {
   dark: { name: 'Β · Σκούρο', map: 'nyxta', stroke: '#0B0C0E' },
   bold: { name: 'Γ · Έντονο', map: 'xromata', stroke: '#0A0A0A' }
 };
-let designKey = 'old';
-try { const d = localStorage.getItem('design'); if (DOKIMI && DESIGNS[d]) designKey = d; } catch (e) {}
+let designKey = 'dark'; // το σχέδιο που διάλεξε ο Igli
 function applyDesign() { if (designKey === 'old') document.documentElement.removeAttribute('data-d'); else document.documentElement.dataset.d = designKey; }
 applyDesign();
 let styleKey = DESIGNS[designKey].map || 'apalos';
@@ -507,23 +509,6 @@ function setStyleKey(k) {
   try { localStorage.setItem('style', k); } catch (e) {}
     map.setStyle(STYLES[k].url(), { diff: false });
   map.easeTo({ pitch: STYLES[k].pitch || 0, duration: 600 });
-}
-if (DOKIMI) {
-  const box = $('styles'); box.hidden = false;
-  for (const [k, v] of Object.entries(DESIGNS)) {
-    const b = document.createElement('button'); b.type = 'button'; b.dataset.k = k; b.textContent = v.name;
-    b.setAttribute('aria-pressed', k === designKey);
-    b.onclick = () => {
-      designKey = k; applyDesign();
-      try { localStorage.setItem('design', k); } catch (e) {}
-      box.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.k === k));
-      const want = DESIGNS[k].map || 'apalos';
-      if (want !== styleKey) setStyleKey(want);
-      else if (map.getLayer('ph-dot')) map.setPaintProperty('ph-dot', 'circle-stroke-color', DESIGNS[k].stroke || '#ffffff');
-      setTimeout(() => map.resize(), 50);
-    };
-    box.appendChild(b);
-  }
 }
 
 let byN = [], clickedPin = false;
