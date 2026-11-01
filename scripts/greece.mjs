@@ -19,13 +19,13 @@ await mkdir(f(''), { recursive: true });
 let areas = await readJson('areas.json', null);
 if (!areas || !areas.items?.length || Date.now() - new Date(areas.built).getTime() > 7 * 864e5) {
   const home = await get(BASE + '/efimeries-farmakeion/');
-  const prefs = [...new Set([...home.matchAll(/href="([^"]*SelectedPrefecture=[^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, '&')))]
+  const prefs = [...new Set([...home.matchAll(/href=["']?([^"'\s>]*SelectedPrefecture=[^"'\s>]+)/g)].map((m) => m[1].replace(/&amp;/g, '&')))]
     .map((u) => (u.startsWith('http') ? u : BASE + u));
   const items = [];
   for (const u of prefs) {
     const pref = decodeURIComponent(u.split('SelectedPrefecture=')[1]).replace(/\+/g, ' ');
     const h = await get(u);
-    for (const m of (h || '').matchAll(/<div class="RegionDescription">\s*<a href="(?:https:\/\/www\.vrisko\.gr)?\/efimeries-farmakeion\/([^"/]+)\/?">([\s\S]*?)<\/a>/g)) {
+    for (const m of (h || '').matchAll(/class="RegionDescription">\s*<a href=["']?(?:https:\/\/www\.vrisko\.gr)?\/efimeries-farmakeion\/([^"'\/\s>]+)\/?["']?>([\s\S]*?)<\/a>/g)) {
       if (!items.some((x) => x.slug === m[1])) items.push({ slug: m[1], name: clean(m[2]), pref });
     }
     await sleep(800);

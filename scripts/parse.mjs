@@ -29,7 +29,7 @@ export function parseList(html) {
     const type = tags.some((t) => /Διευρυμ/.test(t)) ? 'extended' : 'duty';
     const addrFull = clean((raw.match(/pharmacies-card-address">\s*<span>([\s\S]*?)<\/span>/) || [])[1]);
     const phone = (clean((raw.match(/pharmacies-phone-icon"><\/div>([\s\S]*?)<\/div>/) || [])[1]).match(/[\d ]{10,}/) || [''])[0].replace(/\s/g, '');
-    const mapUrl = (raw.match(/href="(https:\/\/www\.vrisko\.gr\/(?:adv)?details\/map\/[^"]+)"/) || [])[1] || '';
+    const mapUrl = (raw.match(/href=["']?(https:\/\/www\.vrisko\.gr\/(?:adv)?details\/map\/[^"'\s>]+)/) || [])[1] || '';
     const id = mapUrl.split('/').pop() || name;
     const dayTxt = clean((raw.match(/class="DutyDay">([\s\S]*?)<\/div>\s*<\/div>/) || [])[1]);
     const dm = dayTxt.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
