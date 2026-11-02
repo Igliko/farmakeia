@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-02T03:45",
+ "updated": "2026-11-02T11:19",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "_k5d1d7e1i7a_13g613226154h1b1__e",
-   "name": "Σαράβα Άννα",
-   "address": "Μεσολογγίου 107",
-   "area": "Πάτρα",
-   "zip": "26224",
-   "phone": "2610312438",
-   "mapUrl": "https://www.vrisko.gr/details/map/_k5d1d7e1i7a_13g613226154h1b1__e",
-   "slots": [
-    {
-     "from": "2026-11-01T21:00",
-     "to": "2026-11-02T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.234683,
-   "lng": 21.733128
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
