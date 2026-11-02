@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-02T00:10",
+ "updated": "2026-11-02T03:45",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -19,24 +19,6 @@
    ],
    "lat": 38.234683,
    "lng": 21.733128
-  },
-  {
-   "id": "712d7_3g_5126eadd04341beab45701i",
-   "name": "Τσακάλου Αναστασία Σ.",
-   "address": "Καζαντζάκη Νικολάου 6-8 & Τέλλου Άγρα",
-   "area": "Αγυιά",
-   "zip": "26442",
-   "phone": "2610438277",
-   "mapUrl": "https://www.vrisko.gr/details/map/712d7_3g_5126eadd04341beab45701i",
-   "slots": [
-    {
-     "from": "2026-11-01T21:00",
-     "to": "2026-11-02T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.268747,
-   "lng": 21.751019
   },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
