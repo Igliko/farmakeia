@@ -42,7 +42,9 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
 
 .sheet{position:fixed;z-index:5;left:0;right:0;bottom:0;height:46vh;min-height:300px;display:flex;flex-direction:column;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -10px 30px var(--shadow);transition:height .25s ease}
 .sheet.tall{height:82vh}
-.handle{flex:none;border:0;background:none;padding:10px 0 6px;cursor:pointer;display:grid;place-items:center}
+.sheet.low{height:min(175px,30vh);min-height:0}
+.handle{flex:none;border:0;background:none;padding:14px 0 10px;cursor:grab;display:grid;place-items:center;touch-action:none}
+.sheet .head{touch-action:none}
 .handle i{width:38px;height:4px;border-radius:2px;background:var(--line);display:block}
 .head{flex:none;padding:0 max(18px,env(safe-area-inset-right,0px)) 8px max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
 .styles{position:fixed;z-index:6;top:calc(80px + env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));right:70px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
@@ -113,7 +115,7 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
 .maplibregl-ctrl-bottom-right{bottom:calc(46vh - 8px)}
 
 @media (min-width:860px){
-  .sheet,.sheet.tall{top:calc(84px + env(safe-area-inset-top,0px));left:12px;right:auto;bottom:12px;width:400px;height:auto;min-height:0;border-radius:20px}
+  .sheet,.sheet.tall,.sheet.low{top:calc(84px + env(safe-area-inset-top,0px));left:12px;right:auto;bottom:12px;width:400px;height:auto;min-height:0;border-radius:20px}
   .handle{display:none}.head{padding-top:16px}
   .maplibregl-ctrl-bottom-right{bottom:0}
 }
@@ -124,7 +126,7 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
   html[data-d] .top{left:0;right:max(16px,env(safe-area-inset-right,0px));top:0}
   html[data-d] .brand{position:fixed;left:0;top:0;width:420px;border-radius:0;box-shadow:none;padding:16px 20px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
   html[data-d] .fabs{position:fixed;top:16px;right:max(16px,env(safe-area-inset-right,0px))}
-  html[data-d] .sheet,html[data-d] .sheet.tall{top:67px;left:0;bottom:0;width:420px;border-radius:0;box-shadow:none;border-right:1px solid var(--line)}
+  html[data-d] .sheet,html[data-d] .sheet.tall,html[data-d] .sheet.low{top:67px;left:0;bottom:0;width:420px;border-radius:0;box-shadow:none;border-right:1px solid var(--line)}
   html[data-d] .styles{left:436px;top:16px}
 }
 html[data-d] .head{gap:10px}
@@ -611,7 +613,7 @@ function select(p, fromList) {
   if (!p) return;
   if (p.lat != null) { moving = true; map.flyTo({ center: [p.lng, p.lat], zoom: Math.max(map.getZoom(), 15), offset: innerWidth >= 860 ? [210, 0] : [0, -sheetH() / 2 + 40], duration: 700 }); }
   const el = document.querySelector(`.item[data-id="${CSS.escape(p.id)}"]`);
-  if (el && !fromList) { el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); if (innerWidth < 860) $('sheet').classList.add('tall'); }
+  if (el && !fromList) { el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); if (innerWidth < 860) { $('sheet').classList.remove('low'); $('sheet').classList.add('tall'); } }
 }
 // Δείξε τα πιο κοντινά ανοιχτά φαρμακεία
 function fitAll() {
@@ -702,7 +704,46 @@ document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
 $('locate').onclick = () => locate(true);
 document.querySelectorAll('#mode button').forEach(b => b.onclick = () => { mode = b.dataset.m; try { localStorage.setItem('mode', mode); } catch (e) {} render(); });
 $('fit').onclick = fitAll;
-$('handle').onclick = () => $('sheet').classList.toggle('tall');
+// Σύρσιμο της λίστας πάνω/κάτω με το δάχτυλο (κινητό): 3 θέσεις — χαμηλά, μέση, ψηλά
+(() => {
+  const sh = $('sheet'), zones = [$('handle'), document.querySelector('#sheet .head')];
+  let y0 = 0, h0 = 0, dragging = false, moved = false, lastY = 0, lastT = 0, vel = 0;
+  const snaps = () => [Math.min(175, innerHeight * .3), Math.max(300, innerHeight * .46), innerHeight * .82];
+  const setState = s => { sh.classList.toggle('low', s === 0); sh.classList.toggle('tall', s === 2); };
+  const cur = () => sh.classList.contains('tall') ? 2 : sh.classList.contains('low') ? 0 : 1;
+  const down = e => {
+    if (innerWidth >= 860 || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (e.target.closest('input,.results')) return;
+    dragging = true; moved = false; y0 = lastY = e.clientY; lastT = performance.now(); vel = 0;
+    h0 = sh.getBoundingClientRect().height;
+  };
+  const move = e => {
+    if (!dragging) return;
+    const dy = e.clientY - y0;
+    if (!moved && Math.abs(dy) < 6) return;
+    if (!moved) { moved = true; sh.style.transition = 'none'; sh.style.minHeight = '0'; }
+    const t = performance.now(); vel = (e.clientY - lastY) / Math.max(1, t - lastT); lastY = e.clientY; lastT = t;
+    sh.style.height = Math.max(120, Math.min(innerHeight * .9, h0 - dy)) + 'px';
+    e.preventDefault();
+  };
+  const up = () => {
+    if (!dragging) return; dragging = false;
+    if (!moved) return;
+    const h = sh.getBoundingClientRect().height, s = snaps();
+    let i = s.reduce((b, v, k) => Math.abs(v - h) < Math.abs(s[b] - h) ? k : b, 0);
+    if (vel < -0.5) i = Math.min(2, cur() + 1 > i ? cur() + 1 : i);   // γρήγορο σπρώξιμο πάνω
+    if (vel > 0.5) i = Math.max(0, cur() - 1 < i ? cur() - 1 : i);    // γρήγορο σπρώξιμο κάτω
+    sh.style.transition = ''; sh.style.height = ''; sh.style.minHeight = '';
+    setState(i);
+    const stop = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    addEventListener('click', stop, { capture: true, once: true });   // να μη «πατηθεί» κουμπί μετά το σύρσιμο
+    setTimeout(() => removeEventListener('click', stop, { capture: true }), 50);
+  };
+  zones.forEach(z => z && z.addEventListener('pointerdown', down));
+  addEventListener('pointermove', move, { passive: false });
+  addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  $('handle').onclick = () => { const c = cur(); setState(c === 2 ? 1 : c + 1); };
+})();
 map.on('click', () => { if (clickedPin) { clickedPin = false; return; } if (state.sel) select(null); });
 let moving = false, mvT = null;
 map.on('moveend', () => {
