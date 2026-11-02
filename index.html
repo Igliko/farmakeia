@@ -196,6 +196,11 @@ html[data-d="dark"] .maplibregl-ctrl-group button+button{border-top-color:var(--
 html[data-d="dark"] .maplibregl-ctrl-group .maplibregl-ctrl-icon{filter:invert(1) brightness(.9)}
 html[data-d="dark"] .maplibregl-ctrl-attrib{background:rgba(17,18,20,.8);color:var(--muted)}
 html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
+.legend{position:fixed;z-index:4;right:56px;bottom:calc(46vh + 10px);display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:8px;background:rgba(17,18,20,.88);border:1px solid var(--line);color:var(--muted);font:500 12px/1.2 var(--body)}
+.legend span{display:flex;align-items:center;gap:8px}
+.legend i{width:11px;height:11px;border-radius:50%;border:1.5px solid #0B0C0E;display:inline-block;flex:none}
+.legend i.sm{width:7px;height:7px;margin:0 2px}
+@media (min-width:860px){.legend{bottom:20px;right:60px}}
 </style>
 </head>
 <body>
@@ -210,6 +215,12 @@ html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
     <button class="fab loc" id="locate" aria-label="Η θέση μου"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
     <button class="fab" id="fit" aria-label="Δείξε τα κοντινά ανοιχτά φαρμακεία"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
   </div>
+</div>
+
+<div class="legend" aria-label="Υπόμνημα">
+  <span><i style="background:#07794D"></i>Εφημερεύει · ανοιχτό τώρα</span>
+  <span><i style="background:#A35400"></i>Εφημερεύει · ανοίγει αργότερα</span>
+  <span><i class="sm" style="background:#B4B8BE"></i>Κανονικό ωράριο</span>
 </div>
 
 <section class="sheet" id="sheet" aria-label="Φαρμακεία">
@@ -374,6 +385,16 @@ function placeName() {
 
 const MAX_ITEMS = 40;
 function render() {
+  renderList();
+  // ό,τι πάτησες στον χάρτη φαίνεται πάντα, ανοιχτό στην κορυφή της λίστας
+  const p = state.sel, box = $('list');
+  if (p && !box.querySelector(`.item[data-id="${CSS.escape(p.id)}"]`)) {
+    box.querySelector('.empty')?.remove();
+    const el = card(p, status(p)); el.classList.add('on');
+    box.prepend(el);
+  }
+}
+function renderList() {
   const data = state.data; if (!data) return;
   const n = nowStr(), today = n.slice(0, 10), tm = addDays(today, 1);
   const list = $('list'); list.innerHTML = '';
@@ -511,7 +532,7 @@ function setupLayers() {
   map.addSource('reg', { type: 'geojson', data: regGeojson() });
   map.addLayer({ id: 'reg-dot', type: 'circle', source: 'reg', minzoom: 10,
     paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 14, 4, 17, 7],
-      'circle-color': ['case', ['==', ['get', 'o'], 1], '#9AA8B5', '#4B5260'],
+      'circle-color': ['case', ['==', ['get', 'o'], 1], '#B4B8BE', '#6B6F76'],
       'circle-stroke-color': '#0B0C0E', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 12, 0, 15, 1] } });
   map.addSource('ph', { type: 'geojson', data: geojson([]) });
   map.addLayer({ id: 'ph-halo', type: 'circle', source: 'ph', filter: ['==', ['get', 'k'], 'open'],
@@ -561,7 +582,7 @@ function select(p, fromList) {
   if (!p) return;
   if (p.lat != null) { moving = true; map.flyTo({ center: [p.lng, p.lat], zoom: Math.max(map.getZoom(), 15), offset: innerWidth >= 860 ? [210, 0] : [0, -sheetH() / 2 + 40], duration: 700 }); }
   const el = document.querySelector(`.item[data-id="${CSS.escape(p.id)}"]`);
-  if (el && !fromList) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  if (el && !fromList) { el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); if (innerWidth < 860) $('sheet').classList.add('tall'); }
 }
 // Δείξε τα πιο κοντινά ανοιχτά φαρμακεία
 function fitAll() {
