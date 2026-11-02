@@ -1,0 +1,22 @@
+name: probe
+on:
+  push:
+    paths: [".github/workflows/probe.yml"]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cat > /tmp/p.mjs <<'JS'
+          import { get } from '/home/runner/work/farmakeia-patras/farmakeia-patras/scripts/net.mjs';
+          const h = await get('https://www.vrisko.gr/details/map/31d5d4a40_biba0i0g0h_e36ad75bc_2');
+          console.log('LEN', h && h.length);
+          for (const k of ['latitude','Latitude','DecLatitude','lat']) { const i = h.indexOf(k); console.log('KEY', k, i, i>=0 ? JSON.stringify(h.slice(i-80, i+160)) : ''); }
+          console.log('HEAD', JSON.stringify(h.slice(0, 600)));
+          const a = await get('https://www.vrisko.gr/efimeries-farmakeion/athina/');
+          console.log('ATH LEN', a.length, 'results', (a.match(/class="DutiesResult"/g)||[]).length);
+          const pg = [...a.matchAll(/href=["']?([^"'\s>]*(?:page|Page|σελ)[^"'\s>]*)/g)].map(m=>m[1]).slice(0,10); console.log('PAGING', JSON.stringify(pg));
+          const i2 = a.indexOf('pagination'); console.log('PAGCTX', JSON.stringify(a.slice(i2-100, i2+600)));
+          JS
+          node /tmp/p.mjs
