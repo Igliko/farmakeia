@@ -47,6 +47,9 @@ jobs:
         working-directory: bot
         run: |
           W="npx --yes wrangler@3.78.12"
+          # καθάρισε κενά / αλλαγές γραμμής που μπαίνουν με την αντιγραφή από το κινητό
+          TELEGRAM_TOKEN=$(printf '%s' "$TELEGRAM_TOKEN" | tr -d '[:space:]')
+          case "$TELEGRAM_TOKEN" in *[!A-Za-z0-9:_-]*|"") echo "::error::Ο TELEGRAM_TOKEN έχει περίεργους χαρακτήρες. Ξαναντέγραψέ τον από τον @BotFather."; exit 1;; esac
           $W deploy | tee deploy.log
           printf '%s' "$TELEGRAM_TOKEN" | $W secret put TELEGRAM_TOKEN
           SECRET=$(printf '%s' "$TELEGRAM_TOKEN" | sha256sum | cut -c1-48)
