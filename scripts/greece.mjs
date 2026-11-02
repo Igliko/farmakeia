@@ -43,7 +43,7 @@ const old = await readJson('greece.json', { pharmacies: [] });
 const geo = await readJson('geo-gr.json', {});
 const patraGeo = await readJson('geo.json', {});
 let found = 0, tries = 0, misses = 0;
-const MAX_GEO = +process.env.MAX_GEO || 150;
+const MAX_GEO = +process.env.MAX_GEO || 30;
 // παλιές αποτυχίες (0) τις ξαναδοκιμάζουμε
 for (const k of Object.keys(geo)) if (!geo[k]) delete geo[k];
 for (const p of old.pharmacies || []) {
@@ -69,27 +69,38 @@ const now = athensNow();
 const oldByArea = new Map();
 for (const p of old.pharmacies || []) { if (!oldByArea.has(p.r)) oldByArea.set(p.r, []); oldByArea.get(p.r).push(p); }
 
+// Το vrisko δίνει άδειες σελίδες μετά από ~150-180 αιτήματα. Γι' αυτό κάθε ενημέρωση διαβάζει
+// ένα κομμάτι των περιοχών (από εκεί που σταμάτησε η προηγούμενη) και για τις υπόλοιπες κρατά τα παλιά.
+const PER_RUN = +process.env.AREAS_PER_RUN || 120;
+const cur = await readJson('cursor.json', { next: 0 });
+const list0 = areas.items.filter((a) => !SKIP.has(a.slug));
+const start = (cur.next || 0) % list0.length;
+const order = [...list0.slice(start), ...list0.slice(0, start)];
+const fresh = new Set();
+let ok = 0, blocked = 0, read = 0;
+for (const a of order) {
+  if (read >= PER_RUN || blocked >= 3 || timeLeft() < 15 * 60000) break;
+  read++;
+  try {
+    const h = await get(`${BASE}/efimeries-farmakeion/${a.slug}/`, 2);
+    if (h === null) { fresh.add(a.slug); ok++; oldByArea.set(a.slug, []); continue; }
+    if (!h.includes('DutiesResults')) { blocked++; read--; console.warn('Άδεια/μπλοκαρισμένη σελίδα:', a.slug); continue; }
+    blocked = 0; ok++; fresh.add(a.slug);
+    oldByArea.set(a.slug, merge(parseList(h)));
+  } catch (e) { blocked++; }
+  await sleep(2000);
+}
+await save('cursor.json', { next: (start + read) % list0.length, at: now });
+console.log(`Περιοχές: διαβάστηκαν ${ok} (από τη θέση ${start}), μπλοκαρίσματα: ${blocked}`);
+
 const all = new Map();
-let ok = 0, failed = 0;
 for (const a of areas.items) {
   if (SKIP.has(a.slug)) continue;
-  let entries = null;
-  if (timeLeft() > 20 * 60000) {
-    try {
-      const h = await get(`${BASE}/efimeries-farmakeion/${a.slug}/`, 2);
-      if (h && !/DutiesResults|Εφημερ/.test(h)) throw new Error('blocked');
-      entries = h ? merge(parseList(h)) : []; ok++;
-    } catch (e) { failed++; }
-    await sleep(1200);
-  }
-  // αν απέτυχε, κράτα τα παλιά που ισχύουν ακόμα
-  const list = entries ?? (oldByArea.get(a.slug) || []).map((p) => ({ ...p, slots: p.slots }));
-  for (const p of list) {
+  for (const p of oldByArea.get(a.slug) || []) {
     if (all.has(p.id)) { const q = all.get(p.id); for (const s of p.slots) if (!q.slots.some((x) => x.from === s.from && x.to === s.to)) q.slots.push(s); continue; }
     all.set(p.id, { ...p, r: a.slug });
   }
 }
-console.log(`Περιοχές OK: ${ok}, αποτυχίες: ${failed}`);
 
 // 3β) Όσα δεν πήραν θέση από το vrisko: από τη διεύθυνση, μέσω OpenStreetMap
 const townOf = Object.fromEntries(areas.items.map((a) => [a.slug, a.name]));
