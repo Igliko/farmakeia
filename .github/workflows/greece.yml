@@ -18,7 +18,7 @@ concurrency:
 jobs:
   greece:
     runs-on: ubuntu-latest
-    timeout-minutes: 330
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,7 +26,7 @@ jobs:
           node-version: 20
       - name: Διάβασε όλη την Ελλάδα από το vrisko.gr
         env:
-          TIME_BUDGET_MIN: "300"
+          TIME_BUDGET_MIN: "40"
         run: node scripts/greece.mjs
       - name: Αποθήκευσε
         run: |

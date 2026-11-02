@@ -12,7 +12,7 @@ async function search(params) {
   last = Date.now();
   requests++;
   const u = 'https://nominatim.openstreetmap.org/search?' + new URLSearchParams({ format: 'jsonv2', limit: '1', countrycodes: 'gr', 'accept-language': 'el', ...params });
-  const r = await fetch(u, { headers: { 'User-Agent': UA } });
+  const r = await fetch(u, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(15000) });
   if (r.status === 429 || r.status === 403) throw new Error('nominatim ' + r.status);
   if (!r.ok) return null;
   const j = await r.json();
@@ -28,7 +28,6 @@ function variants(address) {
   const out = [street];
   const w = street.split(' ');
   if (w.length === 2) out.push(w[1] + ' ' + w[0]); // «Βενιζέλου Ελευθερίου» -> «Ελευθερίου Βενιζέλου»
-  if (w.length >= 2) out.push(w[0]); // μόνο το επώνυμο: «Βενιζέλου»
   return { streets: [...new Set(out)], num };
 }
 
@@ -40,6 +39,5 @@ export async function geocode(p, town) {
     if (c) return c;
   }
   if (p.zip) { const c = await search({ postalcode: p.zip }); if (c) return [...c, 1]; }
-  if (town) { const c = await search({ q: town }); if (c) return [...c, 1]; }
   return null;
 }

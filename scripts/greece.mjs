@@ -43,7 +43,7 @@ const old = await readJson('greece.json', { pharmacies: [] });
 const geo = await readJson('geo-gr.json', {});
 const patraGeo = await readJson('geo.json', {});
 let found = 0, tries = 0, misses = 0;
-const MAX_GEO = +process.env.MAX_GEO || 250;
+const MAX_GEO = +process.env.MAX_GEO || 150;
 // παλιές αποτυχίες (0) τις ξαναδοκιμάζουμε
 for (const k of Object.keys(geo)) if (!geo[k]) delete geo[k];
 for (const p of old.pharmacies || []) {
@@ -52,7 +52,7 @@ for (const p of old.pharmacies || []) {
   if (tries >= MAX_GEO) break;
   tries++;
   try {
-    const h = await get(p.mapUrl, 2);
+    const h = await get(p.mapUrl, 1);
     const c = h ? parseCoords(h) : null;
     if (c) { geo[p.id] = c; found++; misses = 0; }
     else if (++misses >= 8) { console.warn('Το vrisko σταμάτησε να δίνει θέσεις, συνεχίζω την επόμενη φορά.'); break; }
@@ -88,18 +88,20 @@ for (const a of areas.items) {
 console.log(`Περιοχές OK: ${ok}, αποτυχίες: ${failed}`);
 
   await sleep(1500);
+  if (tries % 25 === 0) console.log(`  vrisko θέσεις: ${found}/${tries}`);
 }
 await save('geo-gr.json', geo);
 
 // 3β) Όσα δεν πήραν θέση από το vrisko: από τη διεύθυνση, μέσω OpenStreetMap
 const townOf = Object.fromEntries(areas.items.map((a) => [a.slug, a.name]));
 let osm = 0, osmTried = 0;
-const MAX_OSM = +process.env.MAX_OSM || 700;
+const MAX_OSM = +process.env.MAX_OSM || 250;
 for (const p of all.values()) {
   if (geo[p.id] || patraGeo[p.id] || osmTried >= MAX_OSM || timeLeft() < 6 * 60000) continue;
   osmTried++;
   try { const c = await geocode(p, townOf[p.r]); if (c) { geo[p.id] = c; osm++; } }
-  catch (e) { console.warn('OpenStreetMap:', e.message); break; }
+  catch (e) { console.warn('OpenStreetMap:', e.message); if (/429|403/.test(e.message)) break; }
+  if (osmTried % 25 === 0) console.log(`  OpenStreetMap: ${osm}/${osmTried}`);
   if (osm && osm % 50 === 0) await save('geo-gr.json', geo);
 }
 await save('geo-gr.json', geo);
