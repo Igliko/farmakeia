@@ -308,7 +308,7 @@ function card(p, st, extra) {
   el.querySelector('.name').textContent = p.name;
   el.querySelector('.st').textContent = st.text;
   el.querySelector('.kind').textContent = kindOf(st.slot) + (st.slot ? ' · ' + slotLabel(st.slot) : '');
-  el.querySelector('.addr').textContent = [p.address, p.area && p.area !== p.town ? p.area : '', (p.zip ? p.zip + ' ' : '') + (p.town || '')].filter(Boolean).join(', ');
+  el.querySelector('.addr').textContent = [p.address, p.area && p.area !== p.town ? p.area : '', (p.zip ? p.zip + ' ' : '') + (p.town || '')].filter(Boolean).join(', ') + (p.ap ? ' · θέση στον χάρτη κατά προσέγγιση' : '');
   el.querySelector('.phone').textContent = 'Τηλ. ' + p.phone.replace(/^(\d{4})(\d+)/, '$1 $2');
   el.querySelector('.row').onclick = () => select(p === state.sel ? null : p, true);
   return el;

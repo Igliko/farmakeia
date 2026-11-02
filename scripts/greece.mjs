@@ -3,6 +3,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { get, sleep, athensNow } from './net.mjs';
 import { parseList, parseCoords, merge, clean } from './parse.mjs';
+import { geocode } from './geocode.mjs';
 
 const BASE = 'https://www.vrisko.gr';
 const f = (p) => new URL('../data/' + p, import.meta.url);
@@ -36,9 +37,31 @@ if (!areas || !areas.items?.length || Date.now() - new Date(areas.built).getTime
   console.log('Περιοχές:', items.length, 'σε', prefs.length, 'νομούς');
 }
 
-// 2) Φαρμακεία ανά περιοχή
-const now = athensNow();
+// 2) Συντεταγμένες ΠΡΩΤΑ, όσο το vrisko είναι «φρέσκο» (μετά από πολλές σελίδες σταματάει να τις δίνει).
+//    Για φαρμακεία που ξέρουμε από την προηγούμενη φορά· τα καινούργια παίρνουν θέση στην επόμενη.
 const old = await readJson('greece.json', { pharmacies: [] });
+const geo = await readJson('geo-gr.json', {});
+const patraGeo = await readJson('geo.json', {});
+let found = 0, tries = 0, misses = 0;
+const MAX_GEO = +process.env.MAX_GEO || 250;
+// παλιές αποτυχίες (0) τις ξαναδοκιμάζουμε
+for (const k of Object.keys(geo)) if (!geo[k]) delete geo[k];
+for (const p of old.pharmacies || []) {
+  if (geo[p.id] || patraGeo[p.id]) continue;
+  if (!p.mapUrl) continue;
+  if (tries >= MAX_GEO) break;
+  tries++;
+  try {
+    const h = await get(p.mapUrl, 2);
+    const c = h ? parseCoords(h) : null;
+    if (c) { geo[p.id] = c; found++; misses = 0; }
+    else if (++misses >= 8) { console.warn('Το vrisko σταμάτησε να δίνει θέσεις, συνεχίζω την επόμενη φορά.'); break; }
+  } catch { if (++misses >= 8) break; }
+  if (found && found % 50 === 0) await save('geo-gr.json', geo);
+console.log(`Νέες θέσεις: ${found} (από ${tries} δοκιμές)`);
+
+// 3) Φαρμακεία ανά περιοχή
+const now = athensNow();
 const oldByArea = new Map();
 for (const p of old.pharmacies || []) { if (!oldByArea.has(p.r)) oldByArea.set(p.r, []); oldByArea.get(p.r).push(p); }
 
@@ -64,29 +87,23 @@ for (const a of areas.items) {
 }
 console.log(`Περιοχές OK: ${ok}, αποτυχίες: ${failed}`);
 
-// 3) Συντεταγμένες (μία φορά για κάθε φαρμακείο, μετά τις θυμάται)
-const geo = await readJson('geo-gr.json', {});
-const patraGeo = await readJson('geo.json', {});
-let found = 0, tries = 0, misses = 0;
-const MAX_GEO = +process.env.MAX_GEO || 600;
-// παλιές αποτυχίες (0) τις ξαναδοκιμάζουμε
-for (const k of Object.keys(geo)) if (!geo[k]) delete geo[k];
-for (const p of all.values()) {
-  if (geo[p.id] || patraGeo[p.id]) continue;
-  if (timeLeft() < 8 * 60000) break;
-  if (!p.mapUrl) continue;
-  if (tries >= MAX_GEO) break;
-  tries++;
-  try {
-    const h = await get(p.mapUrl, 2);
-    const c = h ? parseCoords(h) : null;
-    if (c) { geo[p.id] = c; found++; misses = 0; }
-    else if (++misses >= 8) { console.warn('Το vrisko σταμάτησε να δίνει θέσεις, συνεχίζω την επόμενη φορά.'); break; }
-  } catch { if (++misses >= 8) break; }
-  if (found && found % 50 === 0) await save('geo-gr.json', geo);
   await sleep(1500);
 }
 await save('geo-gr.json', geo);
+
+// 3β) Όσα δεν πήραν θέση από το vrisko: από τη διεύθυνση, μέσω OpenStreetMap
+const townOf = Object.fromEntries(areas.items.map((a) => [a.slug, a.name]));
+let osm = 0, osmTried = 0;
+const MAX_OSM = +process.env.MAX_OSM || 700;
+for (const p of all.values()) {
+  if (geo[p.id] || patraGeo[p.id] || osmTried >= MAX_OSM || timeLeft() < 6 * 60000) continue;
+  osmTried++;
+  try { const c = await geocode(p, townOf[p.r]); if (c) { geo[p.id] = c; osm++; } }
+  catch (e) { console.warn('OpenStreetMap:', e.message); break; }
+  if (osm && osm % 50 === 0) await save('geo-gr.json', geo);
+}
+await save('geo-gr.json', geo);
+console.log(`Θέσεις από OpenStreetMap: ${osm} από ${osmTried}`);
 
 // 4) Αρχείο για το σάιτ (σύντομα ονόματα πεδίων για μικρό μέγεθος)
 const names = Object.fromEntries(areas.items.map((a) => [a.slug, a.name]));
@@ -94,7 +111,7 @@ const pharmacies = [...all.values()]
   .map((p) => {
     const c = geo[p.id] || patraGeo[p.id];
     return { id: p.id, name: p.name, address: p.address, area: p.area !== 'Πάτρα' ? p.area : '', town: names[p.r] || '', zip: p.zip, phone: p.phone, mapUrl: p.mapUrl, r: p.r,
-      lat: c ? c[0] : null, lng: c ? c[1] : null, slots: p.slots.filter((s) => s.to > now).sort((x, y) => x.from.localeCompare(y.from)) };
+      lat: c ? c[0] : null, lng: c ? c[1] : null, ap: c && c[2] ? 1 : undefined, slots: p.slots.filter((s) => s.to > now).sort((x, y) => x.from.localeCompare(y.from)) };
   })
   .filter((p) => p.slots.length);
 await save('greece.json', { updated: now, source: BASE + '/efimeries-farmakeion/', pharmacies });
