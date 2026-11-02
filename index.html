@@ -232,7 +232,7 @@ html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
   </div>
   <div class="scroll" id="scroll">
     <div id="list"></div>
-    <p class="note">Πηγή: <a href="https://www.vrisko.gr/efimeries-farmakeion/patra/" target="_blank" rel="noopener">vrisko.gr</a> (Φαρμακευτικοί Σύλλογοι) · τελευταία αλλαγή <span id="upd">–</span>.<br>Οι εφημερίες αλλάζουν καμιά φορά τελευταία στιγμή. Πάρε τηλέφωνο πριν πας.</p>
+    <p class="note">Πηγή: <a href="https://www.vrisko.gr/efimeries-farmakeion/patra/" target="_blank" rel="noopener">vrisko.gr</a> (Φαρμακευτικοί Σύλλογοι) · όλα τα φαρμακεία: © OpenStreetMap · τελευταία αλλαγή <span id="upd">–</span>.<br>Οι εφημερίες αλλάζουν καμιά φορά τελευταία στιγμή. Πάρε τηλέφωνο πριν πας.</p>
   </div>
 </section>
 
@@ -241,7 +241,7 @@ html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
 const CROSS = s => `<svg width="${s}" height="${s}" viewBox="0 0 18 18" aria-hidden="true"><path d="M6.5 1h5v5.5H17v5h-5.5V17h-5v-5.5H1v-5h5.5z"/></svg>`;
 const $ = id => document.getElementById(id);
 const dark = matchMedia('(prefers-color-scheme: dark)').matches;
-const state = { data: null, view: 'now', sel: null, me: null };
+const state = { data: null, view: 'now', sel: null, me: null, reg: [] };
 const markers = new Map();
 
 // ---- χρόνος (ώρα Ελλάδας) ----
@@ -260,6 +260,7 @@ function slotLabel(s) { return hhmm(s.from) + ' – ' + hhmm(s.to) + (s.to.slice
 
 // Κατάσταση ενός φαρμακείου τώρα
 function status(p) {
+  if (p.reg) return regStatus();
   const n = nowStr(), nm = mins(n);
   const cur = p.slots.filter(s => s.from <= n && n < s.to).sort((a, b) => b.to.localeCompare(a.to))[0];
   if (cur) {
@@ -275,6 +276,19 @@ function status(p) {
   return { k: 'off', text: 'Έκλεισε', color: 'var(--muted)' };
 }
 const kindOf = s => s && s.type === 'extended' ? 'Διευρυμένο ωράριο' : 'Εφημερία';
+
+// Συνηθισμένο ωράριο φαρμακείων (χωρίς αργίες): Δευ/Τετ 08:00–14:30, Τρι/Πεμ/Παρ 08:00–14:00 & 17:30–21:00, Σαβ/Κυρ κλειστά
+const REG = { 1: [[480, 870]], 2: [[480, 840], [1050, 1260]], 3: [[480, 870]], 4: [[480, 840], [1050, 1260]], 5: [[480, 840], [1050, 1260]], 6: [], 0: [] };
+const fmt = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+function regStatus() {
+  const n = nowStr(); const [y, mo, d] = n.slice(0, 10).split('-').map(Number);
+  const wd = new Date(Date.UTC(y, mo - 1, d)).getUTCDay(), nm = +n.slice(11, 13) * 60 + +n.slice(14, 16);
+  const cur = REG[wd].find(([a, b]) => nm >= a && nm < b);
+  if (cur) { const left = cur[1] - nm; return { k: 'open', reg: true, text: (left <= 60 ? `Κλείνει σε ${left}′ · ` : 'Ανοιχτό ως ') + fmt(cur[1]), color: left <= 60 ? 'var(--amber)' : 'var(--green)', left }; }
+  const nx = REG[wd].find(([a]) => a > nm);
+  if (nx) return { k: 'later', reg: true, text: 'Ανοίγει ' + fmt(nx[0]), color: 'var(--muted)', inM: nx[0] - nm };
+  return { k: 'off', reg: true, text: 'Κλειστό τώρα', color: 'var(--muted)' };
+}
 
 // ---- απόσταση ----
 function km(a, b) { const R = 6371, t = x => x * Math.PI / 180, dl = t(b[0] - a[0]), dn = t(b[1] - a[1]); const h = Math.sin(dl / 2) ** 2 + Math.cos(t(a[0])) * Math.cos(t(b[0])) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
@@ -307,9 +321,11 @@ function card(p, st, extra) {
     </div>`;
   el.querySelector('.name').textContent = p.name;
   el.querySelector('.st').textContent = st.text;
-  el.querySelector('.kind').textContent = kindOf(st.slot) + (st.slot ? ' · ' + slotLabel(st.slot) : '');
+  el.querySelector('.kind').textContent = p.reg ? 'Κανονικό ωράριο (το συνηθισμένο, όχι επιβεβαιωμένο)' : kindOf(st.slot) + (st.slot ? ' · ' + slotLabel(st.slot) : '');
   el.querySelector('.addr').textContent = [p.address, p.area && p.area !== p.town ? p.area : '', (p.zip ? p.zip + ' ' : '') + (p.town || '')].filter(Boolean).join(', ') + (p.ap ? ' · θέση στον χάρτη κατά προσέγγιση' : '');
-  el.querySelector('.phone').textContent = 'Τηλ. ' + p.phone.replace(/^(\d{4})(\d+)/, '$1 $2');
+  el.querySelector('.phone').textContent = p.phone ? 'Τηλ. ' + p.phone.replace(/^(\d{4})(\d+)/, '$1 $2') : 'Δεν υπάρχει τηλέφωνο';
+  if (!p.phone) el.querySelector('.call').remove();
+  if (p.oh) el.querySelector('.addr').textContent += ' · Ωράριο στο OpenStreetMap: ' + p.oh;
   el.querySelector('.row').onclick = () => select(p === state.sel ? null : p, true);
   return el;
 }
@@ -383,11 +399,18 @@ function render() {
     $('small').textContent = !open.length ? (later[0] ? 'Το επόμενο εδώ ανοίγει ' + hhmm(status(later[0]).slot.from) : 'Κανένα σε αυτό το σημείο του χάρτη')
       : d ? 'Πιο κοντινό: ' + short(near.name) + ' · ' + d.text : (where ? 'Στην περιοχή: ' + where : 'Σε αυτό το σημείο του χάρτη');
     open.slice(0, MAX_ITEMS).forEach(p => list.appendChild(card(p, status(p))));
+    const regNear = nearby(state.reg) || [];
+    if (regStatus().k === 'open' && regNear.length) {
+      const g = document.createElement('p'); g.className = 'group'; g.textContent = 'Ανοιχτά με κανονικό ωράριο · ' + regNear.length; list.appendChild(g);
+      regNear.sort((a, b) => sortKey(a) - sortKey(b)).slice(0, 25).forEach(p => list.appendChild(card(p, regStatus())));
+      $('big').textContent = (open.length + regNear.length) + ' ανοιχτά τώρα';
+      if (!d && !open.length) $('small').textContent = (where ? where + ': ' : '') + 'κανονικό ωράριο φαρμακείων';
+    }
     if (later.length) {
       const g = document.createElement('p'); g.className = 'group'; g.textContent = 'Ανοίγουν αργότερα'; list.appendChild(g);
       later.slice(0, 12).forEach(p => list.appendChild(card(p, status(p))));
     }
-    if (!open.length && !later.length) list.innerHTML = '<div class="empty"><b>Δεν βρέθηκαν φαρμακεία εδώ</b>Μίκρυνε λίγο τον χάρτη ή ψάξε άλλη πόλη.</div>';
+    if (!open.length && !later.length && !(regStatus().k === 'open' && (nearby(state.reg) || []).length)) list.innerHTML = '<div class="empty"><b>Δεν βρέθηκαν φαρμακεία εδώ</b>Μίκρυνε λίγο τον χάρτη ή ψάξε άλλη πόλη.</div>';
   } else {
     const day = state.view === 'today' ? today : tm;
     $('big').textContent = dayName(day).replace(/^./, c => c.toUpperCase());
@@ -485,6 +508,11 @@ function setupLayers() {
   const img = new Image(48, 48);
   img.onload = () => { if (!map.hasImage('cross')) map.addImage('cross', img, { pixelRatio: 2 }); };
   img.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 18 18"><path d="M6.5 1h5v5.5H17v5h-5.5V17h-5v-5.5H1v-5h5.5z" fill="#fff" transform="translate(4.5 4.5) scale(.5)"/></svg>');
+  map.addSource('reg', { type: 'geojson', data: regGeojson() });
+  map.addLayer({ id: 'reg-dot', type: 'circle', source: 'reg', minzoom: 10,
+    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 14, 4, 17, 7],
+      'circle-color': ['case', ['==', ['get', 'o'], 1], '#9AA8B5', '#4B5260'],
+      'circle-stroke-color': '#0B0C0E', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 12, 0, 15, 1] } });
   map.addSource('ph', { type: 'geojson', data: geojson([]) });
   map.addLayer({ id: 'ph-halo', type: 'circle', source: 'ph', filter: ['==', ['get', 'k'], 'open'],
     paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, STYLES[styleKey].glow ? 8 : 4, 12, STYLES[styleKey].glow ? 24 : 13, 16, STYLES[styleKey].glow ? 36 : 22],
@@ -498,7 +526,10 @@ function setupLayers() {
     layout: { 'icon-image': 'cross', 'icon-size': ['interpolate', ['linear'], ['zoom'], 11.5, 0.45, 16, 0.85], 'icon-allow-overlap': true } });
   if (!layerEvents) { layerEvents = true; map.on('click', 'ph-dot', e => { const f = e.features && e.features[0]; if (f) { e.originalEvent.cancelBubble = true; clickedPin = true; select(byN[f.properties.i], false); } });
   map.on('mouseenter', 'ph-dot', () => map.getCanvas().style.cursor = 'pointer');
-  map.on('mouseleave', 'ph-dot', () => map.getCanvas().style.cursor = ''); }
+  map.on('mouseleave', 'ph-dot', () => map.getCanvas().style.cursor = '');
+  map.on('click', 'reg-dot', e => { const f = e.features && e.features[0]; if (f && !clickedPin) { clickedPin = true; select(state.reg[f.properties.i], false); } });
+  map.on('mouseenter', 'reg-dot', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', 'reg-dot', () => map.getCanvas().style.cursor = ''); }
   mapReady = true;
   render();
 }
@@ -512,7 +543,14 @@ function setStyleKey(k) {
 }
 
 let byN = [], clickedPin = false;
+function regGeojson() {
+  const o = regStatus().k === 'open' ? 1 : 0;
+  return { type: 'FeatureCollection', features: (state.reg || []).map((p, i) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [p.lng, p.lat] }, properties: { i, o } })) };
+}
+let regPainted = -1;
 function paintMarkers(list) {
+  const o = regStatus().k === 'open' ? 1 : 0;
+  if (mapReady && map.getSource('reg') && (regPainted !== (state.reg || []).length * 2 + o)) { map.getSource('reg').setData(regGeojson()); regPainted = (state.reg || []).length * 2 + o; }
   if (!mapReady || !map.getSource('ph')) return;
   map.getSource('ph').setData(geojson(list));
 }
@@ -555,7 +593,7 @@ function locate(fly) {
 // ---- δεδομένα: Πάτρα (κάθε 30') + όλη η Ελλάδα (3 φορές τη μέρα) ----
 async function getJson(u) { const r = await fetch(u + '?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }); if (!r.ok) throw new Error(r.status); return r.json(); }
 async function load(first) {
-  const [pa, gr, tw] = await Promise.allSettled([getJson('data/patra.json'), getJson('data/greece.json'), state.towns.length ? Promise.resolve(state.towns) : getJson('data/towns.json')]);
+  const [pa, gr, tw, al] = await Promise.allSettled([getJson('data/patra.json'), getJson('data/greece.json'), state.towns.length ? Promise.resolve(state.towns) : getJson('data/towns.json'), state.regRaw ? Promise.resolve(state.regRaw) : getJson('data/all.json')]);
   if (pa.status !== 'fulfilled' && gr.status !== 'fulfilled') {
     $('big').textContent = 'Δεν φόρτωσαν τα φαρμακεία';
     $('small').textContent = 'Έλεγξε τη σύνδεση και ξαναδοκίμασε.';
@@ -567,6 +605,13 @@ async function load(first) {
   for (const p of (gr.value?.pharmacies || [])) if (!seen.has(p.id)) { seen.add(p.id); list.push(p); }
   list.forEach((p, i) => p.n = i);
   byN = list;
+  if (al.status === 'fulfilled' && al.value?.items) {
+    state.regRaw = al.value;
+    const grid = new Map(); const key = (a, b) => Math.round(a * 1500) + ':' + Math.round(b * 1500);
+    for (const p of list) if (p.lat != null) grid.set(key(p.lat, p.lng), 1);
+    const near = (a, b) => { for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) if (grid.has((Math.round(a * 1500) + i) + ':' + (Math.round(b * 1500) + j))) return true; return false; };
+    state.reg = al.value.items.filter(r => !near(r[0], r[1])).map((r, i) => ({ id: 'osm' + i, reg: true, lat: r[0], lng: r[1], name: r[2], address: r[3], town: r[4], zip: '', phone: r[5], oh: r[6], slots: [] }));
+  }
   const ups = [pa.value?.updated, gr.value?.updated].filter(Boolean).sort();
   state.data = { pharmacies: list, updated: ups[ups.length - 1] };
   if (state.sel) state.sel = list.find(p => p.id === state.sel.id) || null;
