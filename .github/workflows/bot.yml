@@ -54,8 +54,11 @@ jobs:
           URL=$(grep -o 'https://[a-zA-Z0-9.-]*workers.dev' deploy.log | head -1)
           test -n "$URL" || { echo "::error::Δεν βρέθηκε η διεύθυνση workers.dev. Άνοιξε μία φορά το Workers & Pages στο Cloudflare για να φτιαχτεί."; exit 1; }
           echo "Bot: $URL"
-          curl -sS "https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook" \
-            -d "url=${URL}/telegram" -d "secret_token=${SECRET}" -d 'allowed_updates=["message"]' -d "drop_pending_updates=true" | grep -o '"ok":true' 
+          ME=$(curl -sS "https://api.telegram.org/bot${TELEGRAM_TOKEN}/getMe")
+          echo "Telegram getMe: $(echo "$ME" | grep -o '"ok":[a-z]*\|"username":"[^"]*"\|"description":"[^"]*"' | tr '\n' ' ')"
+          RES=$(curl -sS "https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook" \
+            --data-urlencode "url=${URL}/telegram" --data-urlencode "secret_token=${SECRET}" --data-urlencode 'allowed_updates=["message"]' -d "drop_pending_updates=true")
+          echo "Telegram setWebhook: $RES"
+          echo "$RES" | grep -q '"ok":true'
           curl -sS "https://api.telegram.org/bot${TELEGRAM_TOKEN}/setMyCommands" -H 'Content-Type: application/json' \
             -d '{"commands":[{"command":"start","description":"Ξεκίνα"},{"command":"notify","description":"Ειδοποίηση κάθε βράδυ"},{"command":"stop","description":"Σταμάτα τις ειδοποιήσεις"}]}' > /dev/null
-          curl -sS "https://api.telegram.org/bot${TELEGRAM_TOKEN}/getMe" | grep -o '"username":"[^"]*"'
