@@ -42,6 +42,8 @@ jobs:
           }
           end=$(( $(date +%s) + 300*60 ))
           last_gr=$(date +%s)   # η Ελλάδα 2 ώρες μετά την αρχή (για να μη «φορτώνουμε» το vrisko)
+          node scripts/osm.mjs || echo "OpenStreetMap απέτυχε αυτή τη φορά"   # μία φορά την εβδομάδα (αλλιώς δεν κάνει τίποτα)
+          save "Όλα τα φαρμακεία:"
           while [ "$(date +%s)" -lt "$end" ]; do
             git pull -q --rebase -X theirs origin main || true
             node scripts/update.mjs || echo "Η Πάτρα απέτυχε αυτή τη φορά"
