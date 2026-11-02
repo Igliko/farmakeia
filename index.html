@@ -201,6 +201,12 @@ html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
 .legend i{width:11px;height:11px;border-radius:50%;border:1.5px solid #0B0C0E;display:inline-block;flex:none}
 .legend i.sm{width:7px;height:7px;margin:0 2px}
 @media (min-width:860px){.legend{bottom:20px;right:60px}}
+.reach{font:600 12.5px/1.3 var(--body)}
+.reach.ok{color:var(--green)}
+.reach.no{color:#F87171}
+.mode{display:flex;gap:6px}
+.mode button{flex:1;height:32px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--muted);font:500 13px/1 var(--body);cursor:pointer}
+.mode button[aria-pressed="true"]{background:var(--soft);color:var(--fg);border-color:var(--muted)}
 </style>
 </head>
 <body>
@@ -239,6 +245,10 @@ html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
     <div class="sum">
       <div><p class="big" id="big">Φόρτωση…</p><p class="small" id="small">&nbsp;</p></div>
       <span class="live" id="live"><i></i>Ζωντανά</span>
+    </div>
+    <div class="mode" id="mode" role="group" aria-label="Πώς θα πας" hidden>
+      <button type="button" data-m="walk">Με τα πόδια</button>
+      <button type="button" data-m="car">Με αμάξι</button>
     </div>
   </div>
   <div class="scroll" id="scroll">
@@ -306,7 +316,17 @@ function km(a, b) { const R = 6371, t = x => x * Math.PI / 180, dl = t(b[0] - a[
 function dist(p) {
   if (!state.me || p.lat == null) return null;
   const d = km(state.me, [p.lat, p.lng]) * 1.3; // περίπου, με τους δρόμους
-  return { d, text: d < 1 ? Math.round(d * 100) * 10 + ' μ.' : d.toFixed(1).replace('.', ',') + ' χλμ', walk: d <= 3 ? Math.max(1, Math.round(d * 1000 / 80)) + '′ με τα πόδια' : Math.max(2, Math.round(d * 2.2)) + '′ με αμάξι' };
+  return { d, text: d < 1 ? Math.round(d * 100) * 10 + ' μ.' : d.toFixed(1).replace('.', ',') + ' χλμ', walk: mode === 'walk' ? Math.max(1, Math.ceil(d * 1000 / 80)) + '′ με τα πόδια' : Math.max(3, Math.ceil(d * 2.4 + 2)) + '′ με αμάξι' };
+}
+// «Θα το προλάβω;» — πόσο θες να φτάσεις και αν θα είναι ακόμα ανοιχτό
+let mode = 'walk';
+try { if (localStorage.getItem('mode') === 'car') mode = 'car'; } catch (e) {}
+function travelMin(p) { const d = dist(p); if (!d) return null; return mode === 'walk' ? Math.max(1, Math.ceil(d.d * 1000 / 80)) : Math.max(3, Math.ceil(d.d * 2.4 + 2)); }
+function reach(p, st) {
+  if (!state.me || !st || st.k !== 'open' || st.left == null) return null;
+  const t = travelMin(p); if (t == null) return null;
+  const n = nowStr(), nm = +n.slice(11, 13) * 60 + +n.slice(14, 16);
+  return { ok: t <= st.left - 3, t, left: st.left, arrive: fmt((nm + t) % 1440) };
 }
 const short = n => { const m = n.match(/\(([^)]+)\)\s*$/); const s = m ? m[1] : n; return s.trim().split(/\s+/)[0].replace(/^./, c => c).toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase()); };
 
@@ -319,7 +339,7 @@ function card(p, st, extra) {
   const ic = st.k === 'open' ? '' : st.k === 'later' ? ' later' : ' off';
   el.innerHTML = `<button class="row" aria-expanded="${p === state.sel}">
       <span class="ic${ic}">${CROSS(15)}</span>
-      <span class="mid"><span class="name"></span><span class="st" style="color:${st.color}"></span><span class="kind"></span></span>
+      <span class="mid"><span class="name"></span><span class="st" style="color:${st.color}"></span><span class="reach" hidden></span><span class="kind"></span></span>
       <span class="dist"><b>${d ? d.text : ''}</b><span>${d ? d.walk : ''}</span></span>
     </button>
     ${extra || ''}
@@ -332,6 +352,11 @@ function card(p, st, extra) {
     </div>`;
   el.querySelector('.name').textContent = p.name;
   el.querySelector('.st').textContent = st.text;
+  const r = reach(p, st), re = el.querySelector('.reach');
+  if (r) {
+    re.hidden = false; re.className = 'reach ' + (r.ok ? 'ok' : 'no');
+    re.textContent = r.ok ? `✓ Προλαβαίνεις · φτάνεις ${r.arrive}, σε ${r.t}′` : `✕ Δεν προλαβαίνεις · φτάνεις σε ${r.t}′, κλείνει σε ${r.left}′`;
+  }
   el.querySelector('.kind').textContent = p.reg ? 'Κανονικό ωράριο (το συνηθισμένο, όχι επιβεβαιωμένο)' : kindOf(st.slot) + (st.slot ? ' · ' + slotLabel(st.slot) : '');
   el.querySelector('.addr').textContent = [p.address, p.area && p.area !== p.town ? p.area : '', (p.zip ? p.zip + ' ' : '') + (p.town || '')].filter(Boolean).join(', ') + (p.ap ? ' · θέση στον χάρτη κατά προσέγγιση' : '');
   el.querySelector('.phone').textContent = p.phone ? 'Τηλ. ' + p.phone.replace(/^(\d{4})(\d+)/, '$1 $2') : 'Δεν υπάρχει τηλέφωνο';
@@ -401,6 +426,8 @@ function renderList() {
   const all = data.pharmacies.filter(inView);
   const ph = nearby(all);
   $('live').hidden = state.view !== 'now';
+  $('mode').hidden = !state.me || state.view !== 'now';
+  document.querySelectorAll('#mode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === mode));
   const where = placeName();
   paintMarkers(all);
   $('upd').textContent = data.updated ? data.updated.slice(8, 10) + '/' + data.updated.slice(5, 7) + ' ' + hhmm(data.updated) : '–';
@@ -413,17 +440,19 @@ function renderList() {
   }
 
   if (state.view === 'now') {
-    const open = ph.filter(p => status(p).k === 'open').sort((a, b) => sortKey(a) - sortKey(b));
+    const rk = p => { const r = reach(p, status(p)); return r && !r.ok ? 1 : 0; };
+    const open = ph.filter(p => status(p).k === 'open').sort((a, b) => rk(a) - rk(b) || sortKey(a) - sortKey(b));
     const later = ph.filter(p => status(p).k === 'later').sort((a, b) => status(a).inM - status(b).inM || sortKey(a) - sortKey(b));
     $('big').textContent = (open.length === 1 ? '1 ανοιχτό τώρα' : open.length + ' ανοιχτά τώρα');
-    const near = open[0], d = near && dist(near);
+    const near = open[0], d = near && dist(near), nr = near && reach(near, status(near));
     $('small').textContent = !open.length ? (later[0] ? 'Το επόμενο εδώ ανοίγει ' + hhmm(status(later[0]).slot.from) : 'Κανένα σε αυτό το σημείο του χάρτη')
-      : d ? 'Πιο κοντινό: ' + short(near.name) + ' · ' + d.text : (where ? 'Στην περιοχή: ' + where : 'Σε αυτό το σημείο του χάρτη');
+      : nr ? (nr.ok ? `Προλαβαίνεις: ${short(near.name)} · φτάνεις σε ${nr.t}′` : 'Κανένα ανοιχτό εδώ δεν προλαβαίνεις · δες «Ανοίγουν αργότερα»')
+      : d ? 'Πιο κοντινό: ' + short(near.name) + ' · ' + d.text : (where ? 'Στην περιοχή: ' + where + ' · πάτα το βελάκι για να δεις αν προλαβαίνεις' : 'Πάτα το βελάκι για να δεις αν προλαβαίνεις');
     open.slice(0, MAX_ITEMS).forEach(p => list.appendChild(card(p, status(p))));
     const regNear = nearby(state.reg) || [];
     if (regStatus().k === 'open' && regNear.length) {
       const g = document.createElement('p'); g.className = 'group'; g.textContent = 'Ανοιχτά με κανονικό ωράριο · ' + regNear.length; list.appendChild(g);
-      regNear.sort((a, b) => sortKey(a) - sortKey(b)).slice(0, 25).forEach(p => list.appendChild(card(p, regStatus())));
+      regNear.sort((a, b) => rk(a) - rk(b) || sortKey(a) - sortKey(b)).slice(0, 25).forEach(p => list.appendChild(card(p, regStatus())));
       $('big').textContent = (open.length + regNear.length) + ' ανοιχτά τώρα';
       if (!d && !open.length) $('small').textContent = (where ? where + ': ' : '') + 'κανονικό ωράριο φαρμακείων';
     }
@@ -671,6 +700,7 @@ document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
   $('scroll').scrollTop = 0; render();
 });
 $('locate').onclick = () => locate(true);
+document.querySelectorAll('#mode button').forEach(b => b.onclick = () => { mode = b.dataset.m; try { localStorage.setItem('mode', mode); } catch (e) {} render(); });
 $('fit').onclick = fitAll;
 $('handle').onclick = () => $('sheet').classList.toggle('tall');
 map.on('click', () => { if (clickedPin) { clickedPin = false; return; } if (state.sel) select(null); });
