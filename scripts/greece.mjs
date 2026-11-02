@@ -58,7 +58,11 @@ for (const p of old.pharmacies || []) {
     else if (++misses >= 8) { console.warn('Το vrisko σταμάτησε να δίνει θέσεις, συνεχίζω την επόμενη φορά.'); break; }
   } catch { if (++misses >= 8) break; }
   if (found && found % 50 === 0) await save('geo-gr.json', geo);
-console.log(`Νέες θέσεις: ${found} (από ${tries} δοκιμές)`);
+  await sleep(1500);
+  if (tries % 25 === 0) console.log(`  vrisko θέσεις: ${found}/${tries}`);
+}
+await save('geo-gr.json', geo);
+console.log(`Νέες θέσεις από vrisko: ${found} (από ${tries} δοκιμές)`);
 
 // 3) Φαρμακεία ανά περιοχή
 const now = athensNow();
@@ -86,11 +90,6 @@ for (const a of areas.items) {
   }
 }
 console.log(`Περιοχές OK: ${ok}, αποτυχίες: ${failed}`);
-
-  await sleep(1500);
-  if (tries % 25 === 0) console.log(`  vrisko θέσεις: ${found}/${tries}`);
-}
-await save('geo-gr.json', geo);
 
 // 3β) Όσα δεν πήραν θέση από το vrisko: από τη διεύθυνση, μέσω OpenStreetMap
 const townOf = Object.fromEntries(areas.items.map((a) => [a.slug, a.name]));
