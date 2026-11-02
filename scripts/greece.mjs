@@ -31,6 +31,11 @@ if (!areas || !areas.items?.length || Date.now() - new Date(areas.built).getTime
     }
     await sleep(800);
   }
+  // Νομοί με μία μόνο περιοχή: το vrisko δίνει κατευθείαν link στην περιοχή (π.χ. ΙΩΑΝΝΙΝΩΝ -> /ioannina/)
+  for (const m of home.matchAll(/<li><a href=["']?(?:https:\/\/www\.vrisko\.gr)?\/efimeries-farmakeion\/([a-z0-9-]+)\/?["']?>([^<]+)<\/a><\/li>/g)) {
+    const pref = clean(m[2]);
+    if (!items.some((x) => x.slug === m[1])) items.push({ slug: m[1], name: pref.charAt(0) + pref.slice(1).toLowerCase(), pref });
+  }
   if (items.length < 50) throw new Error('Βρέθηκαν μόνο ' + items.length + ' περιοχές: μάλλον άλλαξε το vrisko.');
   areas = { built: new Date().toISOString(), items };
   await save('areas.json', areas);
