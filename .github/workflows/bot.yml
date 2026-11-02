@@ -1,0 +1,61 @@
+name: Telegram bot (εγκατάσταση στο Cloudflare)
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ["bot/**", ".github/workflows/bot.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Υπάρχουν οι κωδικοί;
+        id: check
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ] || [ -z "$TELEGRAM_TOKEN" ]; then
+            echo "::warning::Λείπουν οι κωδικοί (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, TELEGRAM_TOKEN) στο Settings → Secrets → Actions."
+            echo "ok=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=yes" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Βάση για τις ειδοποιήσεις (KV)
+        if: steps.check.outputs.ok == 'yes'
+        working-directory: bot
+        run: |
+          W="npx --yes wrangler@3.78.12"
+          ID=$($W kv namespace list | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(s.indexOf("[")));const n=j.find(x=>/farmakeia-bot-KV$/.test(x.title));console.log(n?n.id:"")})')
+          if [ -z "$ID" ]; then
+            $W kv namespace create KV
+            ID=$($W kv namespace list | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(s.indexOf("[")));const n=j.find(x=>/farmakeia-bot-KV$/.test(x.title));console.log(n?n.id:"")})')
+          fi
+          test -n "$ID"
+          sed -i "s/__KV_ID__/$ID/" wrangler.toml
+      - name: Ανέβασμα στο Cloudflare
+        if: steps.check.outputs.ok == 'yes'
+        working-directory: bot
+        run: |
+          W="npx --yes wrangler@3.78.12"
+          $W deploy | tee deploy.log
+          printf '%s' "$TELEGRAM_TOKEN" | $W secret put TELEGRAM_TOKEN
+          SECRET=$(printf '%s' "$TELEGRAM_TOKEN" | sha256sum | cut -c1-48)
+          printf '%s' "$SECRET" | $W secret put WEBHOOK_SECRET
+          URL=$(grep -o 'https://[a-zA-Z0-9.-]*workers.dev' deploy.log | head -1)
+          test -n "$URL" || { echo "::error::Δεν βρέθηκε η διεύθυνση workers.dev. Άνοιξε μία φορά το Workers & Pages στο Cloudflare για να φτιαχτεί."; exit 1; }
+          echo "Bot: $URL"
+          curl -sS "https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook" \
+            -d "url=${URL}/telegram" -d "secret_token=${SECRET}" -d 'allowed_updates=["message"]' -d "drop_pending_updates=true" | grep -o '"ok":true' 
+          curl -sS "https://api.telegram.org/bot${TELEGRAM_TOKEN}/setMyCommands" -H 'Content-Type: application/json' \
+            -d '{"commands":[{"command":"start","description":"Ξεκίνα"},{"command":"notify","description":"Ειδοποίηση κάθε βράδυ"},{"command":"stop","description":"Σταμάτα τις ειδοποιήσεις"}]}' > /dev/null
+          curl -sS "https://api.telegram.org/bot${TELEGRAM_TOKEN}/getMe" | grep -o '"username":"[^"]*"'

@@ -1,0 +1,12 @@
+# Cloudflare Worker για το Telegram bot. Το id του KV το συμπληρώνει μόνο του το .github/workflows/bot.yml
+name = "farmakeia-bot"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+[triggers]
+# 17:30 και 18:30 UTC: ένα από τα δύο είναι 20:30 ώρα Ελλάδας (χειμώνα ή καλοκαίρι)
+crons = ["30 17 * * *", "30 18 * * *"]
+
+[[kv_namespaces]]
+binding = "KV"
+id = "__KV_ID__"
