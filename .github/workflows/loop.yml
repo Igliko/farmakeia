@@ -1,0 +1,61 @@
+name: Αυτόματη ενημέρωση (συνεχής)
+
+# Το «schedule» του GitHub σε καινούργια repos τρέχει πολύ σπάνια.
+# Γι' αυτό αυτή η εργασία τρέχει ~5 ώρες, ενημερώνει μόνη της, και στο τέλος ξεκινάει την επόμενη.
+#   - Πάτρα: κάθε 15 λεπτά
+#   - Υπόλοιπη Ελλάδα: κάθε 2 ώρες ένα κομμάτι των περιοχών
+on:
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/loop.yml"]
+  schedule:
+    - cron: "17 */6 * * *"   # εφεδρεία, αν κάποια στιγμή σταματήσει η αλυσίδα
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: loop
+  cancel-in-progress: false
+
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Ενημέρωση σε επανάληψη
+        env:
+          TIME_BUDGET_MIN: "40"
+        run: |
+          git config user.name "farmakeia-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          save() {
+            git add data/
+            if git diff --cached --quiet; then return 0; fi
+            git commit -q -m "$1 $(TZ=Europe/Athens date '+%d/%m %H:%M')"
+            for i in 1 2 3 4 5; do git pull -q --rebase -X theirs origin main && git push -q && return 0; sleep 7; done
+          }
+          end=$(( $(date +%s) + 300*60 ))
+          last_gr=$(date +%s)   # η Ελλάδα 2 ώρες μετά την αρχή (για να μη «φορτώνουμε» το vrisko)
+          while [ "$(date +%s)" -lt "$end" ]; do
+            git pull -q --rebase -X theirs origin main || true
+            node scripts/update.mjs || echo "Η Πάτρα απέτυχε αυτή τη φορά"
+            save "Εφημερίες: ενημέρωση"
+            now=$(date +%s)
+            if [ $(( now - last_gr )) -ge 7200 ] && [ $(( end - now )) -ge 2700 ]; then
+              node scripts/greece.mjs || echo "Η Ελλάδα απέτυχε αυτή τη φορά"
+              save "Ελλάδα: ενημέρωση"
+              last_gr=$now
+            fi
+            sleep 900
+          done
+      - name: Ξεκίνα την επόμενη
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run loop.yml --repo "$GITHUB_REPOSITORY" --ref main

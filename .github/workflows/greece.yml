@@ -1,12 +1,8 @@
 name: Εφημερίες όλης της Ελλάδας
 
 on:
-  schedule:
-    # κάθε 2 ώρες· κάθε φορά ένα κομμάτι από τις ~400 περιοχές
-    - cron: "20 */2 * * *"
+  # τρέχει πλέον μέσα από το loop.yml· εδώ μόνο χειροκίνητα
   workflow_dispatch:
-  push:
-    paths: ["scripts/greece.mjs", "scripts/net.mjs", "scripts/parse.mjs", ".github/workflows/greece.yml"]
 
 permissions:
   contents: write

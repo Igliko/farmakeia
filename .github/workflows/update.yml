@@ -1,11 +1,8 @@
 name: Ενημέρωση εφημεριών
 
 on:
-  schedule:
-    - cron: "*/15 * * * *"   # κάθε 15 λεπτά (το GitHub καμιά φορά καθυστερεί)
+  # τρέχει πλέον μέσα από το loop.yml· εδώ μόνο χειροκίνητα
   workflow_dispatch:
-  push:
-    paths: ["scripts/**", ".github/workflows/update.yml"]
 
 permissions:
   contents: write
