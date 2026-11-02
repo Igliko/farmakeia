@@ -48,8 +48,12 @@ for (const a of areas.items) {
   if (SKIP.has(a.slug)) continue;
   let entries = null;
   if (timeLeft() > 20 * 60000) {
-    try { const h = await get(`${BASE}/efimeries-farmakeion/${a.slug}/`, 2); entries = h ? merge(parseList(h)) : []; ok++; } catch (e) { failed++; }
-    await sleep(900);
+    try {
+      const h = await get(`${BASE}/efimeries-farmakeion/${a.slug}/`, 2);
+      if (h && !/DutiesResults|Εφημερ/.test(h)) throw new Error('blocked');
+      entries = h ? merge(parseList(h)) : []; ok++;
+    } catch (e) { failed++; }
+    await sleep(1200);
   }
   // αν απέτυχε, κράτα τα παλιά που ισχύουν ακόμα
   const list = entries ?? (oldByArea.get(a.slug) || []).map((p) => ({ ...p, slots: p.slots }));
@@ -63,14 +67,24 @@ console.log(`Περιοχές OK: ${ok}, αποτυχίες: ${failed}`);
 // 3) Συντεταγμένες (μία φορά για κάθε φαρμακείο, μετά τις θυμάται)
 const geo = await readJson('geo-gr.json', {});
 const patraGeo = await readJson('geo.json', {});
-let found = 0;
+let found = 0, tries = 0, misses = 0;
+const MAX_GEO = +process.env.MAX_GEO || 600;
+// παλιές αποτυχίες (0) τις ξαναδοκιμάζουμε
+for (const k of Object.keys(geo)) if (!geo[k]) delete geo[k];
 for (const p of all.values()) {
   if (geo[p.id] || patraGeo[p.id]) continue;
   if (timeLeft() < 8 * 60000) break;
   if (!p.mapUrl) continue;
-  try { const c = parseCoords(await get(p.mapUrl, 2)); geo[p.id] = c || 0; if (c) found++; } catch { /* ξανά την επόμενη φορά */ }
-  if (found % 50 === 0) await save('geo-gr.json', geo);
-  await sleep(700);
+  if (tries >= MAX_GEO) break;
+  tries++;
+  try {
+    const h = await get(p.mapUrl, 2);
+    const c = h ? parseCoords(h) : null;
+    if (c) { geo[p.id] = c; found++; misses = 0; }
+    else if (++misses >= 8) { console.warn('Το vrisko σταμάτησε να δίνει θέσεις, συνεχίζω την επόμενη φορά.'); break; }
+  } catch { if (++misses >= 8) break; }
+  if (found && found % 50 === 0) await save('geo-gr.json', geo);
+  await sleep(1500);
 }
 await save('geo-gr.json', geo);
 

@@ -2,7 +2,7 @@ name: Ενημέρωση εφημεριών
 
 on:
   schedule:
-    - cron: "7,37 * * * *"   # κάθε 30 λεπτά
+    - cron: "*/15 * * * *"   # κάθε 15 λεπτά (το GitHub καμιά φορά καθυστερεί)
   workflow_dispatch:
   push:
     paths: ["scripts/**", ".github/workflows/update.yml"]
