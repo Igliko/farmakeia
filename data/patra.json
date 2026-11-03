@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-03T00:14",
+ "updated": "2026-11-03T02:14",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "d1_dacd2_a_e3e2g2dah744a4j1c15_7",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΑΝΝΑ ΜΠΑΡΟΥΣΗ ΚΑΙ ΟΥΡΑΝΙΑ ΔΗΜΗΤΡΟΠΟΥΛΟΥ (Μπαρούση Άννα Ι.)",
-   "address": "Κορίνθου 334",
-   "area": "Πάτρα",
-   "zip": "26222",
-   "phone": "2610321750",
-   "mapUrl": "https://www.vrisko.gr/details/map/d1_dacd2_a_e3e2g2dah744a4j1c15_7",
-   "slots": [
-    {
-     "from": "2026-11-02T21:00",
-     "to": "2026-11-03T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.2414,
-   "lng": 21.729274
-  },
   {
    "id": "ad0eaj7d_e07bc_f4ibe327a1d4g_b2e",
    "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΠΑΠΑΓΕΩΡΓΟΠΟΥΛΟΥ ΑΝΔΡΟΜΑΧΗ ΜΠΑΡΔΟΥΤΣΟΣ ΓΕΩΡΓΙΟΣ ΟΕ",
