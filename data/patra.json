@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-03T02:14",
+ "updated": "2026-11-03T08:41",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "ad0eaj7d_e07bc_f4ibe327a1d4g_b2e",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΠΑΠΑΓΕΩΡΓΟΠΟΥΛΟΥ ΑΝΔΡΟΜΑΧΗ ΜΠΑΡΔΟΥΤΣΟΣ ΓΕΩΡΓΙΟΣ ΟΕ",
-   "address": "Λεωφόρος Γούναρη Δημητρίου 203 & Παλαιολόγου Κ.",
-   "area": "Πάτρα",
-   "zip": "26331",
-   "phone": "2610222676",
-   "mapUrl": "https://www.vrisko.gr/details/map/ad0eaj7d_e07bc_f4ibe327a1d4g_b2e",
-   "slots": [
-    {
-     "from": "2026-11-02T21:00",
-     "to": "2026-11-03T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.239238,
-   "lng": 21.742906
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
