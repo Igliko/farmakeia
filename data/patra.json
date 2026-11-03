@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-03T21:14",
+ "updated": "2026-11-03T22:30",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "616h3j7ac3c_2dcg6ga7ac365e7i5bd_",
-   "name": "Γκούμα Λαμπρινή Γ.",
-   "address": "Καλλιθέα & Εθνική Οδός Πατρών - Τριπόλεως",
-   "area": "Πάτρα",
-   "zip": "26500",
-   "phone": "2610590336",
-   "mapUrl": "https://www.vrisko.gr/details/map/616h3j7ac3c_2dcg6ga7ac365e7i5bd_",
-   "slots": [
-    {
-     "from": "2026-11-03T21:00",
-     "to": "2026-11-03T22:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.161822,
-   "lng": 21.728647
-  },
   {
    "id": "0bd70g2721_c6b7h1__2b_356_377d64",
    "name": "Μπερτσουκλή Γεωργία Φ.",
