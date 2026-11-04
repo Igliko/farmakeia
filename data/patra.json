@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04T00:13",
+ "updated": "2026-11-04T02:09",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -19,24 +19,6 @@
    ],
    "lat": 38.252923,
    "lng": 21.741634
-  },
-  {
-   "id": "7k1kd53i425e4hd074103k500ddf_4d_",
-   "name": "Νικολαροπούλου Ηλέκτρα Σ.",
-   "address": "Ολυμπίου Γ. 58",
-   "area": "Πάτρα",
-   "zip": "26222",
-   "phone": "2610311410",
-   "mapUrl": "https://www.vrisko.gr/details/map/7k1kd53i425e4hd074103k500ddf_4d_",
-   "slots": [
-    {
-     "from": "2026-11-03T21:00",
-     "to": "2026-11-04T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.239109,
-   "lng": 21.732089
   },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
