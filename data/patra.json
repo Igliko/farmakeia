@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-04T02:09",
+ "updated": "2026-11-04T08:30",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "0bd70g2721_c6b7h1__2b_356_377d64",
-   "name": "Μπερτσουκλή Γεωργία Φ.",
-   "address": "Κωνσταντινουπόλεως 72 & Νόρμαν",
-   "area": "Πάτρα",
-   "zip": "26223",
-   "phone": "2610426365",
-   "mapUrl": "https://www.vrisko.gr/details/map/0bd70g2721_c6b7h1__2b_356_377d64",
-   "slots": [
-    {
-     "from": "2026-11-03T21:00",
-     "to": "2026-11-04T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.252923,
-   "lng": 21.741634
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
