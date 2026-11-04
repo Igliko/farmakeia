@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04T21:13",
+ "updated": "2026-11-05T00:04",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -37,6 +37,201 @@
    ],
    "lat": 38.240719,
    "lng": 21.735723
+  },
+  {
+   "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
+   "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
+   "address": "Γλαύκου 9, Εντός Στοάς Patra Mall",
+   "area": "Περιβόλα",
+   "zip": "26332",
+   "phone": "2610644006",
+   "mapUrl": "https://www.vrisko.gr/details/map/a_cb_1660b14c3deaebb4h6ad7_f73be",
+   "slots": [
+    {
+     "from": "2026-11-05T08:00",
+     "to": "2026-11-05T21:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.210312,
+   "lng": 21.763538
+  },
+  {
+   "id": "3a_c6g___b77aa70ag0i7ed_243fc257",
+   "name": "ΞΙΦΑΡΑ Α ΚΑΡΑΝΤΩΝΗΣ Χ ΟΕ",
+   "address": "Κορίνθου 336 & Παπαφλέσσα",
+   "area": "Πάτρα",
+   "zip": "26222",
+   "phone": "2610423293",
+   "mapUrl": "https://www.vrisko.gr/details/map/3a_c6g___b77aa70ag0i7ed_243fc257",
+   "slots": [
+    {
+     "from": "2026-11-05T08:00",
+     "to": "2026-11-05T21:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.240806,
+   "lng": 21.728663
+  },
+  {
+   "id": "6f3gb116__cfde7g0b661a7c1eck3j7b",
+   "name": "Παπαθανάσης Δαμιανός Α.",
+   "address": "Νέα Εθνική Οδός Πατρών - Αθηνών & Αμερικής, Εντός Στοάς Σούπερ Μάρκετ ΑΒ Βασιλόπουλος",
+   "area": "Πάτρα",
+   "zip": "26441",
+   "phone": "2610425352",
+   "mapUrl": "https://www.vrisko.gr/details/map/6f3gb116__cfde7g0b661a7c1eck3j7b",
+   "slots": [
+    {
+     "from": "2026-11-05T08:00",
+     "to": "2026-11-05T21:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.261583,
+   "lng": 21.749788
+  },
+  {
+   "id": "c0df1c2acecc401faea14ba6_g0_0a_3",
+   "name": "Πασλή Ελισάβετ Κ.",
+   "address": "Κιλκίς 41",
+   "area": "Πλατεία Αγίας Σοφίας",
+   "zip": "26223",
+   "phone": "2610452209",
+   "mapUrl": "https://www.vrisko.gr/details/map/c0df1c2acecc401faea14ba6_g0_0a_3",
+   "slots": [
+    {
+     "from": "2026-11-05T08:00",
+     "to": "2026-11-05T21:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.256354,
+   "lng": 21.743374
+  },
+  {
+   "id": "266b4g50d3413fb14f335i5d2g6_dfb3",
+   "name": "Ράγγου Μαρία Γ.",
+   "address": "Ανθείας 83, Πλησίον Εργατικών Κατοικιών",
+   "area": "Πάτρα",
+   "zip": "26333",
+   "phone": "2610313868",
+   "mapUrl": "https://www.vrisko.gr/details/map/266b4g50d3413fb14f335i5d2g6_dfb3",
+   "slots": [
+    {
+     "from": "2026-11-05T08:00",
+     "to": "2026-11-05T14:30",
+     "type": "extended"
+    },
+    {
+     "from": "2026-11-05T17:30",
+     "to": "2026-11-05T21:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.223307,
+   "lng": 21.727612
+  },
+  {
+   "id": "4f3ebk73da3f_55daga221465g1c_5ck",
+   "name": "GREEN PHARMACY LAB ΜΟΝΟΠΡΟΣΩΠΗ ΕΠΕ (Σύρος Γεώργιος )",
+   "address": "Λεωφόρος Παπανδρέου Γεωργίου 44-48, Πλησίον Νοσοκομείου Αγίου Ανδρέα",
+   "area": "Πάτρα",
+   "zip": "26226",
+   "phone": "2616009264",
+   "mapUrl": "https://www.vrisko.gr/details/map/4f3ebk73da3f_55daga221465g1c_5ck",
+   "slots": [
+    {
+     "from": "2026-11-05T08:00",
+     "to": "2026-11-05T21:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.233958,
+   "lng": 21.745693
+  },
+  {
+   "id": "5a_a__aja17eafaj760a6k0436df1571",
+   "name": "PHARMACY4U.GR - ΠΑΠΑΔΟΠΟΥΛΟΣ ΠΑΝΑΓΙΩΤΗΣ ΚΑΙ ΣΙΑ ΟΕ (Παπαδόπουλος Παναγιώτης Φ.)",
+   "address": "Γιαννιτσών 4, Έναντι ΙΚΑ Αγίου Αλεξίου",
+   "area": "Πάτρα",
+   "zip": "26223",
+   "phone": "2610461563",
+   "mapUrl": "https://www.vrisko.gr/details/map/5a_a__aja17eafaj760a6k0436df1571",
+   "slots": [
+    {
+     "from": "2026-11-05T08:00",
+     "to": "2026-11-05T21:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.255745,
+   "lng": 21.73892
+  },
+  {
+   "id": "56141jd01jda6b3i615f4461bfc1d32d",
+   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΜΑΥΡΟΕΙΔΗΣ ΒΑΣΙΛΕΙΟΣ ΚΑΙ ΜΑΥΡΟΕΙΔΗΣ ΔΗΜΗΤΡΙΟΣ ΟΕ",
+   "address": "Καλαβρύτων 28",
+   "area": "Πάτρα",
+   "zip": "26226",
+   "phone": "2610334563",
+   "mapUrl": "https://www.vrisko.gr/details/map/56141jd01jda6b3i615f4461bfc1d32d",
+   "slots": [
+    {
+     "from": "2026-11-05T08:30",
+     "to": "2026-11-05T14:30",
+     "type": "extended"
+    },
+    {
+     "from": "2026-11-05T17:00",
+     "to": "2026-11-05T21:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.236044,
+   "lng": 21.745985
+  },
+  {
+   "id": "4fcf75_1_35aajc0151i6k143e5a7i7b",
+   "name": "Τσάρα Μαρίνα Ε.",
+   "address": "Ερενστρώλε 17 & Νικήτα",
+   "area": "Πάτρα",
+   "zip": "26224",
+   "phone": "2610344426",
+   "mapUrl": "https://www.vrisko.gr/details/map/4fcf75_1_35aajc0151i6k143e5a7i7b",
+   "slots": [
+    {
+     "from": "2026-11-05T14:30",
+     "to": "2026-11-05T17:30",
+     "type": "duty"
+    },
+    {
+     "from": "2026-11-05T21:00",
+     "to": "2026-11-06T02:00",
+     "type": "duty"
+    }
+   ],
+   "lat": 38.240631,
+   "lng": 21.736884
+  },
+  {
+   "id": "cgdbbi4570_a2c3i0c5k_7dd12_bb0ce",
+   "name": "Μπαλαφούτη Γεωργία Χ.",
+   "address": "Ζακύνθου 27-29",
+   "area": "Πάτρα",
+   "zip": "26441",
+   "phone": "2610429990",
+   "mapUrl": "https://www.vrisko.gr/details/map/cgdbbi4570_a2c3i0c5k_7dd12_bb0ce",
+   "slots": [
+    {
+     "from": "2026-11-05T21:00",
+     "to": "2026-11-06T08:30",
+     "type": "duty"
+    }
+   ],
+   "lat": 38.258472,
+   "lng": 21.745991
   }
  ]
 }
