@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-05T00:04",
+ "updated": "2026-11-05T02:12",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "5e4gc004502e4b5g4f4f01ck1eb6d22h",
-   "name": "Κορμπάκης Βασίλειος Ν.",
-   "address": "Κορίνθου 166",
-   "area": "Πάτρα",
-   "zip": "26223",
-   "phone": "2610225971",
-   "mapUrl": "https://www.vrisko.gr/details/map/5e4gc004502e4b5g4f4f01ck1eb6d22h",
-   "slots": [
-    {
-     "from": "2026-11-04T21:00",
-     "to": "2026-11-05T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.249224,
-   "lng": 21.739362
-  },
   {
    "id": "3bd3db20105j52_c5a73_a2kb_250312",
    "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΣΟΦΙΑΝΟΠΟΥΛΟΣ Α ΒΟΥΤΥΡΑΚΗ Μ ΟΕ",
