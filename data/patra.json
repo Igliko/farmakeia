@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-05T02:12",
+ "updated": "2026-11-05T08:36",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "3bd3db20105j52_c5a73_a2kb_250312",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΣΟΦΙΑΝΟΠΟΥΛΟΣ Α ΒΟΥΤΥΡΑΚΗ Μ ΟΕ",
-   "address": "Πλατεία Υψηλών Αλωνίων 16",
-   "area": "Πάτρα",
-   "zip": "26224",
-   "phone": "2610315825",
-   "mapUrl": "https://www.vrisko.gr/details/map/3bd3db20105j52_c5a73_a2kb_250312",
-   "slots": [
-    {
-     "from": "2026-11-04T21:00",
-     "to": "2026-11-05T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.240719,
-   "lng": 21.735723
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
