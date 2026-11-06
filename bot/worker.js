@@ -2,7 +2,7 @@
 // Παίρνει τα δεδομένα από το σάιτ (GitHub Pages), δεν διαβάζει ποτέ το vrisko.
 // Αποθηκεύει (KV) μόνο: τελευταία τοποθεσία (για «Ειδοποίησέ με») και τη συνδρομή στις βραδινές ειδοποιήσεις.
 
-const SITE = 'https://igliko.github.io/farmakeia-patras/';
+const SITE = 'https://igliko.github.io/farmakeia/';
 const BTN_LOC = '📍 Στείλε τοποθεσία';
 const BTN_SUB = '🔔 Ειδοποίησέ με κάθε βράδυ';
 const BTN_UNSUB = '🔕 Σταμάτα τις ειδοποιήσεις';

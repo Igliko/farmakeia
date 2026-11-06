@@ -2,7 +2,7 @@
 // Κανόνες Nominatim: το πολύ 1 αίτημα/δευτερόλεπτο, δικό μας User-Agent, αποθήκευση αποτελεσμάτων (τα κρατάμε στο geo-gr.json).
 import { sleep } from './net.mjs';
 
-const UA = 'farmakeia-patras/1.0 (https://github.com/Igliko/farmakeia-patras)';
+const UA = 'farmakeia/1.0 (https://github.com/Igliko/farmakeia)';
 let last = 0;
 export let requests = 0;
 

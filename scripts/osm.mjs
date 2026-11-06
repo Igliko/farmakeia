@@ -3,7 +3,7 @@
 import { writeFile, readFile } from 'node:fs/promises';
 
 const OUT = new URL('../data/all.json', import.meta.url);
-const UA = 'farmakeia-patras/1.0 (https://github.com/Igliko/farmakeia-patras)';
+const UA = 'farmakeia/1.0 (https://github.com/Igliko/farmakeia)';
 const QUERY = `[out:json][timeout:300];
 area["ISO3166-1"="GR"][admin_level=2]->.gr;
 (node["amenity"="pharmacy"](area.gr);way["amenity"="pharmacy"](area.gr);relation["amenity"="pharmacy"](area.gr););
