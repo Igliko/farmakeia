@@ -1,8 +1,9 @@
-// Όλα τα φαρμακεία της Ελλάδας από το OpenStreetMap (Overpass API) -> data/all.json
+// Όλα τα φαρμακεία της Ελλάδας από το OpenStreetMap (Overpass API) -> data/osm.json (μετά ενώνεται στο data/all.json)
 // Τρέχει μία φορά την εβδομάδα. Τα δεδομένα: © OpenStreetMap contributors (ODbL).
 import { writeFile, readFile } from 'node:fs/promises';
+import { merge } from './merge.mjs';
 
-const OUT = new URL('../data/all.json', import.meta.url);
+const OUT = new URL('../data/osm.json', import.meta.url);
 const UA = 'farmakeia/1.0 (https://github.com/Igliko/farmakeia)';
 const QUERY = `[out:json][timeout:300];
 area["ISO3166-1"="GR"][admin_level=2]->.gr;
@@ -13,7 +14,7 @@ const SERVERS = ['https://overpass-api.de/api/interpreter', 'https://overpass.ku
 try {
   const old = JSON.parse(await readFile(OUT, 'utf8'));
   const age = Date.now() - new Date(old.updated).getTime();
-  if (age < 6.5 * 864e5 && !process.env.FORCE) { console.log('Τα φαρμακεία OSM είναι φρέσκα, δεν χρειάζεται ενημέρωση.'); process.exit(0); }
+  if (age < 6.5 * 864e5 && !process.env.FORCE) { console.log('Τα φαρμακεία OSM είναι φρέσκα, δεν χρειάζεται ενημέρωση.'); await merge(); process.exit(0); }
 } catch { /* πρώτη φορά */ }
 
 let data = null;
@@ -43,3 +44,4 @@ for (const e of data.elements) {
 items.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 await writeFile(OUT, JSON.stringify({ updated: new Date().toISOString(), source: 'OpenStreetMap', items }) + '\n');
 console.log(`OK: ${items.length} φαρμακεία από το OpenStreetMap.`);
+await merge();
