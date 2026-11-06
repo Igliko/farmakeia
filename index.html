@@ -39,6 +39,7 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
 .fabs{display:flex;flex-direction:column;gap:10px}
 .fab{width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer}
 .fab.loc{color:var(--blue)}
+.fab[aria-pressed="true"]{background:var(--green)!important;color:#fff}
 
 .sheet{position:fixed;z-index:5;left:0;right:0;bottom:0;height:46vh;min-height:300px;display:flex;flex-direction:column;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -10px 30px var(--shadow);transition:height .25s ease}
 .sheet.tall{height:82vh}
@@ -75,7 +76,7 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
 .row{display:flex;align-items:center;gap:12px;width:100%;padding:0;border:0;background:none;text-align:left;cursor:pointer}
 .ic{flex:none;width:32px;height:32px;border-radius:9px;background:var(--green);display:grid;place-items:center}
 .ic path{fill:var(--onGreen)}
-.ic.later{background:var(--amberSoft)} .ic.later path{fill:var(--amber)}
+.ic.later{background:var(--soft)} .ic.later path{fill:var(--muted)}
 .ic.off{background:var(--soft)} .ic.off path{fill:var(--muted)}
 .mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .name{font:600 16px/1.25 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -136,7 +137,7 @@ html[data-d] .tabs button[aria-selected="true"]{background:none;box-shadow:inset
 html[data-d] .live{background:none;padding:0}
 html[data-d] .ic{width:10px;height:10px;border-radius:50%;margin:0 4px}
 html[data-d] .ic svg{display:none}
-html[data-d] .ic.later{background:var(--amber)} html[data-d] .ic.off{background:var(--line)}
+html[data-d] .ic.later{background:var(--line)} html[data-d] .ic.off{background:var(--line)}
 html[data-d] .item .more{padding-left:26px}
 html[data-d] .item{padding:14px 0}
 
@@ -221,14 +222,14 @@ html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
   </div>
   <div class="fabs">
     <button class="fab loc" id="locate" aria-label="Η θέση μου"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
+    <button class="fab" id="sat" aria-label="Χάρτης δορυφόρου" aria-pressed="false" title="Δορυφόρος"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></button>
     <button class="fab" id="fit" aria-label="Δείξε τα κοντινά ανοιχτά φαρμακεία"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
   </div>
 </div>
 
 <div class="legend" aria-label="Υπόμνημα">
-  <span><i style="background:#07794D"></i>Εφημερεύει · ανοιχτό τώρα</span>
-  <span><i style="background:#A35400"></i>Εφημερεύει · ανοίγει αργότερα</span>
-  <span><i class="sm" style="background:#B4B8BE"></i>Κανονικό ωράριο</span>
+  <span><i style="background:#07794D"></i>Ανοιχτό τώρα</span>
+  <span><i style="background:#7D8C85"></i>Κλειστό τώρα</span>
 </div>
 
 <section class="sheet" id="sheet" aria-label="Φαρμακεία">
@@ -548,6 +549,8 @@ let designKey = 'dark'; // το σχέδιο που διάλεξε ο Igli
 function applyDesign() { if (designKey === 'old') document.documentElement.removeAttribute('data-d'); else document.documentElement.dataset.d = designKey; }
 applyDesign();
 let styleKey = DESIGNS[designKey].map || 'apalos';
+let satOn = false; try { satOn = localStorage.getItem('sat') === '1'; } catch (e) {}
+if (satOn) styleKey = 'doryforos';
 
 const map = new maplibregl.Map({
   container: 'map', style: STYLES[styleKey].url(), pitch: STYLES[styleKey].pitch || 0, maxPitch: 70,
@@ -556,7 +559,7 @@ const map = new maplibregl.Map({
 let mapReady = false;
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 
-const COLORS = { open: '#07794D', later: '#A35400', off: '#7D8C85' };
+const COLORS = { open: '#07794D', later: '#7D8C85', off: '#7D8C85' }; // πράσινο = ανοιχτό τώρα, γκρι = κλειστό τώρα
 function geojson(list) {
   return { type: 'FeatureCollection', features: list.filter(p => p.lat != null).map(p => {
     const st = status(p);
@@ -579,7 +582,7 @@ function setupLayers() {
   map.addSource('reg', { type: 'geojson', data: regGeojson() });
   map.addLayer({ id: 'reg-dot', type: 'circle', source: 'reg', minzoom: 10,
     paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 14, 4, 17, 7],
-      'circle-color': ['case', ['==', ['get', 'o'], 1], '#B4B8BE', '#6B6F76'],
+      'circle-color': ['case', ['==', ['get', 'o'], 1], '#12A464', '#6B6F76'],
       'circle-stroke-color': '#0B0C0E', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 12, 0, 15, 1] } });
   map.addSource('ph', { type: 'geojson', data: geojson([]) });
   map.addLayer({ id: 'ph-halo', type: 'circle', source: 'ph', filter: ['==', ['get', 'k'], 'open'],
@@ -724,6 +727,12 @@ document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
 $('locate').onclick = () => locate(true);
 document.querySelectorAll('#mode button').forEach(b => b.onclick = () => { mode = b.dataset.m; try { localStorage.setItem('mode', mode); } catch (e) {} render(); });
 $('fit').onclick = fitAll;
+$('sat').setAttribute('aria-pressed', satOn);
+$('sat').onclick = () => {
+  satOn = !satOn; $('sat').setAttribute('aria-pressed', satOn);
+  try { localStorage.setItem('sat', satOn ? '1' : '0'); } catch (e) {}
+  setStyleKey(satOn ? 'doryforos' : (DESIGNS[designKey].map || 'apalos'));
+};
 // Σύρσιμο της λίστας πάνω/κάτω με το δάχτυλο (κινητό): 3 θέσεις — χαμηλά, μέση, ψηλά
 (() => {
   const sh = $('sheet'), zones = [$('handle'), document.querySelector('#sheet .head')];
