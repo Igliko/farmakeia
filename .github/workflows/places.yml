@@ -27,14 +27,19 @@ jobs:
         run: |
           pip install -q duckdb
           python3 scripts/overture.py
-      - name: Ένωσε με το OpenStreetMap
-        run: node scripts/merge.mjs
       - name: Αποθήκευσε
         run: |
           git config user.name "farmakeia-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/overture.json data/all.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -q -m "Όλα τα φαρμακεία: OpenStreetMap + Overture Maps"
-          for i in 1 2 3 4 5; do git pull -q --rebase -X theirs origin main && git push -q && exit 0; sleep 7; done
+          git add data/overture.json
+          git diff --cached --quiet || git commit -q -m "Φαρμακεία: νέα δεδομένα από Overture Maps"
+          # πάρε ό,τι άλλαξε στο μεταξύ και ξαναένωσε πάνω στα πιο φρέσκα δεδομένα
+          for i in 1 2 3 4 5; do
+            git pull -q --rebase -X theirs origin main || { sleep 7; continue; }
+            node scripts/merge.mjs
+            git add data/all.json
+            git diff --cached --quiet || git commit -q -m "Όλα τα φαρμακεία: OpenStreetMap + Overture Maps"
+            git push -q && exit 0
+            sleep 7
+          done
           exit 1
