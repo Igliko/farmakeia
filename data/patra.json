@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-06T02:14",
+ "updated": "2026-11-06T08:39",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "cgdbbi4570_a2c3i0c5k_7dd12_bb0ce",
-   "name": "Μπαλαφούτη Γεωργία Χ.",
-   "address": "Ζακύνθου 27-29",
-   "area": "Πάτρα",
-   "zip": "26441",
-   "phone": "2610429990",
-   "mapUrl": "https://www.vrisko.gr/details/map/cgdbbi4570_a2c3i0c5k_7dd12_bb0ce",
-   "slots": [
-    {
-     "from": "2026-11-05T21:00",
-     "to": "2026-11-06T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.258472,
-   "lng": 21.745991
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
