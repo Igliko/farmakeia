@@ -268,11 +268,13 @@ const state = { data: null, view: 'now', sel: null, me: null, reg: [] };
 const markers = new Map();
 
 // ---- χρόνος (ώρα Ελλάδας) ----
+const ATH = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Athens', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 function athensParts(d = new Date()) {
-  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Athens', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(d).map(x => [x.type, x.value]));
-  return p;
+  return Object.fromEntries(ATH.formatToParts(d).map(x => [x.type, x.value]));
 }
-const nowStr = () => { const p = athensParts(); return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`; };
+// η ώρα διαβάζεται μία φορά το δευτερόλεπτο (όχι χιλιάδες φορές ανά ανανέωση)
+let _now = '', _nowT = 0;
+const nowStr = () => { const t = Date.now(); if (t - _nowT > 1000) { const p = athensParts(); _now = `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`; _nowT = t; } return _now; };
 const pad = n => String(n).padStart(2, '0');
 function addDays(ymd, k) { const [y, m, d] = ymd.split('-').map(Number); const t = new Date(Date.UTC(y, m - 1, d + k)); return `${t.getUTCFullYear()}-${pad(t.getUTCMonth() + 1)}-${pad(t.getUTCDate())}`; }
 const mins = s => { const [d, t] = s.split('T'); const [y, m, dd] = d.split('-').map(Number); const [h, mi] = t.split(':').map(Number); return Date.UTC(y, m - 1, dd, h, mi) / 60000; };
@@ -282,8 +284,15 @@ function dur(m) { if (m < 60) return m + '′'; const h = Math.floor(m / 60), r 
 function slotLabel(s) { return hhmm(s.from) + ' – ' + hhmm(s.to) + (s.to.slice(0, 10) > s.from.slice(0, 10) ? ' (επόμενης)' : ''); }
 
 // Κατάσταση ενός φαρμακείου τώρα
+const _st = new WeakMap(); let _stN = '';
 function status(p) {
+  const n0 = nowStr();
+  if (n0 !== _stN) { _stN = n0; _regSt = null; _st.clear?.(); }
   if (p.reg) return regStatus();
+  const c = _st.get(p); if (c && c.n === n0) return c.v;
+  const v = status0(p); _st.set(p, { n: n0, v }); return v;
+}
+function status0(p) {
   const n = nowStr(), nm = mins(n);
   const cur = p.slots.filter(s => s.from <= n && n < s.to).sort((a, b) => b.to.localeCompare(a.to))[0];
   if (cur) {
@@ -303,7 +312,12 @@ const kindOf = s => s && s.type === 'extended' ? 'Διευρυμένο ωράρ�
 // Συνηθισμένο ωράριο φαρμακείων (χωρίς αργίες): Δευ/Τετ 08:00–14:30, Τρι/Πεμ/Παρ 08:00–14:00 & 17:30–21:00, Σαβ/Κυρ κλειστά
 const REG = { 1: [[480, 870]], 2: [[480, 840], [1050, 1260]], 3: [[480, 870]], 4: [[480, 840], [1050, 1260]], 5: [[480, 840], [1050, 1260]], 6: [], 0: [] };
 const fmt = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+let _regSt = null, _regN = '';
 function regStatus() {
+  if (_regSt && _regN === nowStr()) return _regSt;
+  _regN = nowStr(); return _regSt = regStatus0();
+}
+function regStatus0() {
   const n = nowStr(); const [y, mo, d] = n.slice(0, 10).split('-').map(Number);
   const wd = new Date(Date.UTC(y, mo - 1, d)).getUTCDay(), nm = +n.slice(11, 13) * 60 + +n.slice(14, 16);
   const cur = REG[wd].find(([a, b]) => nm >= a && nm < b);
@@ -392,7 +406,8 @@ function inToday(s, n) { return s.from.slice(0, 10) === n.slice(0, 10) || (s.fro
 
 // Σημείο αναφοράς για τις αποστάσεις: η θέση μου, αλλιώς το κέντρο του χάρτη
 function ref() { if (state.me) return state.me; const c = map.getCenter(); return [c.lat, c.lng]; }
-function sortKey(p) { return p.lat == null ? 1e9 : km(ref(), [p.lat, p.lng]); }
+let _ref = null;
+function sortKey(p) { if (p.lat == null) return 1e9; const r = _ref || ref(); return km(r, [p.lat, p.lng]); }
 
 // Φαρμακεία που φαίνονται στον χάρτη τώρα (ή κοντά του)
 const MIN_ZOOM_LIST = 9.5;
@@ -421,7 +436,8 @@ function render() {
     box.prepend(el);
   }
 }
-function renderList() {
+function renderList() { _ref = state.data ? ref() : null; try { renderList0(); } finally { _ref = null; } }
+function renderList0() {
   const data = state.data; if (!data) return;
   const n = nowStr(), today = n.slice(0, 10), tm = addDays(today, 1);
   const list = $('list'); list.innerHTML = '';
@@ -604,6 +620,10 @@ function paintMarkers(list) {
   const o = regStatus().k === 'open' ? 1 : 0;
   if (mapReady && map.getSource('reg') && (regPainted !== (state.reg || []).length * 2 + o)) { map.getSource('reg').setData(regGeojson()); regPainted = (state.reg || []).length * 2 + o; }
   if (!mapReady || !map.getSource('ph')) return;
+  const key = nowStr() + '|' + (state.sel ? state.sel.id : '') + '|' + list.length + '|' + (list[0] ? list[0].id : '') + '|' + (list.at(-1) ? list.at(-1).id : '');
+  const src = map.getSource('ph');
+  if (key === paintMarkers.last && src === paintMarkers.src) return;   // ίδιες κουκίδες με πριν: μην τις ξαναστέλνεις
+  paintMarkers.last = key; paintMarkers.src = src;
   map.getSource('ph').setData(geojson(list));
 }
 
