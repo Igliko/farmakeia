@@ -229,7 +229,7 @@ html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
 
 <div class="legend" aria-label="Υπόμνημα">
   <span><i style="background:#07794D"></i>Ανοιχτό τώρα</span>
-  <span><i style="background:#7D8C85"></i>Κλειστό τώρα</span>
+  <span><i id="lgOff" style="background:#7D8C85"></i>Κλειστό τώρα</span>
 </div>
 
 <section class="sheet" id="sheet" aria-label="Φαρμακεία">
@@ -579,11 +579,13 @@ function setupLayers() {
   const img = new Image(48, 48);
   img.onload = () => { if (!map.hasImage('cross')) map.addImage('cross', img, { pixelRatio: 2 }); };
   img.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 18 18"><path d="M6.5 1h5v5.5H17v5h-5.5V17h-5v-5.5H1v-5h5.5z" fill="#fff" transform="translate(4.5 4.5) scale(.5)"/></svg>');
+  const sat = styleKey === 'doryforos'; // στον δορυφόρο οι κουκίδες θέλουν ανοιχτό χρώμα και λευκό περίγραμμα για να φαίνονται
   map.addSource('reg', { type: 'geojson', data: regGeojson() });
+  $('lgOff').style.background = sat ? '#C9CED4' : '#7D8C85';
   map.addLayer({ id: 'reg-dot', type: 'circle', source: 'reg', minzoom: 10,
-    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 14, 4, 17, 7],
-      'circle-color': ['case', ['==', ['get', 'o'], 1], '#12A464', '#6B6F76'],
-      'circle-stroke-color': '#0B0C0E', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 12, 0, 15, 1] } });
+    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, sat ? 2.5 : 1.5, 14, sat ? 5 : 4, 17, sat ? 8 : 7],
+      'circle-color': ['case', ['==', ['get', 'o'], 1], '#12A464', sat ? '#C9CED4' : '#6B6F76'],
+      'circle-stroke-color': sat ? '#ffffff' : '#0B0C0E', 'circle-stroke-width': sat ? ['interpolate', ['linear'], ['zoom'], 10, 0.8, 15, 1.5] : ['interpolate', ['linear'], ['zoom'], 12, 0, 15, 1] } });
   map.addSource('ph', { type: 'geojson', data: geojson([]) });
   map.addLayer({ id: 'ph-halo', type: 'circle', source: 'ph', filter: ['==', ['get', 'k'], 'open'],
     paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, STYLES[styleKey].glow ? 8 : 4, 12, STYLES[styleKey].glow ? 24 : 13, 16, STYLES[styleKey].glow ? 36 : 22],
@@ -591,8 +593,8 @@ function setupLayers() {
   map.addLayer({ id: 'ph-dot', type: 'circle', source: 'ph',
     paint: {
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, ['match', ['get', 'k'], 'off', 1.5, 2.5], 12, ['case', ['==', ['get', 'sel'], 1], 14, ['match', ['get', 'k'], 'off', 6, 9]], 16, ['case', ['==', ['get', 'sel'], 1], 20, ['match', ['get', 'k'], 'off', 9, 15]]],
-      'circle-color': ['match', ['get', 'k'], 'open', COLORS.open, 'later', COLORS.later, COLORS.off],
-      'circle-stroke-color': DESIGNS[designKey].stroke || '#ffffff', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 12, 2, 16, 2.5] } });
+      'circle-color': ['match', ['get', 'k'], 'open', COLORS.open, 'later', sat ? '#C9CED4' : COLORS.later, sat ? '#C9CED4' : COLORS.off],
+      'circle-stroke-color': sat ? '#ffffff' : (DESIGNS[designKey].stroke || '#ffffff'), 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 12, 2, 16, 2.5] } });
   map.addLayer({ id: 'ph-cross', type: 'symbol', source: 'ph', minzoom: 11.5,
     layout: { 'icon-image': 'cross', 'icon-size': ['interpolate', ['linear'], ['zoom'], 11.5, 0.45, 16, 0.85], 'icon-allow-overlap': true } });
   if (!layerEvents) { layerEvents = true; map.on('click', 'ph-dot', e => { const f = e.features && e.features[0]; if (f) { e.originalEvent.cancelBubble = true; clickedPin = true; select(byN[f.properties.i], false); } });
