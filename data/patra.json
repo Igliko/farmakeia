@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-07T21:10",
+ "updated": "2026-11-07T22:31",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "7i631h460a0c2kdg604e3g1jaad3b_27",
-   "name": "Κίτσου Αικατερίνη Α.",
-   "address": "Μαγούλα, Πλησίον Πειραματικού Σχολείου",
-   "area": "Πάτρα",
-   "zip": "26500",
-   "phone": "2610910775",
-   "mapUrl": "https://www.vrisko.gr/details/map/7i631h460a0c2kdg604e3g1jaad3b_27",
-   "slots": [
-    {
-     "from": "2026-11-07T09:00",
-     "to": "2026-11-07T22:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.278613,
-   "lng": 21.791032
-  },
   {
    "id": "_k002db3ci160b3a1j_30jdd1k7b1d27",
    "name": "Καρώνης Παναγιώτης Β.",
