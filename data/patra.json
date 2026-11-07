@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-07T14:43",
+ "updated": "2026-11-07T15:13",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -217,24 +217,6 @@
    ],
    "lat": 38.259481,
    "lng": 21.738681
-  },
-  {
-   "id": "ad1616be7f2e152b4_a6204_0k_f14b1",
-   "name": "Γκαβέρας Κωνσταντίνος Ν.",
-   "address": "Κύπρου 2",
-   "area": "Πάτρα",
-   "zip": "26441",
-   "phone": "2610434413",
-   "mapUrl": "https://www.vrisko.gr/details/map/ad1616be7f2e152b4_a6204_0k_f14b1",
-   "slots": [
-    {
-     "from": "2026-11-07T09:00",
-     "to": "2026-11-07T15:00",
-     "type": "extended"
-    }
-   ],
-   "lat": 38.260417,
-   "lng": 21.738822
   },
   {
    "id": "7i631h460a0c2kdg604e3g1jaad3b_27",
