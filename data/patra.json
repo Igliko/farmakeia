@@ -1,30 +1,7 @@
 {
- "updated": "2026-11-07T02:09",
+ "updated": "2026-11-07T08:05",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "4j64216g2f2j116g0bda4j6f06607k11",
-   "name": "Μουστάκη Διονυσία Κ.",
-   "address": "Κορίνθου 435",
-   "area": "Πάτρα",
-   "zip": "26222",
-   "phone": "2610339398",
-   "mapUrl": "https://www.vrisko.gr/details/map/4j64216g2f2j116g0bda4j6f06607k11",
-   "slots": [
-    {
-     "from": "2026-11-06T21:00",
-     "to": "2026-11-07T08:00",
-     "type": "duty"
-    },
-    {
-     "from": "2026-11-07T09:00",
-     "to": "2026-11-07T14:30",
-     "type": "extended"
-    }
-   ],
-   "lat": 38.239461,
-   "lng": 21.728454
-  },
   {
    "id": "b3b734612e011dd7bb0d7e5ia7_iaj3g",
    "name": "Δελέγκου Μαρία Θ.",
@@ -641,6 +618,24 @@
    ],
    "lat": 38.246881,
    "lng": 21.733918
+  },
+  {
+   "id": "4j64216g2f2j116g0bda4j6f06607k11",
+   "name": "Μουστάκη Διονυσία Κ.",
+   "address": "Κορίνθου 435",
+   "area": "Πάτρα",
+   "zip": "26222",
+   "phone": "2610339398",
+   "mapUrl": "https://www.vrisko.gr/details/map/4j64216g2f2j116g0bda4j6f06607k11",
+   "slots": [
+    {
+     "from": "2026-11-07T09:00",
+     "to": "2026-11-07T14:30",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.239461,
+   "lng": 21.728454
   },
   {
    "id": "_666ac2c001f31d4b4571h6h7i307301",
