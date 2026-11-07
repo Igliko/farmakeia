@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-07T00:03",
+ "updated": "2026-11-07T02:09",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -24,29 +24,6 @@
    ],
    "lat": 38.239461,
    "lng": 21.728454
-  },
-  {
-   "id": "aadba2663a674c_ib11jdg7gd4b24ea_",
-   "name": "Πλιακούρα Αλεξάνδρα Χ.",
-   "address": "Λευκωσίας 30 & Έλληνος Στρατιώτου",
-   "area": "Πάτρα",
-   "zip": "26441",
-   "phone": "2610431387",
-   "mapUrl": "https://www.vrisko.gr/details/map/aadba2663a674c_ib11jdg7gd4b24ea_",
-   "slots": [
-    {
-     "from": "2026-11-06T21:00",
-     "to": "2026-11-07T02:00",
-     "type": "duty"
-    },
-    {
-     "from": "2026-11-07T09:00",
-     "to": "2026-11-07T14:30",
-     "type": "extended"
-    }
-   ],
-   "lat": 38.260477,
-   "lng": 21.742699
   },
   {
    "id": "b3b734612e011dd7bb0d7e5ia7_iaj3g",
@@ -736,6 +713,24 @@
    ],
    "lat": 38.220596,
    "lng": 21.737455
+  },
+  {
+   "id": "aadba2663a674c_ib11jdg7gd4b24ea_",
+   "name": "Πλιακούρα Αλεξάνδρα Χ.",
+   "address": "Λευκωσίας 30 & Έλληνος Στρατιώτου",
+   "area": "Πάτρα",
+   "zip": "26441",
+   "phone": "2610431387",
+   "mapUrl": "https://www.vrisko.gr/details/map/aadba2663a674c_ib11jdg7gd4b24ea_",
+   "slots": [
+    {
+     "from": "2026-11-07T09:00",
+     "to": "2026-11-07T14:30",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.260477,
+   "lng": 21.742699
   },
   {
    "id": "34466_3c24ci544c2k07a7da1b1cd224",
