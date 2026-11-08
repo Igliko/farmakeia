@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-08T02:05",
+ "updated": "2026-11-08T08:20",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "6ib__1_jdcb7120gcja71h151d3cd173",
-   "name": "Σπυροπούλου Τατιάνη Α.",
-   "address": "12ου Συντάγματος 94",
-   "area": "Σύνορα",
-   "zip": "26331",
-   "phone": "2610224462",
-   "mapUrl": "https://www.vrisko.gr/details/map/6ib__1_jdcb7120gcja71h151d3cd173",
-   "slots": [
-    {
-     "from": "2026-11-07T21:00",
-     "to": "2026-11-08T08:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.238182,
-   "lng": 21.750742
-  },
   {
    "id": "2f761i2g3f1354440cac5dc0c3a_55be",
    "name": "Αλατάκης Αντώνιος Α.",
