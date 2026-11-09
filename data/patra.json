@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T08:36",
+ "updated": "2026-11-09T10:32",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -340,6 +340,24 @@
    ],
    "lat": 38.269096,
    "lng": 21.744841
+  },
+  {
+   "id": "c3db0d607_551kb37ja7a3b13c27a3_g",
+   "name": "Θεοδώρου Σάββας Π.",
+   "address": "Σολωμού 44",
+   "area": "Πάτρα",
+   "zip": "26222",
+   "phone": "2610327789",
+   "mapUrl": "https://www.vrisko.gr/details/map/c3db0d607_551kb37ja7a3b13c27a3_g",
+   "slots": [
+    {
+     "from": "2026-11-09T21:00",
+     "to": "2026-11-10T08:30",
+     "type": "duty"
+    }
+   ],
+   "lat": 38.237752,
+   "lng": 21.730443
   },
   {
    "id": "5fci_c1k0fad5c7_bi_7d70bbda57_b4",
