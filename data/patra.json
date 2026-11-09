@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-09T02:13",
+ "updated": "2026-11-09T08:36",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "3c5a5c6kcd73b11fc01b70a4632ad_770acec715d413ajb714a153444id6411k",
-   "name": "ΚΑΛΗΜΕΡΗ ΘΕΩΝΗ",
-   "address": "Ακτή Δημαίων 149Α",
-   "area": "Πάτρα",
-   "zip": "26333",
-   "phone": "2610523259",
-   "mapUrl": "https://www.vrisko.gr/advdetails/map/3c5a5c6kcd73b11fc01b70a4632ad_770acec715d413ajb714a153444id6411k",
-   "slots": [
-    {
-     "from": "2026-11-08T21:00",
-     "to": "2026-11-09T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.210091,
-   "lng": 21.714729
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
