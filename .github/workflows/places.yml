@@ -24,6 +24,7 @@ jobs:
       - name: Κατέβασε τα φαρμακεία από το Overture Maps
         env:
           FORCE: "1"
+          DIAG: "1"
         run: |
           pip install -q duckdb
           python3 scripts/overture.py

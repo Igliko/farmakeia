@@ -46,6 +46,19 @@ WHERE bbox.xmin BETWEEN 19.3 AND 29.7 AND bbox.ymin BETWEEN 34.7 AND 41.8
   AND coalesce(confidence, 1) >= 0.5 {status_sql}
 """
 rows = con.sql(q).fetchall()
+if os.environ.get('DIAG'):
+    extra = ', '.join(c for c in ['basic_category', 'taxonomy.primary AS tax', 'categories.primary AS cat'] if c.split('.')[0].split(' ')[0] in cols)
+    d = con.sql(q.replace('phones[1] AS phone, confidence', 'phones[1] AS phone, confidence, ' + extra)).fetchall()
+    import collections
+    print('DIAG κατηγορίες:', collections.Counter(tuple(r[8:]) for r in d).most_common(40))
+    for pat in ['Τράπεζα', 'Μασούτης', 'Roche', 'Ακουστικά', 'Ταβέρνα']:
+        hit = [r for r in d if pat in (r[2] or '')]
+        print('DIAG', pat, len(hit), collections.Counter(tuple(r[8:]) for r in hit).most_common(5), 'conf', sorted(round(r[7] or 0, 2) for r in hit)[:5], sorted(round(r[7] or 0, 2) for r in hit)[-5:])
+    real = [r for r in d if re.search('φαρμακε', (r[2] or '').lower())]
+    print('DIAG με «φαρμακε» στο όνομα', len(real), collections.Counter(tuple(r[8:]) for r in real).most_common(10))
+    cf = sorted(round(r[7] or 0, 1) for r in real); print('DIAG conf πραγματικών', collections.Counter(cf))
+    names_only = [r for r in d if not re.search('φαρμακ|pharm|farmak', (r[2] or '').lower())]
+    print('DIAG χωρίς λέξη', len(names_only), collections.Counter(tuple(r[8:]) for r in names_only).most_common(10), collections.Counter(round(r[7] or 0, 1) for r in names_only))
 items = []
 for lat, lng, name, street, town, country, phone, conf in rows:
     if country and country.upper() != 'GR': continue
