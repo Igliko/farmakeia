@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-10T00:06",
+ "updated": "2026-11-10T02:13",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "d51f3dcd4_b2622gdfdac4d2cd404624",
-   "name": "Ζωγράφος Φώτιος",
-   "address": "Αθηνών 170 & Ευρώτα",
-   "area": "Έξω Αγυιά",
-   "zip": "26442",
-   "phone": "2610424216",
-   "mapUrl": "https://www.vrisko.gr/details/map/d51f3dcd4_b2622gdfdac4d2cd404624",
-   "slots": [
-    {
-     "from": "2026-11-09T21:00",
-     "to": "2026-11-10T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.269096,
-   "lng": 21.744841
-  },
   {
    "id": "c3db0d607_551kb37ja7a3b13c27a3_g",
    "name": "Θεοδώρου Σάββας Π.",
