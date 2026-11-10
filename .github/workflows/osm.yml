@@ -27,6 +27,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/osm.json
           git diff --cached --quiet || git commit -q -m "Φαρμακεία: νέα δεδομένα από OpenStreetMap"
+          git checkout -- data/all.json   # το osm.mjs το έχει ήδη ενώσει· το ξαναφτιάχνουμε παρακάτω πάνω στα πιο φρέσκα δεδομένα
           # πάρε ό,τι άλλαξε στο μεταξύ και ξαναένωσε πάνω στα πιο φρέσκα δεδομένα
           for i in 1 2 3 4 5; do
             git pull -q --rebase -X theirs origin main || { sleep 7; continue; }
