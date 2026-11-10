@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-10T21:07",
+ "updated": "2026-11-10T22:43",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "510b_02_dd_gbk_f_4a_5h726a65006i",
-   "name": "Σπυριδωνίδου Κατερίνα Κ.",
-   "address": "Πετρωτό & Κλάους 7, Έξοδος 3",
-   "area": "Πάτρα",
-   "zip": "26500",
-   "phone": "2610520046",
-   "mapUrl": "https://www.vrisko.gr/details/map/510b_02_dd_gbk_f_4a_5h726a65006i",
-   "slots": [
-    {
-     "from": "2026-11-10T21:00",
-     "to": "2026-11-10T22:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.202857,
-   "lng": 21.764318
-  },
   {
    "id": "a14_24ded7d4bdcaae1acdb20h04244k",
    "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΔΙΑΜΑΝΤΟΠΟΥΛΟΥ ΠΗΝΕΛΟΠΗ ΣΕΡΕΤΗ ΚΩΝΣΤΑΝΤΙΝΑ ΟΕ",
