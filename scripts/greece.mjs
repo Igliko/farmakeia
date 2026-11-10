@@ -1,5 +1,6 @@
-// Όλη η Ελλάδα: διαβάζει κάθε περιοχή του vrisko.gr και γράφει το data/greece.json.
-// Τρέχει λίγες φορές τη μέρα. Η Πάτρα ενημερώνεται χωριστά κάθε 30' (update.mjs).
+// Όλη η Ελλάδα: διαβάζει τις περιοχές του vrisko.gr και γράφει το data/greece.json.
+// Τρέχει κάθε ~2 ώρες (μέσα από το loop.yml) και κάθε φορά διαβάζει ένα κομμάτι των περιοχών.
+// Η Πάτρα ενημερώνεται χωριστά κάθε 15' (update.mjs).
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { get, sleep, athensNow } from './net.mjs';
 import { parseList, parseCoords, merge, clean } from './parse.mjs';
@@ -81,21 +82,23 @@ const cur = await readJson('cursor.json', { next: 0 });
 const list0 = areas.items.filter((a) => !SKIP.has(a.slug));
 const start = (cur.next || 0) % list0.length;
 const order = [...list0.slice(start), ...list0.slice(0, start)];
-const fresh = new Set();
-let ok = 0, blocked = 0, read = 0;
-for (const a of order) {
-  if (read >= PER_RUN || blocked >= 3 || timeLeft() < 15 * 60000) break;
-  read++;
+let ok = 0, blocked = 0, i = 0, firstBlocked = 0;
+for (; i < order.length; i++) {
+  if (ok >= PER_RUN || blocked >= 3 || timeLeft() < 15 * 60000) break;
+  const a = order[i];
+  let good = false;
   try {
     const h = await get(`${BASE}/efimeries-farmakeion/${a.slug}/`, 2);
-    if (h === null) { fresh.add(a.slug); ok++; oldByArea.set(a.slug, []); continue; }
-    if (!h.includes('DutiesResults')) { blocked++; read--; console.warn('Άδεια/μπλοκαρισμένη σελίδα:', a.slug); continue; }
-    blocked = 0; ok++; fresh.add(a.slug);
-    oldByArea.set(a.slug, merge(parseList(h)));
-  } catch (e) { blocked++; }
+    if (h === null) { good = true; oldByArea.set(a.slug, []); } // η περιοχή δεν υπάρχει πια
+    else if (h.includes('DutiesResults')) { good = true; oldByArea.set(a.slug, merge(parseList(h))); }
+    else console.warn('Άδεια/μπλοκαρισμένη σελίδα:', a.slug);
+  } catch (e) { console.warn('Δεν διαβάστηκε:', a.slug); }
+  if (good) { ok++; blocked = 0; } else { if (!blocked) firstBlocked = i; blocked++; }
   await sleep(2000);
 }
-await save('cursor.json', { next: (start + read) % list0.length, at: now });
+// Η επόμενη φορά συνεχίζει από εκεί που σταματήσαμε· αν μας μπλόκαραν, από την πρώτη περιοχή που δεν διαβάστηκε.
+const done = blocked ? firstBlocked : i;
+await save('cursor.json', { next: (start + done) % list0.length, at: now });
 console.log(`Περιοχές: διαβάστηκαν ${ok} (από τη θέση ${start}), μπλοκαρίσματα: ${blocked}`);
 
 const all = new Map();
@@ -127,7 +130,7 @@ const names = Object.fromEntries(areas.items.map((a) => [a.slug, a.name]));
 const pharmacies = [...all.values()]
   .map((p) => {
     const c = geo[p.id] || patraGeo[p.id];
-    return { id: p.id, name: p.name, address: p.address, area: p.area !== 'Πάτρα' ? p.area : '', town: names[p.r] || '', zip: p.zip, phone: p.phone, mapUrl: p.mapUrl, r: p.r,
+    return { id: p.id, name: p.name, address: p.address, area: p.area !== 'Πάτρα' ? p.area : '', town: names[p.r] || '', zip: p.zip, phone: p.phone, mapUrl: c ? undefined : p.mapUrl, r: p.r,
       lat: c ? c[0] : null, lng: c ? c[1] : null, ap: c && c[2] ? 1 : undefined, slots: p.slots.filter((s) => s.to > now).sort((x, y) => x.from.localeCompare(y.from)) };
   })
   .filter((p) => p.slots.length);

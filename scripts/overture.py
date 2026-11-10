@@ -1,7 +1,7 @@
 # Φαρμακεία της Ελλάδας από το Overture Maps (ανοιχτά δεδομένα, CDLA-Permissive-2.0) -> data/overture.json
 # Τρέχει μία φορά την εβδομάδα μέσα στο GitHub Actions (εκεί υπάρχει πρόσβαση στο S3 του Overture).
 # Μορφή: [lat, lng, όνομα, διεύθυνση, πόλη, τηλέφωνο, ""] — ίδια με το OpenStreetMap.
-import json, os, re, subprocess, sys, datetime
+import json, os, re, subprocess, sys, datetime, unicodedata
 import duckdb
 
 OUT = os.path.join(os.path.dirname(__file__), '..', 'data', 'overture.json')
@@ -46,22 +46,25 @@ WHERE bbox.xmin BETWEEN 19.3 AND 29.7 AND bbox.ymin BETWEEN 34.7 AND 41.8
   AND coalesce(confidence, 1) >= 0.5 {status_sql}
 """
 rows = con.sql(q).fetchall()
-if os.environ.get('DIAG'):
-    extra = ', '.join(c for c in ['basic_category', 'taxonomy.primary AS tax', 'categories.primary AS cat'] if c.split('.')[0].split(' ')[0] in cols)
-    d = con.sql(q.replace('phones[1] AS phone, confidence', 'phones[1] AS phone, confidence, ' + extra)).fetchall()
-    import collections
-    print('DIAG κατηγορίες:', collections.Counter(tuple(r[8:]) for r in d).most_common(40))
-    for pat in ['Τράπεζα', 'Μασούτης', 'Roche', 'Ακουστικά', 'Ταβέρνα']:
-        hit = [r for r in d if pat in (r[2] or '')]
-        print('DIAG', pat, len(hit), collections.Counter(tuple(r[8:]) for r in hit).most_common(5), 'conf', sorted(round(r[7] or 0, 2) for r in hit)[:5], sorted(round(r[7] or 0, 2) for r in hit)[-5:])
-    real = [r for r in d if re.search('φαρμακε', (r[2] or '').lower())]
-    print('DIAG με «φαρμακε» στο όνομα', len(real), collections.Counter(tuple(r[8:]) for r in real).most_common(10))
-    cf = sorted(round(r[7] or 0, 1) for r in real); print('DIAG conf πραγματικών', collections.Counter(cf))
-    names_only = [r for r in d if not re.search('φαρμακ|pharm|farmak', (r[2] or '').lower())]
-    print('DIAG χωρίς λέξη', len(names_only), collections.Counter(tuple(r[8:]) for r in names_only).most_common(10), collections.Counter(round(r[7] or 0, 1) for r in names_only))
-items = []
+# Το Overture βάζει στην κατηγορία «φαρμακείο» και άσχετα μαγαζιά (τράπεζες, σούπερ μάρκετ, γιατρούς, μάρκες καλλυντικών...).
+# Όσα έχουν τη λέξη «φαρμακείο» στο όνομα μένουν. Από τα υπόλοιπα (συνήθως ονοματεπώνυμο φαρμακοποιού) πετάμε όσα φαίνονται άλλο είδος.
+def norm(s): return ''.join(c for c in unicodedata.normalize('NFD', (s or '').lower()) if unicodedata.category(c) != 'Mn')
+IS_PHARMACY = re.compile(r'φαρμακ|pharm|farmak|farmac|apothek')
+NOT_PHARMACY = re.compile(
+    r'τραπεζ|bank|\batm\b|μασουτη|σκλαβενιτ|lidl|market|μαρκετ|βιοιατρικη|αποφραξ|απολυμανσ|ακουστικ|βαρηκο|φροντιστηρ|ορθοπεδ|ιατρει|ιατρικ|ιατρος\b|χειρουργ|γυναικολογ|μαιευτηρ|'
+    r'παθολογ|καρδιολογ|δερματολογ|οφθαλμ|ψυχολογ|ψυχοθεραπ|φυσικοθεραπ|κλινικ|διαγνωστ|μικροβιολ|εργαστηρ|θεραπει|κομμωτ|κουρει|αισθητικ|νυχι|spa\b|beauty|'
+    r'ασφαλει|ασφαλιστ|δικηγορ|λογιστ|συμβολαιογραφ|μηχανικ|τεχνικ|κατασκευ|αλουμινι|κουφωμ|τζαμι|επιπλ|κλειδαρ|μετακομισ|ταξι\b|αυτοκινητ|αμαξωμ|συνεργει|'
+    r'ρολογια|κοσμηματ|οπτικ|ταβερν|εστιατορ|καφε\b|καφετ|cafe|coffee|bar\b|κρεοπωλ|αρτοποι|ζαχαροπλαστ|ξενοδοχ|hotel|rooms|σχολη\b|σχολει|σχολες|college|εκπαιδευτ|γλωσσων|'
+    r'συλλογος|συνεταιρισμ|δημοτικ|πολιτιστικ|γραφειο|τελετων|ζωοτροφ|κτηνιατρ|pet\b|γυμναστ|gym|store|shop|καταστημα|ειδη |greece|hellas|laboratorios|roche|'
+    r'embryolisse|vichy|avene|\.gr\b|\.com\b|medical|services|υπηρεσιες|κεντρο|'
+    r'ανακαιν|χυτηρ|σκεπες|σκεπη\b|εκκενωσ|βοθρ|επισκευ|χρωματ|μοτοσ|αβεε|α\.ε|βιομηχαν|φαρμα\b|farma\b|surgery|doctor|\bdr\b|\bδρ\b|ουρολογ|ανδρολογ|νευρολογ|'
+    r'ενδοκρινολογ|ογκολογ|ρευματολογ|ωρλ|διαιτολογ|διατροφ|λογοθεραπ|μεσιτ|οικονομολογ|φοροτεχν|εμπορ|εισαγωγ|ανταλλακτικ|ηλεκτρολογ|υδραυλικ|'
+    r'καθαρισ|συνεργ|τυπογραφ|βιβλιο|ανθοπωλ|παιχνιδ|ενδυμα|υποδημα|παντοπωλ|ψητοπωλ|πιτσα|pizza|grill|studio|salon|travel|rent|club')
+items, junk = [], 0
 for lat, lng, name, street, town, country, phone, conf in rows:
     if country and country.upper() != 'GR': continue
+    nn = norm(name)
+    if not IS_PHARMACY.search(nn) and NOT_PHARMACY.search(nn): junk += 1; continue
     if not country and not re.search(r'[α-ωΑ-Ω]', name or ''): continue  # χωρίς χώρα: κράτα μόνο ελληνικά ονόματα (όχι Τουρκία/Αλβανία)
     ph = re.sub(r'[^\d+]', '', phone or '')
     ph = re.sub(r'^(\+30|0030)', '', ph)
@@ -69,4 +72,4 @@ for lat, lng, name, street, town, country, phone, conf in rows:
 items.sort(key=lambda r: (r[0], r[1]))
 json.dump({'updated': datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z'), 'source': 'Overture Maps ' + rel, 'items': items},
           open(OUT, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
-print(f'OK: {len(items)} φαρμακεία από το Overture Maps.')
+print(f'OK: {len(items)} φαρμακεία από το Overture Maps ({junk} άσχετα μαγαζιά πετάχτηκαν).')

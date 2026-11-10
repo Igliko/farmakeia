@@ -114,7 +114,7 @@ export async function handleUpdate(env, u) {
     return answerFor(env, chat, at, 'κοντά σου');
   }
   const text = (m.text || '').trim();
-  if (!text || text === '/start' || text === '/help') {
+  if (!text || /^\/(start|help)\b/.test(text)) {
     return send(env, chat,
       'Γεια! 👋 Σου βρίσκω <b>ανοιχτά φαρμακεία</b> κοντά σου, σε όλη την Ελλάδα.\n\n' +
       '• Πάτα <b>📍 Στείλε τοποθεσία</b> για τα πιο κοντινά τώρα\n' +

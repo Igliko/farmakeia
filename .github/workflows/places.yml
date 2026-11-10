@@ -17,14 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
       - name: Κατέβασε τα φαρμακεία από το Overture Maps
         env:
           FORCE: "1"
-          DIAG: "1"
         run: |
           pip install -q duckdb
           python3 scripts/overture.py

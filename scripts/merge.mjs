@@ -27,8 +27,10 @@ export async function merge() {
   }
   out.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
   const src = ['OpenStreetMap', ov ? 'Overture Maps' : ''].filter(Boolean).join(' + ');
-  await writeFile(new URL('all.json', D), JSON.stringify({ updated: new Date().toISOString(), source: src, items: out }) + '\n');
-  console.log(`Σύνολο: ${out.length} φαρμακεία (OSM ${osm?.items?.length || 0}, Overture ${ov?.items?.length || 0}, διπλά ${dup}).`);
+  const prev = await read('all.json');
+  const same = prev && prev.source === src && JSON.stringify(prev.items) === JSON.stringify(out);
+  if (!same) await writeFile(new URL('all.json', D), JSON.stringify({ updated: new Date().toISOString(), source: src, items: out }) + '\n');
+  console.log(`Σύνολο: ${out.length} φαρμακεία (OSM ${osm?.items?.length || 0}, Overture ${ov?.items?.length || 0}, διπλά ${dup})${same ? ' — καμία αλλαγή' : ''}.`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) await merge();

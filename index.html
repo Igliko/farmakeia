@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="el">
+<html lang="el" data-d="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -7,20 +7,17 @@
 <meta name="description" content="Ποια φαρμακεία είναι ανοιχτά τώρα σε όλη την Ελλάδα: εφημερεύοντα και διευρυμένου ωραρίου, σε χάρτη.">
 <meta name="theme-color" content="#0B0C0E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2307794D'/%3E%3Cpath d='M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z' fill='white'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Fira+Sans+Extra+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
 <style>
 /* Χάρτης σε όλη την οθόνη, φύλλο με τη λίστα από κάτω (κινητό) ή αριστερά (υπολογιστής) */
 :root{
   --bg:#E8ECE7;--card:#FFFFFF;--fg:#10241B;--muted:#52635B;--line:#E3E9E5;--soft:#EEF2EF;
   --green:#07794D;--greenSoft:#E3F3EA;--bar:#5FB98C;--amber:#A35400;--amberSoft:#FBEEDD;--blue:#2563EB;--onGreen:#FFFFFF;
-  --shadow:rgba(16,36,27,.16);--display:'Fira Sans Extra Condensed','Arial Narrow',sans-serif;--body:Commissioner,'Segoe UI',Roboto,Arial,sans-serif}
-@media (prefers-color-scheme:dark){:root{
-  --bg:#121C18;--card:#121D19;--fg:#E6F0EB;--muted:#9AB0A6;--line:#22322B;--soft:#1A2722;
-  --green:#3DDC97;--greenSoft:rgba(61,220,151,.12);--bar:#2E8A62;--amber:#F2A65A;--amberSoft:rgba(242,166,90,.13);--blue:#4C8DFF;--onGreen:#062014;
-  --shadow:rgba(0,0,0,.45);color-scheme:dark}}
+  --shadow:rgba(16,36,27,.16);--display:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+/* --sheet = πόσο ψηλά φτάνει η λίστα στο κινητό (χαμηλά / μέση / ψηλά) */
+:root{--sheet:max(46vh,300px)}
+:root:has(.sheet.low){--sheet:min(175px,30vh)}
+:root:has(.sheet.tall){--sheet:82vh}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%;margin:0}
@@ -39,18 +36,13 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
 .fabs{display:flex;flex-direction:column;gap:10px}
 .fab{width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer}
 .fab.loc{color:var(--blue)}
-.fab[aria-pressed="true"]{background:var(--green)!important;color:#fff}
+.fab[aria-pressed="true"]{background:var(--green)!important;color:var(--onGreen)}
 
-.sheet{position:fixed;z-index:5;left:0;right:0;bottom:0;height:46vh;min-height:300px;display:flex;flex-direction:column;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -10px 30px var(--shadow);transition:height .25s ease}
-.sheet.tall{height:82vh}
-.sheet.low{height:min(175px,30vh);min-height:0}
+.sheet{position:fixed;z-index:5;left:0;right:0;bottom:0;height:var(--sheet);display:flex;flex-direction:column;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -10px 30px var(--shadow);transition:height .25s ease}
 .handle{flex:none;border:0;background:none;padding:14px 0 10px;cursor:grab;display:grid;place-items:center;touch-action:none}
 .sheet .head{touch-action:none}
 .handle i{width:38px;height:4px;border-radius:2px;background:var(--line);display:block}
 .head{flex:none;padding:0 max(18px,env(safe-area-inset-right,0px)) 8px max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
-.styles{position:fixed;z-index:6;top:calc(80px + env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));right:70px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
-.styles button{flex:none;height:36px;padding:0 13px;border:0;border-radius:999px;background:var(--card);color:var(--fg);font:600 13.5px/1 var(--body);box-shadow:0 3px 10px var(--shadow);cursor:pointer}
-.styles button[aria-pressed="true"]{background:var(--green);color:var(--onGreen)}
 .search{position:relative;display:flex;align-items:center;gap:8px;height:44px;padding:0 12px;border-radius:12px;background:var(--soft);color:var(--muted)}
 .search input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--fg);font:500 16px/1 var(--body);outline:none}
 .search:focus-within{outline:3px solid var(--blue);outline-offset:1px}
@@ -106,29 +98,23 @@ h1{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.2px}
 .note{margin:16px 0 0;font:500 12.5px/1.5 var(--body);color:var(--muted)}
 .note a{color:inherit}
 
-.pin{width:34px;height:34px;border-radius:11px;border:2.5px solid #fff;background:#07794D;display:grid;place-items:center;padding:0;cursor:pointer;box-shadow:0 0 0 5px rgba(18,164,100,.22),0 4px 10px rgba(0,0,0,.3);transition:transform .15s}
-.pin path{fill:#fff}
-.pin.later{background:#A35400;box-shadow:0 4px 10px rgba(0,0,0,.3)}
-.pin.off{background:#7D8C85;box-shadow:0 4px 10px rgba(0,0,0,.25);transform:scale(.8)}
-.pin.on{transform:scale(1.25);z-index:3}
 .me{width:16px;height:16px;border-radius:50%;background:#2563EB;border:3px solid #fff;box-shadow:0 0 0 12px rgba(37,99,235,.15)}
 .maplibregl-ctrl-attrib{font-size:10px}
-.maplibregl-ctrl-bottom-right{bottom:calc(46vh - 8px)}
+.maplibregl-ctrl-bottom-right{bottom:calc(var(--sheet) - 8px);transition:bottom .25s ease}
 
 @media (min-width:860px){
   .sheet,.sheet.tall,.sheet.low{top:calc(84px + env(safe-area-inset-top,0px));left:12px;right:auto;bottom:12px;width:400px;height:auto;min-height:0;border-radius:20px}
   .handle{display:none}.head{padding-top:16px}
   .maplibregl-ctrl-bottom-right{bottom:0}
 }
-@media (prefers-reduced-motion:reduce){.sheet,.pin{transition:none}}
+@media (prefers-reduced-motion:reduce){.sheet,.legend,.maplibregl-ctrl-bottom-right{transition:none}}
 
-/* ===== Σχέδια (δοκιμή) : html[data-d] ===== */
+/* ===== Το σκούρο σχέδιο (το μόνιμο) ===== */
 @media (min-width:860px){
   html[data-d] .top{left:0;right:max(16px,env(safe-area-inset-right,0px));top:0}
   html[data-d] .brand{position:fixed;left:0;top:0;width:420px;border-radius:0;box-shadow:none;padding:16px 20px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
   html[data-d] .fabs{position:fixed;top:16px;right:max(16px,env(safe-area-inset-right,0px))}
   html[data-d] .sheet,html[data-d] .sheet.tall,html[data-d] .sheet.low{top:67px;left:0;bottom:0;width:420px;border-radius:0;box-shadow:none;border-right:1px solid var(--line)}
-  html[data-d] .styles{left:436px;top:16px}
 }
 html[data-d] .head{gap:10px}
 html[data-d] .tabs{background:none;border-radius:0;padding:0;gap:0;border-bottom:1px solid var(--line)}
@@ -141,20 +127,6 @@ html[data-d] .ic.later{background:var(--line)} html[data-d] .ic.off{background:v
 html[data-d] .item .more{padding-left:26px}
 html[data-d] .item{padding:14px 0}
 
-/* Α · Καθαρό */
-html[data-d="clean"]{--bg:#F5F5F3;--card:#FFFFFF;--fg:#151515;--muted:#5F6368;--line:#E4E4E1;--soft:#F1F1EE;--green:#0B7A3E;--greenSoft:#E6F2EA;--amber:#B25E00;--blue:#1A56DB;--onGreen:#fff;--shadow:rgba(0,0,0,.08);
-  --display:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color-scheme:light}
-html[data-d="clean"] h1{font:600 17px/1.2 var(--body);letter-spacing:0}
-html[data-d="clean"] .logo{width:28px;height:28px;border-radius:6px}
-html[data-d="clean"] .big{font:600 22px/1.2 var(--body)}
-html[data-d="clean"] .name{font:600 15px/1.3 var(--body)}
-html[data-d="clean"] .dist b{font:600 15px/1 var(--body)}
-html[data-d="clean"] .search{background:#fff;border:1px solid var(--line);border-radius:8px}
-html[data-d="clean"] .btns a{border-radius:8px;height:40px;font:600 14px/1 var(--body)}
-html[data-d="clean"] .fab{border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.15),0 0 0 1px var(--line)}
-html[data-d="clean"] .group{letter-spacing:.6px}
-
-/* Β · Σκούρο */
 html[data-d="dark"]{--bg:#0B0C0E;--card:#111214;--fg:#EDEDEF;--muted:#8A8F98;--line:#222428;--soft:#17181B;--green:#4ADE80;--greenSoft:rgba(74,222,128,.1);--bar:#2F8F57;--amber:#F5A524;--amberSoft:rgba(245,165,36,.12);--blue:#7AA2FF;--onGreen:#04140A;--shadow:rgba(0,0,0,.5);
   --display:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color-scheme:dark}
 html[data-d="dark"] h1{font:600 16px/1.2 var(--body);letter-spacing:-.1px}
@@ -172,37 +144,14 @@ html[data-d="dark"] .btns a{border-radius:7px;height:38px;font:500 14px/1 var(--
 html[data-d="dark"] .dir{border:1px solid var(--line)}
 html[data-d="dark"] .fab{border-radius:8px;background:var(--card);box-shadow:0 0 0 1px var(--line)}
 
-/* Γ · Έντονο (neo-brutal) */
-html[data-d="bold"]{--bg:#FFFDF6;--card:#FFFDF6;--fg:#0A0A0A;--muted:#3B3B3B;--line:#0A0A0A;--soft:#F1EEE2;--green:#00C065;--greenSoft:#C9F7DD;--bar:#00C065;--amber:#FF8A00;--amberSoft:#FFE2BF;--blue:#2B4BFF;--onGreen:#0A0A0A;--shadow:transparent;
-  --display:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color-scheme:light}
-html[data-d="bold"] .brand,html[data-d="bold"] .sheet{border-width:2px!important;border-color:#0A0A0A!important}
-html[data-d="bold"] h1{font:800 20px/1.1 var(--body);text-transform:uppercase;letter-spacing:.3px}
-html[data-d="bold"] .logo{border-radius:0;border:2px solid #0A0A0A}
-html[data-d="bold"] .big{font:800 30px/1.05 var(--body);letter-spacing:-.5px}
-html[data-d="bold"] .name{font:700 16px/1.3 var(--body)}
-html[data-d="bold"] .st{color:var(--fg)!important;font:600 13.5px/1.3 var(--body)}
-html[data-d="bold"] .ic{width:14px;height:14px;border-radius:0;border:2px solid #0A0A0A}
-html[data-d="bold"] .item{border-top:2px solid #0A0A0A}
-html[data-d="bold"] .tabs{border:2px solid #0A0A0A;border-bottom-width:2px}
-html[data-d="bold"] .tabs button{font-weight:800;text-transform:uppercase;letter-spacing:.5px}
-html[data-d="bold"] .tabs button+button{border-left:2px solid #0A0A0A}
-html[data-d="bold"] .tabs button[aria-selected="true"]{background:var(--green);box-shadow:none}
-html[data-d="bold"] .search{background:#fff;border:2px solid #0A0A0A;border-radius:0;box-shadow:3px 3px 0 #0A0A0A}
-html[data-d="bold"] .btns a{border-radius:0;border:2px solid #0A0A0A;box-shadow:3px 3px 0 #0A0A0A;font:800 14px/1 var(--body);text-transform:uppercase}
-html[data-d="bold"] .call{background:var(--green);color:#0A0A0A}
-html[data-d="bold"] .fab{border-radius:0;background:#fff;border:2px solid #0A0A0A;box-shadow:3px 3px 0 #0A0A0A}
-html[data-d="bold"] .live{color:#0A0A0A;font-weight:800}
-html[data-d="bold"] .live i{background:var(--green);border:1.5px solid #0A0A0A;width:9px;height:9px}
-html[data-d="bold"] .styles button{border-radius:0;border:2px solid #0A0A0A;box-shadow:none}
 html[data-d="dark"] .maplibregl-ctrl-group{background:var(--card);box-shadow:0 0 0 1px var(--line)}
 html[data-d="dark"] .maplibregl-ctrl-group button+button{border-top-color:var(--line)}
 html[data-d="dark"] .maplibregl-ctrl-group .maplibregl-ctrl-icon{filter:invert(1) brightness(.9)}
 html[data-d="dark"] .maplibregl-ctrl-attrib{background:rgba(17,18,20,.8);color:var(--muted)}
 html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
-.legend{position:fixed;z-index:4;right:56px;bottom:calc(46vh + 10px);display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:8px;background:rgba(17,18,20,.88);border:1px solid var(--line);color:var(--muted);font:500 12px/1.2 var(--body)}
+.legend{position:fixed;z-index:4;right:56px;bottom:calc(var(--sheet) + 10px);transition:bottom .25s ease;display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:8px;background:rgba(17,18,20,.88);border:1px solid var(--line);color:var(--muted);font:500 12px/1.2 var(--body)}
 .legend span{display:flex;align-items:center;gap:8px}
 .legend i{width:11px;height:11px;border-radius:50%;border:1.5px solid #0B0C0E;display:inline-block;flex:none}
-.legend i.sm{width:7px;height:7px;margin:0 2px}
 @media (min-width:860px){.legend{bottom:20px;right:60px}}
 .reach{font:600 12.5px/1.3 var(--body)}
 .reach.ok{color:var(--green)}
@@ -264,9 +213,7 @@ html[data-d="dark"] .maplibregl-ctrl-attrib a{color:var(--muted)}
 <script>
 const CROSS = s => `<svg width="${s}" height="${s}" viewBox="0 0 18 18" aria-hidden="true"><path d="M6.5 1h5v5.5H17v5h-5.5V17h-5v-5.5H1v-5h5.5z"/></svg>`;
 const $ = id => document.getElementById(id);
-const dark = matchMedia('(prefers-color-scheme: dark)').matches;
-const state = { data: null, view: 'now', sel: null, me: null, reg: [] };
-const markers = new Map();
+const state = { data: null, view: 'now', sel: null, me: null, reg: [], towns: [], ver: 0, regVer: 0 };
 
 // ---- χρόνος (ώρα Ελλάδας) ----
 const ATH = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Athens', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
@@ -310,7 +257,16 @@ function status0(p) {
 }
 const kindOf = s => s && s.type === 'extended' ? 'Διευρυμένο ωράριο' : 'Εφημερία';
 
-// Συνηθισμένο ωράριο φαρμακείων (χωρίς αργίες): Δευ/Τετ 08:00–14:30, Τρι/Πεμ/Παρ 08:00–14:00 & 17:30–21:00, Σαβ/Κυρ κλειστά
+// Συνηθισμένο ωράριο φαρμακείων: Δευ/Τετ 08:00–14:30, Τρι/Πεμ/Παρ 08:00–14:00 & 17:30–21:00, Σαβ/Κυρ και επίσημες αργίες κλειστά
+// Επίσημες αργίες όλης της χώρας (όχι τοπικές γιορτές, όχι Μεγάλη Παρασκευή που αλλάζει ανά περιοχή)
+function easter(y) { const a = y % 4, b = y % 7, c = y % 19, d = (19 * c + 15) % 30, e = (2 * a + 4 * b - d + 34) % 7; return new Date(Date.UTC(y, Math.floor((d + e + 114) / 31) - 1, ((d + e + 114) % 31) + 1 + 13)); }
+const _hol = {};
+function isHoliday(ymd) {
+  const y = +ymd.slice(0, 4);
+  if (!_hol[y]) { const E = easter(y).getTime(), day = k => new Date(E + k * 864e5).toISOString().slice(0, 10);
+    _hol[y] = new Set(['01-01', '01-06', '03-25', '05-01', '08-15', '10-28', '12-25', '12-26'].map(x => y + '-' + x).concat([day(-48), day(1), day(50)])); } // + Καθαρά Δευτέρα, Δευτέρα του Πάσχα, Αγίου Πνεύματος
+  return _hol[y].has(ymd);
+}
 const REG = { 1: [[480, 870]], 2: [[480, 840], [1050, 1260]], 3: [[480, 870]], 4: [[480, 840], [1050, 1260]], 5: [[480, 840], [1050, 1260]], 6: [], 0: [] };
 const fmt = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
 let _regSt = null, _regN = '';
@@ -321,6 +277,7 @@ function regStatus() {
 function regStatus0() {
   const n = nowStr(); const [y, mo, d] = n.slice(0, 10).split('-').map(Number);
   const wd = new Date(Date.UTC(y, mo - 1, d)).getUTCDay(), nm = +n.slice(11, 13) * 60 + +n.slice(14, 16);
+  if (isHoliday(n.slice(0, 10))) return { k: 'off', reg: true, text: 'Κλειστό (αργία)', color: 'var(--muted)' };
   const cur = REG[wd].find(([a, b]) => nm >= a && nm < b);
   if (cur) { const left = cur[1] - nm; return { k: 'open', reg: true, text: (left <= 60 ? `Κλείνει σε ${left}′ · ` : 'Ανοιχτό ως ') + fmt(cur[1]), color: left <= 60 ? 'var(--amber)' : 'var(--green)', left }; }
   const nx = REG[wd].find(([a]) => a > nm);
@@ -345,7 +302,7 @@ function reach(p, st) {
   const n = nowStr(), nm = +n.slice(11, 13) * 60 + +n.slice(14, 16);
   return { ok: t <= st.left - 3, t, left: st.left, arrive: fmt((nm + t) % 1440) };
 }
-const short = n => { const m = n.match(/\(([^)]+)\)\s*$/); const s = m ? m[1] : n; return s.trim().split(/\s+/)[0].replace(/^./, c => c).toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase()); };
+const short = n => { const m = n.match(/\(([^)]+)\)\s*$/); const s = m ? m[1] : n; return s.trim().split(/\s+/)[0].toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase()); };
 
 // ---- λίστα ----
 function card(p, st, extra) {
@@ -452,7 +409,7 @@ function renderList0() {
   $('upd').textContent = data.updated ? data.updated.slice(8, 10) + '/' + data.updated.slice(5, 7) + ' ' + hhmm(data.updated) : '–';
 
   if (!ph) {
-    $('big').textContent = all.filter(p => status(p).k === 'open').length + ' ανοιχτά σε όλη την Ελλάδα';
+    $('big').textContent = (all.filter(p => status(p).k === 'open').length + (state.view === 'now' && regStatus().k === 'open' ? state.reg.length : 0)).toLocaleString('el-GR') + ' ανοιχτά σε όλη την Ελλάδα';
     $('small').textContent = 'Ψάξε πόλη ή πάτα το βελάκι';
     list.innerHTML = '<div class="empty"><b>Μεγάλωσε τον χάρτη σε μια πόλη</b>Ή γράψε το όνομα της πόλης στην αναζήτηση από πάνω.</div>';
     return;
@@ -513,7 +470,6 @@ function renderList0() {
 // ---- χάρτης ----
 let start = { center: [21.7346, 38.2466], zoom: 12.6 };
 try { const v = JSON.parse(localStorage.getItem('view') || 'null'); if (v && v.center && v.zoom) start = v; } catch (e) {}
-// ---- στυλ χάρτη (δοκιμή: ?dokimi στη διεύθυνση) ----
 const OFM = 'https://tiles.openfreemap.org/styles/';
 const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
 const satellite = {
@@ -530,30 +486,14 @@ const satellite = {
     { id: 'names', type: 'raster', source: 'names' }
   ]
 };
-const STYLES = {
-  apalos: { name: 'Απαλός', url: () => OFM + (dark ? 'dark' : 'positron') },
-  xromata: { name: 'Πολύχρωμος', url: () => OFM + 'liberty' },
-  '3d': { name: '3D κτίρια', url: () => OFM + 'liberty', pitch: 55 },
-  doryforos: { name: 'Δορυφόρος', url: () => satellite },
-  nyxta: { name: 'Σκούρος', url: () => OFM + 'dark', glow: true }
-};
-const DOKIMI = /dokimi/.test(location.search + location.hash);
-// Σχέδια σελίδας: το καθένα έχει και δικό του χάρτη
-const DESIGNS = {
-  old: { name: 'Τωρινό', map: null },
-  clean: { name: 'Α · Καθαρό', map: 'xromata', stroke: '#ffffff' },
-  dark: { name: 'Β · Σκούρο', map: 'nyxta', stroke: '#0B0C0E' },
-  bold: { name: 'Γ · Έντονο', map: 'xromata', stroke: '#0A0A0A' }
-};
-let designKey = 'dark'; // το σχέδιο που διάλεξε ο Igli
-function applyDesign() { if (designKey === 'old') document.documentElement.removeAttribute('data-d'); else document.documentElement.dataset.d = designKey; }
-applyDesign();
-let styleKey = DESIGNS[designKey].map || 'apalos';
+// Δύο χάρτες: ο σκούρος (κανονικός) και ο δορυφόρος
+const STYLES = { nyxta: { url: () => OFM + 'dark', glow: true }, doryforos: { url: () => satellite } };
+const STROKE = '#0B0C0E';
 let satOn = false; try { satOn = localStorage.getItem('sat') === '1'; } catch (e) {}
-if (satOn) styleKey = 'doryforos';
+let styleKey = satOn ? 'doryforos' : 'nyxta';
 
 const map = new maplibregl.Map({
-  container: 'map', style: STYLES[styleKey].url(), pitch: STYLES[styleKey].pitch || 0, maxPitch: 70,
+  container: 'map', style: STYLES[styleKey].url(),
   center: start.center, zoom: start.zoom, attributionControl: { compact: true }, maxBounds: [[17.5, 33.8], [30.5, 42.5]], minZoom: 5.5
 });
 let mapReady = false;
@@ -568,9 +508,6 @@ function geojson(list) {
 }
 let layerEvents = false;
 function setupLayers() {
-  const st = STYLES[styleKey];
-  if (map.getLayer('building-3d')) map.setLayoutProperty('building-3d', 'visibility', st.pitch ? 'visible' : 'none');
-  if (st.pitch && map.getLayer('building')) map.setLayoutProperty('building', 'visibility', 'none');
   for (const l of map.getStyle().layers) {
     if (l.type === 'symbol' && l.layout && l.layout['text-field']) {
       try { map.setLayoutProperty(l.id, 'text-field', ['coalesce', ['get', 'name:el'], ['get', 'name'], ['get', 'name_int']]); } catch (e) {}
@@ -594,7 +531,7 @@ function setupLayers() {
     paint: {
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, ['match', ['get', 'k'], 'off', 1.5, 2.5], 12, ['case', ['==', ['get', 'sel'], 1], 14, ['match', ['get', 'k'], 'off', 6, 9]], 16, ['case', ['==', ['get', 'sel'], 1], 20, ['match', ['get', 'k'], 'off', 9, 15]]],
       'circle-color': ['match', ['get', 'k'], 'open', COLORS.open, 'later', sat ? '#C9CED4' : COLORS.later, sat ? '#C9CED4' : COLORS.off],
-      'circle-stroke-color': sat ? '#ffffff' : (DESIGNS[designKey].stroke || '#ffffff'), 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 12, 2, 16, 2.5] } });
+      'circle-stroke-color': sat ? '#ffffff' : STROKE, 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 12, 2, 16, 2.5] } });
   map.addLayer({ id: 'ph-cross', type: 'symbol', source: 'ph', minzoom: 11.5,
     layout: { 'icon-image': 'cross', 'icon-size': ['interpolate', ['linear'], ['zoom'], 11.5, 0.45, 16, 0.85], 'icon-allow-overlap': true } });
   if (!layerEvents) { layerEvents = true; map.on('click', 'ph-dot', e => { const f = e.features && e.features[0]; if (f) { e.originalEvent.cancelBubble = true; clickedPin = true; select(byN[f.properties.i], false); } });
@@ -603,6 +540,7 @@ function setupLayers() {
   map.on('click', 'reg-dot', e => { const f = e.features && e.features[0]; if (f && !clickedPin) { clickedPin = true; select(state.reg[f.properties.i], false); } });
   map.on('mouseenter', 'reg-dot', () => map.getCanvas().style.cursor = 'pointer');
   map.on('mouseleave', 'reg-dot', () => map.getCanvas().style.cursor = ''); }
+  regPainted = state.regVer + '|' + regStatus().k; // η πηγή 'reg' μόλις γέμισε με τα τωρινά δεδομένα
   mapReady = true;
   render();
 }
@@ -610,9 +548,7 @@ map.on('style.load', setupLayers);
 function setStyleKey(k) {
   if (!STYLES[k] || k === styleKey) return;
   styleKey = k; mapReady = false;
-  try { localStorage.setItem('style', k); } catch (e) {}
-    map.setStyle(STYLES[k].url(), { diff: false });
-  map.easeTo({ pitch: STYLES[k].pitch || 0, duration: 600 });
+  map.setStyle(STYLES[k].url(), { diff: false });
 }
 
 let byN = [], clickedPin = false;
@@ -620,12 +556,12 @@ function regGeojson() {
   const o = regStatus().k === 'open' ? 1 : 0;
   return { type: 'FeatureCollection', features: (state.reg || []).map((p, i) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: [p.lng, p.lat] }, properties: { i, o } })) };
 }
-let regPainted = -1;
+let regPainted = '';
 function paintMarkers(list) {
-  const o = regStatus().k === 'open' ? 1 : 0;
-  if (mapReady && map.getSource('reg') && (regPainted !== (state.reg || []).length * 2 + o)) { map.getSource('reg').setData(regGeojson()); regPainted = (state.reg || []).length * 2 + o; }
+  const rk = state.regVer + '|' + regStatus().k;
+  if (mapReady && map.getSource('reg') && regPainted !== rk) { map.getSource('reg').setData(regGeojson()); regPainted = rk; }
   if (!mapReady || !map.getSource('ph')) return;
-  const key = nowStr() + '|' + (state.sel ? state.sel.id : '') + '|' + list.length + '|' + (list[0] ? list[0].id : '') + '|' + (list.at(-1) ? list.at(-1).id : '');
+  const key = state.ver + '|' + nowStr() + '|' + (state.sel ? state.sel.id : '') + '|' + list.length + '|' + (list[0] ? list[0].id : '') + '|' + (list.at(-1) ? list.at(-1).id : '');
   const src = map.getSource('ph');
   if (key === paintMarkers.last && src === paintMarkers.src) return;   // ίδιες κουκίδες με πριν: μην τις ξαναστέλνεις
   paintMarkers.last = key; paintMarkers.src = src;
@@ -656,7 +592,7 @@ function fitAll() {
 // ---- θέση χρήστη ----
 let meMarker = null;
 function locate(fly) {
-  if (!navigator.geolocation) return;
+  if (!navigator.geolocation) { if (fly) $('small').textContent = 'Ο browser αυτός δεν δίνει τοποθεσία.'; return; }
   navigator.geolocation.getCurrentPosition(pos => {
     state.me = [pos.coords.latitude, pos.coords.longitude];
     try { localStorage.setItem('loc-ok', '1'); } catch (e) {}
@@ -664,17 +600,21 @@ function locate(fly) {
     else meMarker.setLngLat([state.me[1], state.me[0]]);
     if (fly) { map.jumpTo({ center: [state.me[1], state.me[0]], zoom: Math.max(map.getZoom(), 13) }); fitAll(); }
     render();
-  }, () => {}, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+  }, () => { if (fly) $('small').textContent = 'Δεν μπόρεσα να βρω τη θέση σου. Δες αν επιτρέπεται η τοποθεσία για το σάιτ.'; }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
 }
 
-// ---- δεδομένα: Πάτρα (κάθε 30') + όλη η Ελλάδα (3 φορές τη μέρα) ----
-async function getJson(u) { const r = await fetch(u + '?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }); if (!r.ok) throw new Error(r.status); return r.json(); }
+// ---- δεδομένα: Πάτρα (κάθε 15') + υπόλοιπη Ελλάδα (ένα κομμάτι κάθε ~2 ώρες) + όλα τα φαρμακεία (κάθε εβδομάδα) ----
+// Οι εφημερίες ζητούνται πάντα φρέσκες. Οι πόλεις και η μεγάλη λίστα «όλα τα φαρμακεία» αλλάζουν σπάνια: τις κρατάει ο browser.
+async function getJson(u, fresh = true) { const r = await fetch(fresh ? u + '?t=' + Math.floor(Date.now() / 60000) : u, fresh ? { cache: 'no-store' } : {}); if (!r.ok) throw new Error(r.status); return r.json(); }
+let lastLoad = 0;
 async function load(first) {
-  const [pa, gr, tw, al] = await Promise.allSettled([getJson('data/patra.json'), getJson('data/greece.json'), state.towns.length ? Promise.resolve(state.towns) : getJson('data/towns.json'), state.regRaw ? Promise.resolve(state.regRaw) : getJson('data/all.json')]);
+  if (!first && Date.now() - lastLoad < 120000) return; // όχι πιο συχνά από κάθε 2 λεπτά
+  lastLoad = Date.now();
+  const [pa, gr, tw, al] = await Promise.allSettled([getJson('data/patra.json'), getJson('data/greece.json'), state.towns.length ? Promise.resolve(state.towns) : getJson('data/towns.json', false), state.regRaw ? Promise.resolve(state.regRaw) : getJson('data/all.json', false)]);
   if (pa.status !== 'fulfilled' && gr.status !== 'fulfilled') {
-    $('big').textContent = 'Δεν φόρτωσαν τα φαρμακεία';
-    $('small').textContent = 'Έλεγξε τη σύνδεση και ξαναδοκίμασε.';
-    return;
+    lastLoad = 0;
+    if (!state.data) { $('big').textContent = 'Δεν φόρτωσαν τα φαρμακεία'; $('small').textContent = 'Έλεγξε τη σύνδεση και ξαναδοκίμασε.'; }
+    return; // αν υπάρχουν ήδη δεδομένα, μένουν στην οθόνη
   }
   if (tw.status === 'fulfilled') state.towns = tw.value;
   const seen = new Set(), list = [];
@@ -687,13 +627,15 @@ async function load(first) {
     const grid = new Map(); const key = (a, b) => Math.round(a * 1500) + ':' + Math.round(b * 1500);
     for (const p of list) if (p.lat != null) grid.set(key(p.lat, p.lng), 1);
     const near = (a, b) => { for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) if (grid.has((Math.round(a * 1500) + i) + ':' + (Math.round(b * 1500) + j))) return true; return false; };
-    state.reg = al.value.items.filter(r => !near(r[0], r[1])).map((r, i) => ({ id: 'osm' + i, reg: true, lat: r[0], lng: r[1], name: r[2], address: r[3], town: r[4], zip: '', phone: r[5], oh: r[6], slots: [] }));
+    state.reg = al.value.items.filter(r => !near(r[0], r[1])).map(r => ({ id: 'reg' + r[0] + ',' + r[1], reg: true, lat: r[0], lng: r[1], name: r[2], address: r[3], town: r[4], zip: '', phone: r[5], oh: r[6], slots: [] }));
   }
   const ups = [pa.value?.updated, gr.value?.updated].filter(Boolean).sort();
   state.data = { pharmacies: list, updated: ups[ups.length - 1] };
-  if (state.sel) state.sel = list.find(p => p.id === state.sel.id) || null;
+  state.ver++; state.regVer = state.ver;
+  if (state.sel) state.sel = (state.sel.reg ? state.reg : list).find(p => p.id === state.sel.id) || null;
   render();
-  if (first && !localStorage.getItem('view')) { if (mapReady) fitAll(); else map.once('style.load', () => setTimeout(fitAll, 50)); }
+  let hasView = null; try { hasView = localStorage.getItem('view'); } catch (e) {}
+  if (first && !hasView) { if (mapReady) fitAll(); else map.once('style.load', () => setTimeout(fitAll, 50)); }
 }
 
 function clock() { const d = new Date(); $('clock').textContent = d.toLocaleDateString('el-GR', { weekday: 'long', day: '2-digit', month: '2-digit', timeZone: 'Europe/Athens' }) + ' · ' + d.toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Athens' }); }
@@ -733,7 +675,7 @@ $('sat').setAttribute('aria-pressed', satOn);
 $('sat').onclick = () => {
   satOn = !satOn; $('sat').setAttribute('aria-pressed', satOn);
   try { localStorage.setItem('sat', satOn ? '1' : '0'); } catch (e) {}
-  setStyleKey(satOn ? 'doryforos' : (DESIGNS[designKey].map || 'apalos'));
+  setStyleKey(satOn ? 'doryforos' : 'nyxta');
 };
 // Σύρσιμο της λίστας πάνω/κάτω με το δάχτυλο (κινητό): 3 θέσεις — χαμηλά, μέση, ψηλά
 (() => {
@@ -786,7 +728,6 @@ map.on('moveend', () => {
   }, 150);
 });
 
-state.towns = [];
 clock(); load(true);
 try { if (localStorage.getItem('loc-ok')) locate(!localStorage.getItem('view')); } catch (e) {}
 setInterval(() => { clock(); render(); }, 30000);

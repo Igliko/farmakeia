@@ -24,10 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 340
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
       - name: Ενημέρωση σε επανάληψη
         env:
           TIME_BUDGET_MIN: "40"
@@ -41,7 +41,9 @@ jobs:
             for i in 1 2 3 4 5; do git pull -q --rebase -X theirs origin main && git push -q && return 0; sleep 7; done
           }
           end=$(( $(date +%s) + 300*60 ))
-          last_gr=$(date +%s)   # η Ελλάδα 2 ώρες μετά την αρχή (για να μη «φορτώνουμε» το vrisko)
+          # Η Ελλάδα κάθε 2 ώρες, μετρώντας από την τελευταία φορά που έτρεξε (γράφεται στο data/cursor.json),
+          # όχι από την αρχή αυτής της εργασίας: έτσι δεν χάνεται χρόνος κάθε φορά που ξαναρχίζει η αλυσίδα.
+          last_gr=$(TZ=Europe/Athens date -d "$(node -p "require('./data/cursor.json').at" 2>/dev/null)" +%s 2>/dev/null || date +%s)
           node scripts/osm.mjs || echo "OpenStreetMap απέτυχε αυτή τη φορά"   # μία φορά την εβδομάδα (αλλιώς δεν κάνει τίποτα)
           (pip install -q duckdb && python3 scripts/overture.py && node scripts/merge.mjs) || echo "Overture απέτυχε αυτή τη φορά"   # κι αυτό μία φορά την εβδομάδα
           save "Όλα τα φαρμακεία:"
@@ -50,7 +52,7 @@ jobs:
             node scripts/update.mjs || echo "Η Πάτρα απέτυχε αυτή τη φορά"
             save "Εφημερίες: ενημέρωση"
             now=$(date +%s)
-            if [ $(( now - last_gr )) -ge 7200 ] && [ $(( end - now )) -ge 2700 ]; then
+            if [ $(( now - last_gr )) -ge 7000 ] && [ $(( end - now )) -ge 2700 ]; then
               node scripts/greece.mjs || echo "Η Ελλάδα απέτυχε αυτή τη φορά"
               save "Ελλάδα: ενημέρωση"
               last_gr=$now

@@ -4,13 +4,11 @@ import { sleep } from './net.mjs';
 
 const UA = 'farmakeia/1.0 (https://github.com/Igliko/farmakeia)';
 let last = 0;
-export let requests = 0;
 
 async function search(params) {
   const wait = 1100 - (Date.now() - last);
   if (wait > 0) await sleep(wait);
   last = Date.now();
-  requests++;
   const u = 'https://nominatim.openstreetmap.org/search?' + new URLSearchParams({ format: 'jsonv2', limit: '1', countrycodes: 'gr', 'accept-language': 'el', ...params });
   const r = await fetch(u, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(15000) });
   if (r.status === 429 || r.status === 403) throw new Error('nominatim ' + r.status);
