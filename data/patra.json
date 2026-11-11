@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-11T02:12",
+ "updated": "2026-11-11T08:42",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "502a6k0g3cab_d2ib53c4j3db430_ade",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΔΡΟΣΟΠΟΥΛΟΥ ΕΛΕΝΗ ΔΡΟΣΟΠΟΥΛΟΥ ΑΝΑΣΤΑΣΙΑ ΟΕ",
-   "address": "Μαιζώνος 128Γ & Κανάρη",
-   "area": "Πάτρα",
-   "zip": "26222",
-   "phone": "2610333996",
-   "mapUrl": "https://www.vrisko.gr/details/map/502a6k0g3cab_d2ib53c4j3db430_ade",
-   "slots": [
-    {
-     "from": "2026-11-10T21:00",
-     "to": "2026-11-11T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.244196,
-   "lng": 21.731784
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
