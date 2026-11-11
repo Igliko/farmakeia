@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-11T08:42",
+ "updated": "2026-11-11T14:32",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -73,29 +73,6 @@
    ],
    "lat": 38.256354,
    "lng": 21.743374
-  },
-  {
-   "id": "266b4g50d3413fb14f335i5d2g6_dfb3",
-   "name": "Ράγγου Μαρία Γ.",
-   "address": "Ανθείας 83, Πλησίον Εργατικών Κατοικιών",
-   "area": "Πάτρα",
-   "zip": "26333",
-   "phone": "2610313868",
-   "mapUrl": "https://www.vrisko.gr/details/map/266b4g50d3413fb14f335i5d2g6_dfb3",
-   "slots": [
-    {
-     "from": "2026-11-11T08:00",
-     "to": "2026-11-11T14:30",
-     "type": "extended"
-    },
-    {
-     "from": "2026-11-11T17:30",
-     "to": "2026-11-11T21:00",
-     "type": "extended"
-    }
-   ],
-   "lat": 38.223307,
-   "lng": 21.727612
   },
   {
    "id": "4f3ebk73da3f_55daga221465g1c_5ck",
@@ -276,6 +253,24 @@
    ],
    "lat": 38.247944,
    "lng": 21.737679
+  },
+  {
+   "id": "266b4g50d3413fb14f335i5d2g6_dfb3",
+   "name": "Ράγγου Μαρία Γ.",
+   "address": "Ανθείας 83, Πλησίον Εργατικών Κατοικιών",
+   "area": "Πάτρα",
+   "zip": "26333",
+   "phone": "2610313868",
+   "mapUrl": "https://www.vrisko.gr/details/map/266b4g50d3413fb14f335i5d2g6_dfb3",
+   "slots": [
+    {
+     "from": "2026-11-11T17:30",
+     "to": "2026-11-11T21:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.223307,
+   "lng": 21.727612
   },
   {
    "id": "bk336k715cc567c2a6bf_i2dc70gaib3",
