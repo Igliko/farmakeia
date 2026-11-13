@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-13T02:00",
+ "updated": "2026-11-13T08:37",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "4e5h3id6af4ecj_d552i6g6a2a_k3_75",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΑΘΑΝΑΣΟΠΟΥΛΟΥ ΑΓΓΕΛΟΠΟΥΛΟΥ ΕΥΦΡΟΣΥΝΗ ΑΘΑΝΑΣΟΠΟΥΛΟΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΟΕ",
-   "address": "Αγίου Ιωάννη Πράτσικα 56-58",
-   "area": "Πάτρα",
-   "zip": "26333",
-   "phone": "2610332467",
-   "mapUrl": "https://www.vrisko.gr/details/map/4e5h3id6af4ecj_d552i6g6a2a_k3_75",
-   "slots": [
-    {
-     "from": "2026-11-12T21:00",
-     "to": "2026-11-13T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.230086,
-   "lng": 21.734798
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
