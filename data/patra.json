@@ -1,30 +1,7 @@
 {
- "updated": "2026-11-14T02:09",
+ "updated": "2026-11-14T08:07",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "6f3gb116__cfde7g0b661a7c1eck3j7b",
-   "name": "Παπαθανάσης Δαμιανός Α.",
-   "address": "Νέα Εθνική Οδός Πατρών - Αθηνών & Αμερικής, Εντός Στοάς Σούπερ Μάρκετ ΑΒ Βασιλόπουλος",
-   "area": "Πάτρα",
-   "zip": "26441",
-   "phone": "2610425352",
-   "mapUrl": "https://www.vrisko.gr/details/map/6f3gb116__cfde7g0b661a7c1eck3j7b",
-   "slots": [
-    {
-     "from": "2026-11-13T21:00",
-     "to": "2026-11-14T08:00",
-     "type": "duty"
-    },
-    {
-     "from": "2026-11-14T08:00",
-     "to": "2026-11-14T20:00",
-     "type": "extended"
-    }
-   ],
-   "lat": 38.261583,
-   "lng": 21.749788
-  },
   {
    "id": "bkd44ic56d7i3k6d145k_k6f012i6c2b",
    "name": "Δημοπούλου Νικολέττα",
@@ -96,6 +73,24 @@
    ],
    "lat": 38.228038,
    "lng": 21.761786
+  },
+  {
+   "id": "6f3gb116__cfde7g0b661a7c1eck3j7b",
+   "name": "Παπαθανάσης Δαμιανός Α.",
+   "address": "Νέα Εθνική Οδός Πατρών - Αθηνών & Αμερικής, Εντός Στοάς Σούπερ Μάρκετ ΑΒ Βασιλόπουλος",
+   "area": "Πάτρα",
+   "zip": "26441",
+   "phone": "2610425352",
+   "mapUrl": "https://www.vrisko.gr/details/map/6f3gb116__cfde7g0b661a7c1eck3j7b",
+   "slots": [
+    {
+     "from": "2026-11-14T08:00",
+     "to": "2026-11-14T20:00",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.261583,
+   "lng": 21.749788
   },
   {
    "id": "c0df1c2acecc401faea14ba6_g0_0a_3",
