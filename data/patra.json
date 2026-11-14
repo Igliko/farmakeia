@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T08:07",
+ "updated": "2026-11-14T14:06",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -875,24 +875,6 @@
    ],
    "lat": 38.246753,
    "lng": 21.734458
-  },
-  {
-   "id": "56141jd01jda6b3i615f4461bfc1d32d",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΜΑΥΡΟΕΙΔΗΣ ΒΑΣΙΛΕΙΟΣ ΚΑΙ ΜΑΥΡΟΕΙΔΗΣ ΔΗΜΗΤΡΙΟΣ ΟΕ",
-   "address": "Καλαβρύτων 28",
-   "area": "Πάτρα",
-   "zip": "26226",
-   "phone": "2610334563",
-   "mapUrl": "https://www.vrisko.gr/details/map/56141jd01jda6b3i615f4461bfc1d32d",
-   "slots": [
-    {
-     "from": "2026-11-14T09:00",
-     "to": "2026-11-14T14:00",
-     "type": "extended"
-    }
-   ],
-   "lat": 38.236044,
-   "lng": 21.745985
   },
   {
    "id": "06d10a5jc6454i0f1h73c30d0ccgaa76",
