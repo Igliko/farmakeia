@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T00:06",
+ "updated": "2026-11-14T02:09",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -24,24 +24,6 @@
    ],
    "lat": 38.261583,
    "lng": 21.749788
-  },
-  {
-   "id": "a_527bc_64ac0f2e60015i0c5fa00eag",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΔΙΑΜΑΝΤΟΠΟΥΛΟΥ ΓΕΩΡΓΙΑ ΚΑΙ ΑΓΓΕΛΟΠΟΥΛΟΣ ΝΙΚΟΛΑΟΣ ΟΕ",
-   "address": "Φωκαίας 17",
-   "area": "Πλατεία Ελευθερίας",
-   "zip": "26226",
-   "phone": "2610323556",
-   "mapUrl": "https://www.vrisko.gr/details/map/a_527bc_64ac0f2e60015i0c5fa00eag",
-   "slots": [
-    {
-     "from": "2026-11-13T21:00",
-     "to": "2026-11-14T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.236295,
-   "lng": 21.741193
   },
   {
    "id": "bkd44ic56d7i3k6d145k_k6f012i6c2b",
