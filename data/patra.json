@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-15T00:06",
+ "updated": "2026-11-15T02:10",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -19,24 +19,6 @@
    ],
    "lat": 38.265693,
    "lng": 21.740254
-  },
-  {
-   "id": "31agd145_h1fd63ib573c16376a7a7be",
-   "name": "Σιάμου Ζωή Χ.",
-   "address": "Πατρών Κλάους 126",
-   "area": "Κουκούλι",
-   "zip": "26335",
-   "phone": "2610329439",
-   "mapUrl": "https://www.vrisko.gr/details/map/31agd145_h1fd63ib573c16376a7a7be",
-   "slots": [
-    {
-     "from": "2026-11-14T21:00",
-     "to": "2026-11-15T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.220166,
-   "lng": 21.750285
   },
   {
    "id": "5k772fdg_5c6_27e3jb33k_b3i4a4ed4_23hca6cb5c10gccd0_d572e25130k3f",
