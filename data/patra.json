@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-15T02:10",
+ "updated": "2026-11-15T08:06",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "03bkbe165f0d2i0e46_ec1_b171c2bbf",
-   "name": "Παπαναούμ Μυροφόρα Ε.",
-   "address": "Σοφοκλέους 5 & Ηρώων Πολυτεχνείου",
-   "area": "Τερψιθέα",
-   "zip": "26442",
-   "phone": "2614004371",
-   "mapUrl": "https://www.vrisko.gr/details/map/03bkbe165f0d2i0e46_ec1_b171c2bbf",
-   "slots": [
-    {
-     "from": "2026-11-14T21:00",
-     "to": "2026-11-15T08:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.265693,
-   "lng": 21.740254
-  },
   {
    "id": "5k772fdg_5c6_27e3jb33k_b3i4a4ed4_23hca6cb5c10gccd0_d572e25130k3f",
    "name": "ΛΙΑΝΟΥ ΜΑΡΙΝΑ & ΧΑΡΔΑΛΙΑΣ ΘΕΟΦΑΝΗΣ Ο.Ε.",
