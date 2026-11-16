@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-16T00:03",
+ "updated": "2026-11-16T02:10",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "5f55ae_66a7c_41b3c6c626dc_2h3621",
-   "name": "Καρακάση Δήμητρα Α.",
-   "address": "Γούναρη Δημητρίου 35 & Κανακάρη 184",
-   "area": "Πάτρα",
-   "zip": "",
-   "phone": "2610226863",
-   "mapUrl": "https://www.vrisko.gr/details/map/5f55ae_66a7c_41b3c6c626dc_2h3621",
-   "slots": [
-    {
-     "from": "2026-11-15T21:00",
-     "to": "2026-11-16T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.243488,
-   "lng": 21.733375
-  },
   {
    "id": "7a47c52ec4c72b_kdc20bb2f3d5b221j",
    "name": "Πελεκούδας Ιωάννης Β.",
