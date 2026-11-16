@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-16T02:10",
+ "updated": "2026-11-16T08:33",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "7a47c52ec4c72b_kdc20bb2f3d5b221j",
-   "name": "Πελεκούδας Ιωάννης Β.",
-   "address": "Κορίνθου 242 & Ερμού",
-   "area": "Πάτρα",
-   "zip": "26221",
-   "phone": "2610220201",
-   "mapUrl": "https://www.vrisko.gr/details/map/7a47c52ec4c72b_kdc20bb2f3d5b221j",
-   "slots": [
-    {
-     "from": "2026-11-15T21:00",
-     "to": "2026-11-16T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.246605,
-   "lng": 21.736137
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
