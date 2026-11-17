@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-17T00:02",
+ "updated": "2026-11-17T02:09",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "a51b263gdc7f5h_h56737_bh4521be_0",
-   "name": "Κολυρόπουλος Γεώργιος Α.",
-   "address": "Ρήγα Φεραίου 36 & Αράτου",
-   "area": "Πλατεία Όλγας",
-   "zip": "26221",
-   "phone": "2610225921",
-   "mapUrl": "https://www.vrisko.gr/details/map/a51b263gdc7f5h_h56737_bh4521be_0",
-   "slots": [
-    {
-     "from": "2026-11-16T21:00",
-     "to": "2026-11-17T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.249933,
-   "lng": 21.737645
-  },
   {
    "id": "7k2bb1170jbk_e6d2hb11f_h_b4hb1c6",
    "name": "Λάτσης Δημήτριος Κ.",
