@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-18T21:12",
+ "updated": "2026-11-18T22:33",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "4cdf6i4j_0_j3_2b175f505g_ecbc6bf",
-   "name": "Παυλίδου Αγγελική Θ.",
-   "address": "Πατρών - Πύργου 87",
-   "area": "Πάτρα",
-   "zip": "26333",
-   "phone": "2610527236",
-   "mapUrl": "https://www.vrisko.gr/details/map/4cdf6i4j_0_j3_2b175f505g_ecbc6bf",
-   "slots": [
-    {
-     "from": "2026-11-18T14:30",
-     "to": "2026-11-18T22:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.189595,
-   "lng": 21.690184
-  },
   {
    "id": "77b41g4b0c7f5_32bf33a6_j53411j4h",
    "name": "ΒΑΣΙΛΑΚΟΠΟΥΛΟΣ ΣΩΤΗΡΙΟΣ ΚΑΙ ΣΙΑ ΟΕ",
