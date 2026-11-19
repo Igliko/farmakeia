@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-19T02:01",
+ "updated": "2026-11-19T08:32",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "_61c1f0_a3bka73c0b4b123_0ba0bc0e",
-   "name": "Μακρή Ανδρομάχη",
-   "address": "Λεωφόρος Γούναρη Δημητρίου 131",
-   "area": "Πάτρα",
-   "zip": "26225",
-   "phone": "2610241150",
-   "mapUrl": "https://www.vrisko.gr/details/map/_61c1f0_a3bka73c0b4b123_0ba0bc0e",
-   "slots": [
-    {
-     "from": "2026-11-18T21:00",
-     "to": "2026-11-19T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.241273,
-   "lng": 21.738197
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
