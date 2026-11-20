@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-20T02:01",
+ "updated": "2026-11-20T08:32",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "c3db0d607_551kb37ja7a3b13c27a3_g",
-   "name": "Θεοδώρου Σάββας Π.",
-   "address": "Σολωμού 44",
-   "area": "Πάτρα",
-   "zip": "26222",
-   "phone": "2610327789",
-   "mapUrl": "https://www.vrisko.gr/details/map/c3db0d607_551kb37ja7a3b13c27a3_g",
-   "slots": [
-    {
-     "from": "2026-11-19T21:00",
-     "to": "2026-11-20T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.237752,
-   "lng": 21.730443
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
