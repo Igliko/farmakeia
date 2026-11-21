@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-21T02:04",
+ "updated": "2026-11-21T08:18",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "cka0aic66141_k7c03_b0k3c0k006c56",
-   "name": "Λυκοκανέλλου Ζωή",
-   "address": "Γούναρη Δημητρίου 34 & Κορίνθου",
-   "area": "Πάτρα",
-   "zip": "26222",
-   "phone": "2610327548",
-   "mapUrl": "https://www.vrisko.gr/details/map/cka0aic66141_k7c03_b0k3c0k006c56",
-   "slots": [
-    {
-     "from": "2026-11-20T21:00",
-     "to": "2026-11-21T08:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.244016,
-   "lng": 21.732756
-  },
   {
    "id": "bk336k715cc567c2a6bf_i2dc70gaib3",
    "name": "Μαλαμής Βασίλειος Γ.",
