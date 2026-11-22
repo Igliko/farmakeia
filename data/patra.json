@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T00:00",
+ "updated": "2026-11-22T02:03",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -19,24 +19,6 @@
    ],
    "lat": 38.245637,
    "lng": 21.730831
-  },
-  {
-   "id": "301f__6dc04g343ea30e56ae25703hb2",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΧΡΗΣΤΟΥ ΘΕΟΦΙΛΑΤΟΥ ΚΑΙ ΠΑΝΑΓΙΩΤΗ ΘΕΟΦΙΛΑΤΟΥ ΟΕ",
-   "address": "Κορίνθου 287",
-   "area": "Πλατεία Γεωργίου",
-   "zip": "26221",
-   "phone": "2610270525",
-   "mapUrl": "https://www.vrisko.gr/details/map/301f__6dc04g343ea30e56ae25703hb2",
-   "slots": [
-    {
-     "from": "2026-11-21T21:00",
-     "to": "2026-11-22T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.245683,
-   "lng": 21.735033
   },
   {
    "id": "c3db0d607_551kb37ja7a3b13c27a3_g",
