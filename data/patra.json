@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T08:13",
+ "updated": "2026-11-22T13:41",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -137,11 +137,6 @@
    "phone": "2610520046",
    "mapUrl": "https://www.vrisko.gr/details/map/510b_02_dd_gbk_f_4a_5h726a65006i",
    "slots": [
-    {
-     "from": "2026-11-22T09:00",
-     "to": "2026-11-22T13:30",
-     "type": "duty"
-    },
     {
      "from": "2026-11-22T17:30",
      "to": "2026-11-22T22:30",
