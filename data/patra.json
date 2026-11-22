@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-22T02:03",
+ "updated": "2026-11-22T08:13",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "6c63bbb_abc62k7550d7dc4_26df2k13",
-   "name": "ΛΟΥΚΑΣ ΛΕΩΝΙΔΑΣ ΚΑΙ ΣΙΑ ΕΕ",
-   "address": "Αγίου Ανδρέα 151 & Γούναρη Δημητρίου",
-   "area": "Πάτρα",
-   "zip": "26221",
-   "phone": "2610271225",
-   "mapUrl": "https://www.vrisko.gr/details/map/6c63bbb_abc62k7550d7dc4_26df2k13",
-   "slots": [
-    {
-     "from": "2026-11-21T21:00",
-     "to": "2026-11-22T08:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.245637,
-   "lng": 21.730831
-  },
   {
    "id": "c3db0d607_551kb37ja7a3b13c27a3_g",
    "name": "Θεοδώρου Σάββας Π.",
