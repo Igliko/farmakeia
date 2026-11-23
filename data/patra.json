@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-23T02:03",
+ "updated": "2026-11-23T08:38",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "bkd44ic56d7i3k6d145k_k6f012i6c2b",
-   "name": "Δημοπούλου Νικολέττα",
-   "address": "Κορίνθου 194-196 & Κολοκοτρώνη",
-   "area": "Πάτρα",
-   "zip": "26221",
-   "phone": "2610273063",
-   "mapUrl": "https://www.vrisko.gr/details/map/bkd44ic56d7i3k6d145k_k6f012i6c2b",
-   "slots": [
-    {
-     "from": "2026-11-22T21:00",
-     "to": "2026-11-23T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.248044,
-   "lng": 21.737903
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
