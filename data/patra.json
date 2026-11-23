@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T08:38",
+ "updated": "2026-11-23T11:15",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -299,6 +299,24 @@
    ],
    "lat": 38.2414,
    "lng": 21.729274
+  },
+  {
+   "id": "d5_j116dd3d34ibb50a_3k360c5g135a",
+   "name": "Παπαδόπουλος Κωνσταντίνος",
+   "address": "Κορίνθου 265 & Αγίου Νικολάου",
+   "area": "Πάτρα",
+   "zip": "26221",
+   "phone": "2610279530",
+   "mapUrl": "https://www.vrisko.gr/details/map/d5_j116dd3d34ibb50a_3k360c5g135a",
+   "slots": [
+    {
+     "from": "2026-11-23T21:00",
+     "to": "2026-11-24T08:30",
+     "type": "duty"
+    }
+   ],
+   "lat": 38.247218,
+   "lng": 21.736898
   },
   {
    "id": "_2_k_3c1b_4gdbbe_3bd3f0f167h1227",
