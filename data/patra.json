@@ -1,43 +1,7 @@
 {
- "updated": "2026-11-24T02:14",
+ "updated": "2026-11-24T08:34",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "d5_j116dd3d34ibb50a_3k360c5g135a",
-   "name": "Παπαδόπουλος Κωνσταντίνος",
-   "address": "Κορίνθου 265 & Αγίου Νικολάου",
-   "area": "Πάτρα",
-   "zip": "26221",
-   "phone": "2610279530",
-   "mapUrl": "https://www.vrisko.gr/details/map/d5_j116dd3d34ibb50a_3k360c5g135a",
-   "slots": [
-    {
-     "from": "2026-11-23T21:00",
-     "to": "2026-11-24T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.247218,
-   "lng": 21.736898
-  },
-  {
-   "id": "3da7cf33213c13de2h1c4e1kcd0kci41",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΡΑΠΤΗΣ ΑΛΕΞΑΝΔΡΟΣ ΡΑΠΤΗΣ ΘΕΟΔΩΡΟΣ ΟΕ",
-   "address": "Κανακάρη 93",
-   "area": "Πάτρα",
-   "zip": "26221",
-   "phone": "2610279009",
-   "mapUrl": "https://www.vrisko.gr/details/map/3da7cf33213c13de2h1c4e1kcd0kci41",
-   "slots": [
-    {
-     "from": "2026-11-23T21:00",
-     "to": "2026-11-24T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.247391,
-   "lng": 21.738478
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
