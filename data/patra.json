@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-25T00:02",
+ "updated": "2026-11-25T02:09",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "313i1aaa221h2ibc5h0kbk5677bka64g",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΚΟΥΡΛΑΜΠΑΣ ΠΕΦΑΝΗΣ ΣΩΤΗΡΙΟΣ ΠΕΦΑΝΗ ΑΝΤΙΜΗΣΙΑΡΗ ΚΩΝΣΤΑΝΤΙΝΑ ΚΑΙ ΣΙΑ ΟΕ",
-   "address": "Πλατεία Γεωργίου Α 2 & Γεροκωστοπούλου",
-   "area": "Πάτρα",
-   "zip": "26221",
-   "phone": "2610277245",
-   "mapUrl": "https://www.vrisko.gr/details/map/313i1aaa221h2ibc5h0kbk5677bka64g",
-   "slots": [
-    {
-     "from": "2026-11-24T21:00",
-     "to": "2026-11-25T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.246753,
-   "lng": 21.734458
-  },
   {
    "id": "47_1403ac06f_2537361bc5k42bi1dbi",
    "name": "ΦΑΡΜΑΚΕΙΟ ΘΕΟΔΩΡΟΣ ΠΑΝΤΕΛΙΔΗΣ ΚΑΙ ΣΙΑ ΟΕ",
