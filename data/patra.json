@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-25T02:09",
+ "updated": "2026-11-25T08:30",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "47_1403ac06f_2537361bc5k42bi1dbi",
-   "name": "ΦΑΡΜΑΚΕΙΟ ΘΕΟΔΩΡΟΣ ΠΑΝΤΕΛΙΔΗΣ ΚΑΙ ΣΙΑ ΟΕ",
-   "address": "Νέα Εθνική Οδός Πατρών - Αθηνών 78",
-   "area": "Πάτρα",
-   "zip": "26443",
-   "phone": "2610701528",
-   "mapUrl": "https://www.vrisko.gr/details/map/47_1403ac06f_2537361bc5k42bi1dbi",
-   "slots": [
-    {
-     "from": "2026-11-24T21:00",
-     "to": "2026-11-25T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.268102,
-   "lng": 21.75518
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
