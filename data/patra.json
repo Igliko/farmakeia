@@ -1,25 +1,7 @@
 {
- "updated": "2026-11-27T02:08",
+ "updated": "2026-11-27T08:31",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "cg3a_ja25_bhba5fd3akac3i573jb12c",
-   "name": "Σερέτη Ελένη Χ.",
-   "address": "Εγλυκάδος 140Β",
-   "area": "Πάτρα",
-   "zip": "26335",
-   "phone": "2610642525",
-   "mapUrl": "https://www.vrisko.gr/details/map/cg3a_ja25_bhba5fd3akac3i573jb12c",
-   "slots": [
-    {
-     "from": "2026-11-26T21:00",
-     "to": "2026-11-27T08:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.232077,
-   "lng": 21.757041
-  },
   {
    "id": "a_cb_1660b14c3deaebb4h6ad7_f73be",
    "name": "ΝΙΚΟΛΑΟΣ ΠΑΠΑΝΙΚΟΛΑΟΥ ΚΑΙ ΣΙΑ ΟΕ",
