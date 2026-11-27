@@ -1,43 +1,7 @@
 {
- "updated": "2026-11-27T21:08",
+ "updated": "2026-11-27T22:38",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "616h3j7ac3c_2dcg6ga7ac365e7i5bd_",
-   "name": "Γκούμα Λαμπρινή Γ.",
-   "address": "Καλλιθέα & Εθνική Οδός Πατρών - Τριπόλεως",
-   "area": "Πάτρα",
-   "zip": "26500",
-   "phone": "2610590336",
-   "mapUrl": "https://www.vrisko.gr/details/map/616h3j7ac3c_2dcg6ga7ac365e7i5bd_",
-   "slots": [
-    {
-     "from": "2026-11-27T21:00",
-     "to": "2026-11-27T22:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.161822,
-   "lng": 21.728647
-  },
-  {
-   "id": "4cdf6i4j_0_j3_2b175f505g_ecbc6bf",
-   "name": "Παυλίδου Αγγελική Θ.",
-   "address": "Πατρών - Πύργου 87",
-   "area": "Πάτρα",
-   "zip": "26333",
-   "phone": "2610527236",
-   "mapUrl": "https://www.vrisko.gr/details/map/4cdf6i4j_0_j3_2b175f505g_ecbc6bf",
-   "slots": [
-    {
-     "from": "2026-11-27T21:00",
-     "to": "2026-11-27T22:30",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.189595,
-   "lng": 21.690184
-  },
   {
    "id": "cj7a3b6d71ad4h__c04i7b4_2325400g",
    "name": "Σκαρλάτος Ιωάννης Γ.",
