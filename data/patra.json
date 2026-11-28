@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-28T00:00",
+ "updated": "2026-11-28T02:04",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -24,24 +24,6 @@
    ],
    "lat": 38.232555,
    "lng": 21.744489
-  },
-  {
-   "id": "ci522_ccb02a3i471hb24ddc22_2345e",
-   "name": "ΣΥΣΤΕΓΑΣΜΕΝΑ ΦΑΡΜΑΚΕΙΑ ΤΣΑΛΤΑΣ ΔΗΜΗΤΡΙΟΣ ΚΑΙ ΤΣΑΛΤΑ ΜΑΡΙΑ ΟΕ",
-   "address": "Διγενή Ακρίτα 91",
-   "area": "Μποζαΐτικα",
-   "zip": "26442",
-   "phone": "2610434406",
-   "mapUrl": "https://www.vrisko.gr/details/map/ci522_ccb02a3i471hb24ddc22_2345e",
-   "slots": [
-    {
-     "from": "2026-11-27T21:00",
-     "to": "2026-11-28T02:00",
-     "type": "duty"
-    }
-   ],
-   "lat": 38.280782,
-   "lng": 21.768938
   },
   {
    "id": "4454215ic6566_ag2h37756b62cea4d2",
