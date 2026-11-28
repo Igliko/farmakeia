@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-28T14:35",
+ "updated": "2026-11-28T15:06",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
   {
@@ -33,11 +33,6 @@
      "from": "2026-11-28T08:00",
      "to": "2026-11-28T21:00",
      "type": "duty"
-    },
-    {
-     "from": "2026-11-28T09:00",
-     "to": "2026-11-28T15:00",
-     "type": "extended"
     }
    ],
    "lat": 38.260417,
