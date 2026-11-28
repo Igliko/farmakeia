@@ -1,30 +1,7 @@
 {
- "updated": "2026-11-28T02:04",
+ "updated": "2026-11-28T08:01",
  "source": "https://www.vrisko.gr/efimeries-farmakeion/patra/",
  "pharmacies": [
-  {
-   "id": "cj7a3b6d71ad4h__c04i7b4_2325400g",
-   "name": "Σκαρλάτος Ιωάννης Γ.",
-   "address": "Λεωφόρος Παπανδρέου Γεωργίου 61",
-   "area": "Πάτρα",
-   "zip": "26334",
-   "phone": "2610324354",
-   "mapUrl": "https://www.vrisko.gr/details/map/cj7a3b6d71ad4h__c04i7b4_2325400g",
-   "slots": [
-    {
-     "from": "2026-11-27T21:00",
-     "to": "2026-11-28T08:00",
-     "type": "duty"
-    },
-    {
-     "from": "2026-11-28T09:00",
-     "to": "2026-11-28T14:30",
-     "type": "extended"
-    }
-   ],
-   "lat": 38.232555,
-   "lng": 21.744489
-  },
   {
    "id": "4454215ic6566_ag2h37756b62cea4d2",
    "name": "Αλεξοπούλου Ιουλία Ι.",
@@ -795,6 +772,24 @@
    ],
    "lat": 38.245345,
    "lng": 21.733342
+  },
+  {
+   "id": "cj7a3b6d71ad4h__c04i7b4_2325400g",
+   "name": "Σκαρλάτος Ιωάννης Γ.",
+   "address": "Λεωφόρος Παπανδρέου Γεωργίου 61",
+   "area": "Πάτρα",
+   "zip": "26334",
+   "phone": "2610324354",
+   "mapUrl": "https://www.vrisko.gr/details/map/cj7a3b6d71ad4h__c04i7b4_2325400g",
+   "slots": [
+    {
+     "from": "2026-11-28T09:00",
+     "to": "2026-11-28T14:30",
+     "type": "extended"
+    }
+   ],
+   "lat": 38.232555,
+   "lng": 21.744489
   },
   {
    "id": "2c052_73_h2k0b3h3g0324351cb31j0e",
